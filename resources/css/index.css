@@ -1,0 +1,61 @@
+/* Style pour le conteneur principal */
+.container {
+    max-width: 800px; /* Largeur maximale */
+    margin: 0 auto; /* Centrer horizontalement */
+    padding: 2rem; /* Espacement interne */
+    background-color: #ffffff; /* Fond blanc */
+    border-radius: 0.5rem; /* Coins arrondis */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+/* Style pour le titre */
+.container h1 {
+    font-size: 1.75rem; /* Taille de police */
+    font-weight: bold; /* Gras */
+    text-align: center; /* Centrer le texte */
+    margin-bottom: 1.5rem; /* Espacement en bas */
+    color: #1f2937; /* Gris foncé */
+}
+
+/* Style pour les champs de formulaire */
+.container input,
+.container textarea {
+    width: 100%; /* Largeur complète */
+    padding: 0.75rem; /* Espacement interne */
+    margin-bottom: 1rem; /* Espacement en bas */
+    border: 1px solid #d1d5db; /* Bordure grise */
+    border-radius: 0.375rem; /* Coins arrondis */
+    font-size: 1rem; /* Taille de police */
+    box-sizing: border-box; /* Inclure le padding et la bordure dans la largeur */
+}
+
+/* Style pour le textarea */
+.container textarea {
+    resize: vertical; /* Permet de redimensionner verticalement uniquement */
+}
+
+/* Style pour le bouton */
+.container button {
+    width: 100%; /* Largeur complète */
+    padding: 0.75rem; /* Espacement interne */
+    background-color: #3b82f6; /* Bleu */
+    color: #ffffff; /* Blanc */
+    border: none; /* Pas de bordure */
+    border-radius: 0.375rem; /* Coins arrondis */
+    font-size: 1rem; /* Taille de police */
+    cursor: pointer; /* Curseur pointeur */
+    transition: background-color 0.3s; /* Transition pour le survol */
+}
+
+/* Effet au survol du bouton */
+.container button:hover {
+    background-color: #2563eb; /* Bleu plus foncé */
+}
+
+/* Effet focus pour les champs */
+.container input:focus,
+.container textarea:focus {
+    outline: none; /* Supprime le contour par défaut */
+    border-color: #3b82f6; /* Bordure bleue */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Ombre bleue */
+}

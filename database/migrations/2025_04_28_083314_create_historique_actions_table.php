@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('historique_actions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('dossier_id')->constrained('dossiers')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('utilisateurs')->onDelete('cascade');
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
+            $table->enum('action', ['creation', 'modification', 'transfert', 'archivage']);
+            $table->text('description');
+            $table->date('date_action');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('historique_actions');
+    }
+};
