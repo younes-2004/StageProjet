@@ -63,16 +63,36 @@ class DossierController extends Controller
         return redirect()->route('dashboard')->with('success', 'Dossier créé avec succès et enregistré dans l\'historique des actions !');
     }
 
-    // Affiche un dossier spécifique
-    public function show(Dossier $dossier)
-    {
-        // Vérifiez si l'utilisateur connecté est le créateur du dossier
-        if ($dossier->createur_id !== auth()->id()) {
-            abort(403, 'Accès non autorisé.');
-        }
-
-        // Retourner la vue avec les détails du dossier
-        return view('dossiers.show', compact('dossier'));
+  /**
+ * Affiche un dossier spécifique
+ *
+ * @param Dossier $dossier
+ * @return \Illuminate\View\View
+ */
+public function show(Dossier $dossier)
+{
+    $currentUserId = auth()->id();
+    
+    // Vérifier si l'utilisateur est le créateur du dossier
+    $isCreator = ($dossier->createur_id === $currentUserId);
+    
+    // Vérifier si l'utilisateur est un récepteur du dossier
+    $isReceiver = \App\Models\Reception::where('dossier_id', $dossier->id)
+        ->where('user_id', $currentUserId)
+        ->exists();
+        
+    // Vérifier si l'utilisateur a validé ce dossier
+    $hasValidated = \App\Models\DossierValide::where('dossier_id', $dossier->id)
+        ->where('user_id', $currentUserId)
+        ->exists();
+    
+    // Autoriser l'accès si l'utilisateur est le créateur, un récepteur ou a validé le dossier
+    if (!$isCreator && !$isReceiver && !$hasValidated) {
+        abort(403, 'Accès non autorisé. Vous n\'êtes ni le créateur ni un destinataire de ce dossier.');
     }
+
+    // Retourner la vue avec les détails du dossier
+    return view('dossiers.show', compact('dossier'));
+}
 
 }

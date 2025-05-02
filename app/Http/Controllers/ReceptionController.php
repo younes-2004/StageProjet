@@ -6,9 +6,12 @@ use App\Models\Dossier;
 use App\Models\Reception;
 use App\Models\User;
 use App\Models\Service;
+use App\Models\DossierValide;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ReceptionController extends Controller
 {
@@ -35,27 +38,33 @@ class ReceptionController extends Controller
      */
     public function storeEnvoi(Request $request)
     {
+        Log::info('Début de storeEnvoi', ['request' => $request->all()]);
+        
         $validated = $request->validate([
             'dossier_id' => 'required|exists:dossiers,id',
             'user_id' => 'required|exists:users,id',
         ]);
 
         // Enregistrer l'envoi dans la table Reception
-        $reception = Reception::create([
-            'dossier_id' => $validated['dossier_id'],
-            'user_id' => $validated['user_id'],
-            'date_reception' => Carbon::now(),
-        ]);
+        $reception = new Reception();
+        $reception->dossier_id = $validated['dossier_id'];
+        $reception->user_id = $validated['user_id'];
+        $reception->date_reception = Carbon::now();
+        $reception->traite = false;
+        $reception->save();
+
+        Log::info('Réception créée', ['reception_id' => $reception->id]);
 
         // Ajouter l'action dans la table historique_actions
         \App\Models\HistoriqueAction::create([
             'dossier_id' => $validated['dossier_id'],
-            'user_id' => auth()->id(), // Utilisateur qui effectue l'envoi
-            'service_id' => auth()->user()->service_id, // Service de l'utilisateur connecté
-            'action' => 'transfert', // Type d'action
+            'user_id' => auth()->id(),
+            'service_id' => auth()->user()->service_id,
+            'action' => 'transfert',
             'description' => 'Dossier transféré à l\'utilisateur ID ' . $validated['user_id'],
             'date_action' => now(),
         ]);
+        
         // Récupérer les informations nécessaires
         $userDestination = User::findOrFail($validated['user_id']);
         $userSource = auth()->user();
@@ -72,94 +81,134 @@ class ReceptionController extends Controller
             'statut' => 'envoyé',
         ]);
 
-        // Redirection avec un message de succès
         return redirect()->route('dossiers.index')
             ->with('success', 'Le dossier a été envoyé avec succès et l\'action a été enregistrée.');
     }
 
-    /**
-     * Affiche la liste des dossiers reçus par l'utilisateur connecté
-     *
-     * @return \Illuminate\View\View
-     */
-    public function inbox()
-    {
-        $receptions = Reception::where('user_id', Auth::id())
-            ->with('dossier')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        
-        // Ajout de cette ligne pour rendre les utilisateurs disponibles dans la vue
-        $users = User::where('id', '!=', Auth::id())->get();
-        
-        return view('receptions.inbox', compact('receptions', 'users'));
-    }
+/**
+ * Affiche la liste des dossiers reçus par l'utilisateur connecté
+ * Ne montre que les dossiers non validés
+ *
+ * @return \Illuminate\View\View
+ */
+public function inbox()
+{
+    // Récupérer uniquement les réceptions non traitées
+    $receptions = Reception::where('user_id', Auth::id())
+        ->where('traite', false) // Seulement les non traitées
+        ->with(['dossier', 'dossier.createur']) // Chargement eager des relations
+        ->orderBy('created_at', 'desc')
+        ->paginate(10);
 
-    /**
-     * Marque un dossier comme lu
-     *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function markAsRead($id)
-    {
-        $reception = Reception::findOrFail($id);
-        
-        // Vérifier que l'utilisateur connecté est bien le destinataire
-        if ($reception->user_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à effectuer cette action.');
-        }
+    // Pour débogage, enregistrer dans les logs
+    Log::info('Inbox: Récupération des réceptions non traitées', [
+        'user_id' => Auth::id(),
+        'count' => $receptions->count(),
+        'ids' => $receptions->pluck('id')->toArray()
+    ]);
 
-        // Si nécessaire, ajoutez ici une logique pour marquer comme lu
-        
-        return redirect()->back()->with('success', 'Dossier marqué comme lu.');
-    }
+    // Récupérer les utilisateurs pour la vue
+    $users = User::where('id', '!=', Auth::id())->get();
+    
+    return view('receptions.inbox', compact('receptions', 'users'));
+}
 
-    /**
-     * Valide la réception d'un dossier
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function validerReception(Request $request, $id)
-    {
+   /**
+ * Valide la réception d'un dossier
+ * 
+ * @param \Illuminate\Http\Request $request
+ * @param int $id
+ * @return \Illuminate\Http\RedirectResponse
+ */
+public function validerReception(Request $request, $id)
+{
+    try {
         // Trouver la réception
         $reception = Reception::findOrFail($id);
+        
+        // Log pour débogage
+        Log::info('Début de validation de la réception', [
+            'reception_id' => $id,
+            'user_id' => Auth::id(),
+            'dossier_id' => $reception->dossier_id
+        ]);
         
         // Vérifier que l'utilisateur connecté est bien le destinataire
         if ($reception->user_id != Auth::id()) {
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à effectuer cette action.');
         }
         
-        // Créer un enregistrement dans la table dossiers_valides
-        \App\Models\DossierValide::create([
-            'dossier_id' => $reception->dossier_id,
-            'user_id' => Auth::id(),
-            'date_validation' => now(),
-            'commentaire' => $request->input('commentaire_reception'),
-            'observations' => $request->input('observations')
+        // Vérifier si ce dossier est déjà validé
+        $existingValidation = DossierValide::where('dossier_id', $reception->dossier_id)
+            ->where('user_id', Auth::id())
+            ->first();
+            
+        if ($existingValidation) {
+            return redirect()->back()->with('error', 'Ce dossier a déjà été validé.');
+        }
+        
+        DB::beginTransaction();
+        
+        try {
+            // 1. Créer un enregistrement dans la table dossiers_valides
+            DossierValide::create([
+                'dossier_id' => $reception->dossier_id,
+                'user_id' => Auth::id(),
+                'date_validation' => now(),
+                'commentaire' => $request->input('commentaire_reception'),
+                'observations' => $request->input('observations')
+            ]);
+            
+            // 2. Marquer CETTE réception comme traitée
+            $affected = $reception->update([
+                'traite' => true,
+                'date_traitement' => now()
+            ]);
+            
+            Log::info('Mise à jour de la réception', [
+                'reception_id' => $reception->id,
+                'affected' => $affected
+            ]);
+            
+            // 3. Ajouter l'action dans la table historique_actions
+            \App\Models\HistoriqueAction::create([
+                'dossier_id' => $reception->dossier_id,
+                'user_id' => Auth::id(),
+                'service_id' => Auth::user()->service_id,
+                'action' => 'validation',
+                'description' => 'Dossier validé',
+                'date_action' => now(),
+            ]);
+            
+            DB::commit();
+            
+            // Vérification après validation que le statut a bien été mis à jour
+            $receptionUpdated = Reception::find($id);
+            Log::info('État de la réception après mise à jour', [
+                'reception_id' => $id,
+                'traite' => $receptionUpdated->traite
+            ]);
+            
+            return redirect()->route('receptions.inbox')
+                ->with('success', 'Dossier validé avec succès et déplacé vers les dossiers validés.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Erreur lors de la validation', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de la validation : ' . $e->getMessage());
+        }
+    } catch (\Exception $e) {
+        Log::error('Erreur générale lors de la validation', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
         ]);
         
-        // Marquer le dossier comme traité dans la table reception
-        $reception->update([
-            'traite' => true,
-            'date_traitement' => now()
-        ]);
-        
-        // Ajouter l'action dans la table historique_actions
-        \App\Models\HistoriqueAction::create([
-            'dossier_id' => $reception->dossier_id,
-            'user_id' => Auth::id(),
-            'service_id' => Auth::user()->service_id,
-            'action' => 'validation',
-            'description' => 'Dossier validé',
-            'date_action' => now(),
-        ]);
-        
-        return redirect()->route('receptions.inbox')
-            ->with('success', 'Dossier validé avec succès.');
+        return redirect()->back()->with('error', 'Une erreur est survenue : ' . $e->getMessage());
     }
+}
 
     /**
      * Réaffecter un dossier reçu à un autre service
@@ -226,7 +275,7 @@ class ReceptionController extends Controller
      */
     public function dossiersValides()
     {
-        $dossiersValides = \App\Models\DossierValide::where('user_id', Auth::id())
+        $dossiersValides = DossierValide::where('user_id', Auth::id())
             ->with('dossier')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
