@@ -30,45 +30,34 @@
                     <div class="alert alert-info mb-3">
                         Nombre de dossiers reçus trouvés : {{ $receptions->count() }}
                     </div>
-
                     @if($receptions->isEmpty())
-                        <div class="alert alert-warning">
-                            Vous n'avez reçu aucun dossier pour le moment ou tous vos dossiers ont été validés.
-                            <p class="mt-2">Les dossiers validés sont disponibles dans la section <a href="{{ route('receptions.dossiers_valides') }}" class="font-weight-bold">Dossiers validés</a>.</p>
+                        <div class="alert alert-info">
+                            Vous n'avez reçu aucun dossier pour le moment.
                         </div>
                     @else
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
                                         <th>Titre du dossier</th>
-                                        <th>Date de réception</th>
-                                        <th>Expéditeur</th>
+                                        <th>Service ID</th>
+                                        <th>Utilisateur expéditeur</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($receptions as $reception)
+                                        @if(!$reception->traite)
                                         <tr>
-                                            <!-- ID de la réception pour débogage -->
-                                            <td>{{ $reception->id }}</td>
-                                            
-                                            <!-- Titre du dossier avec vérification -->
-                                            <td>
-                                                @if($reception->dossier)
-                                                    {{ $reception->dossier->titre }}
-                                                @else
-                                                    <span class="text-danger">Dossier non trouvé (ID: {{ $reception->dossier_id }})</span>
-                                                @endif
-                                            </td>
+                                            <!-- Titre du dossier -->
+                                            <td>{{ $reception->dossier->titre }}</td>
 
-                                            <!-- Date de réception -->
-                                            <td>{{ $reception->date_reception ? $reception->date_reception->format('d/m/Y H:i') : 'N/A' }}</td>
+                                            <!-- Service ID -->
+                                            <td>{{ $reception->dossier->service_id }}</td>
 
-                                            <!-- Expéditeur avec vérification -->
+                                            <!-- Utilisateur expéditeur -->
                                             <td>
-                                                @if($reception->dossier && $reception->dossier->createur)
+                                                @if($reception->dossier->createur)
                                                     {{ $reception->dossier->createur->name }}
                                                 @else
                                                     Inconnu
@@ -77,25 +66,16 @@
                                             
                                             <!-- Actions -->
                                             <td>
-                                                <div class="btn-group">
-                                                    <!-- Vérifier si le dossier existe avant d'afficher le lien -->
-                                                    @if($reception->dossier)
-                                                        <!-- Consulter -->
-                                                        <a href="{{ route('dossiers.show', $reception->dossier_id) }}" class="btn btn-info btn-sm mr-1">
-                                                            Consulter
-                                                        </a>
-                                                        
-                                                        <!-- Valider -->
-                                                        <form action="{{ route('receptions.valider', $reception->id) }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <input type="hidden" name="commentaire_reception" value="">
-                                                            <input type="hidden" name="observations" value="">
-                                                            <button type="submit" class="btn btn-success btn-sm">Valider</button>
-                                                        </form>
-                                                    @else
-                                                        <span class="text-danger">Dossier indisponible</span>
-                                                    @endif
+                                                <form action="{{ route('receptions.valider', $reception->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="commentaire_reception" value="">
+                                                    <input type="hidden" name="observations" value="">
+                                                    <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @endif
                                                 </div>
                                             </td>
                                         </tr>
