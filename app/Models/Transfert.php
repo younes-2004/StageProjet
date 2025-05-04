@@ -22,6 +22,10 @@ class Transfert extends Model
         'statut',
         'commentaire',
     ];
+    protected $casts = [
+        'date_envoi' => 'datetime',
+        'date_reception' => 'datetime',
+    ];
 
     /**
      * Relation avec le dossier.

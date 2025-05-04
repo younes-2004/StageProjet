@@ -153,6 +153,33 @@ public function validerReception(Request $request, $id)
         'statut' => 'Validé'
     ]);
     
+    // IMPORTANT: Mettre à jour le transfert avec la date de réception
+    $transfert = \App\Models\Transfert::where('dossier_id', $dossier->id)
+        ->where('user_destination_id', Auth::id())
+        ->whereNull('date_reception') // Chercher uniquement les transferts sans date de réception
+        ->orderBy('created_at', 'desc')
+        ->first();
+    
+    if ($transfert) {
+        $transfert->update([
+            'date_reception' => now(),
+            'statut' => 'validé'
+        ]);
+        
+        // Log pour vérifier
+        Log::info('Transfert mis à jour', [
+            'transfert_id' => $transfert->id,
+            'dossier_id' => $dossier->id,
+            'date_reception' => $transfert->date_reception,
+            'statut' => $transfert->statut
+        ]);
+    } else {
+        Log::warning('Aucun transfert trouvé pour le dossier', [
+            'dossier_id' => $dossier->id,
+            'user_destination_id' => Auth::id()
+        ]);
+    }
+    
     // Supprimer toutes les réceptions pour ce dossier
     Reception::where('dossier_id', $dossier->id)->delete();
     

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dossier;
 use App\Models\HistoriqueAction;
 use Illuminate\Http\Request;
+use App\Models\Transfert;
 use Illuminate\Support\Facades\Log;
 
 class DossierController extends Controller
@@ -17,10 +18,54 @@ class DossierController extends Controller
     }
     public function mesDossiers()
     {
-        $dossiers = Dossier::where('createur_id', auth()->id())->get();
-        return view('dossiers.mes_dossiers', compact('dossiers'));
+        $userId = auth()->id();
+        
+        // Debug: vérifier les transferts
+        $allTransferts = \App\Models\Transfert::where('user_source_id', $userId)->get();
+        Log::info('Tous les transferts de l\'utilisateur', [
+            'user_id' => $userId,
+            'transferts' => $allTransferts->toArray()
+        ]);
+        
+        // Récupérer les IDs des dossiers qui ont été validés (qui ont une date_reception)
+        $dossiersValidesIds = \App\Models\Transfert::where('user_source_id', $userId)
+            ->whereNotNull('date_reception')
+            ->pluck('dossier_id')
+            ->toArray();
+        
+        Log::info('Dossiers validés IDs', [
+            'user_id' => $userId,
+            'dossiers_valides_ids' => $dossiersValidesIds
+        ]);
+        
+        // Si pas de dossiers validés, utiliser un tableau vide
+        if (empty($dossiersValidesIds)) {
+            $dossiersValidesIds = [0]; // Valeur impossible pour éviter l'erreur SQL
+        }
+        
+       // Récupérer les dossiers non validés
+    $query = Dossier::where('createur_id', $userId);
+    
+    if (!empty($dossiersValidesIds)) {
+        $query->whereNotIn('id', $dossiersValidesIds);
     }
-
+    
+    $dossiers = $query->get();
+        
+        // Récupérer uniquement les dossiers envoyés ET validés (avec date_reception)
+        $dossiersEnvoyes = \App\Models\Transfert::where('user_source_id', $userId)
+        ->whereNotNull('date_reception')
+        ->with(['dossier', 'userDestination', 'serviceDestination'])
+        ->orderBy('date_reception', 'desc')
+        ->get();
+        
+        Log::info('Dossiers envoyés et validés', [
+            'count' => $dossiersEnvoyes->count(),
+            'dossiers' => $dossiersEnvoyes->toArray()
+        ]);
+        
+        return view('dossiers.mes_dossiers', compact('dossiers', 'dossiersEnvoyes'));
+    }
     // Affiche le formulaire de création
     public function create()
 {
