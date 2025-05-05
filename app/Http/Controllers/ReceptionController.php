@@ -261,10 +261,37 @@ public function validerReception(Request $request, $id)
      */
     public function dossiersValides()
     {
+        // Récupérer les dossiers validés par l'utilisateur
         $dossiersValides = DossierValide::where('user_id', Auth::id())
             ->with('dossier')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->get();
+        
+        // Filtrer pour exclure les dossiers qui ont été réaffectés après validation
+        $dossiersValidesFiltered = $dossiersValides->filter(function($dossierValide) {
+            // Vérifier s'il y a eu une réaffectation APRÈS la validation
+            $reaffectation = \App\Models\Transfert::where('dossier_id', $dossierValide->dossier_id)
+                ->where('user_source_id', Auth::id())
+                ->where('created_at', '>', $dossierValide->created_at)
+                ->where('statut', 'réaffectation')
+                ->first();
+            
+            // Si pas de réaffectation après validation, on garde le dossier
+            return !$reaffectation;
+        });
+        
+        // Paginer manuellement les résultats filtrés
+        $currentPage = request()->get('page', 1);
+        $perPage = 10;
+        $currentItems = $dossiersValidesFiltered->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        
+        $dossiersValides = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $dossiersValidesFiltered->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         
         $users = User::where('id', '!=', Auth::id())->get();
         
@@ -293,10 +320,10 @@ public function validerReception(Request $request, $id)
             'user_id' => 'required|exists:users,id',
             'commentaire' => 'nullable|string|max:1000',
         ]);
-
+    
         // Récupérer le service_id de l'utilisateur connecté (émetteur)
         $serviceId = Auth::user()->service_id;
-
+    
         // Enregistrer l'action dans la table historique_actions
         \App\Models\HistoriqueAction::create([
             'dossier_id' => $dossier->id,
@@ -306,19 +333,32 @@ public function validerReception(Request $request, $id)
             'description' => 'Dossier réaffecté à l\'utilisateur ID ' . $validated['user_id'],
             'date_action' => now(),
         ]);
-
+    
         // Enregistrer le transfert dans la table transferts
         \App\Models\Transfert::create([
             'dossier_id' => $dossier->id,
             'service_source_id' => $serviceId, // Service source de l'utilisateur connecté
-            'service_destination_id' => $serviceId, // Service destination (même service pour cet exemple)
+            'service_destination_id' => User::find($validated['user_id'])->service_id,
             'user_source_id' => Auth::id(), // Utilisateur source
             'user_destination_id' => $validated['user_id'], // Utilisateur destination
             'date_envoi' => now(),
             'statut' => 'réaffectation', // Statut du transfert
         ]);
-
+    
+        // IMPORTANT: Créer une nouvelle réception pour que le dossier apparaisse dans la boîte de réception
+        $reception = new \App\Models\Reception();
+        $reception->dossier_id = $dossier->id;
+        $reception->user_id = $validated['user_id'];
+        $reception->date_reception = now();
+        $reception->traite = false; // Important: mettre à false pour que le dossier apparaisse dans la boîte de réception
+        $reception->save();
+    
+        // Mettre à jour le statut du dossier
+        $dossier->update([
+            'statut' => 'Transmis'
+        ]);
+    
         // Redirection avec un message de succès
         return redirect()->route('receptions.dossiers_valides')->with('success', 'Le dossier a été réaffecté avec succès.');
-    } 
+    }
 }

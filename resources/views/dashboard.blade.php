@@ -6,6 +6,7 @@
         <!-- Ajoutez le bouton ici -->
         <a href="{{ route('dossiers.create') }}" class="btn btn-primary">Créer un nouveau dossier</a>
         <a href="{{ route('dossiers.mes_dossiers') }}" class="btn btn-primary">Consulter mes dossiers</a>
+        <a href="{{ route('receptions.dossiers_valides') }}" class="btn btn-primary">Voir les dossiers validés</a>
           <!-- Lien vers la boîte de réception -->
           <a href="{{ route('receptions.inbox') }}" class="btn btn-primary">
                         Voir mes dossiers reçus

@@ -20,3 +20,19 @@ module.exports = {
 
     plugins: [require('@tailwindcss/forms')],
 };
+module.exports = {
+    theme: {
+      extend: {
+        colors: {
+          amber: {
+            300: '#fcd34d',
+            400: '#fbbf24',
+          },
+          emerald: {
+            300: '#6ee7b7',
+            400: '#34d399',
+          }
+        }
+      }
+    }
+  }
