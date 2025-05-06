@@ -43,10 +43,11 @@ class DossierController extends Controller
             ->orderBy('date_reception', 'desc')
             ->get();
         
-        // Ajouter un log pour déboguer
+        // Make sure to log what's being passed to the view
         \Illuminate\Support\Facades\Log::info('Données transmises à la vue', [
             'dossiers_count' => $dossiers->count(),
-            'dossiersEnvoyes_count' => $dossiersEnvoyes->count()
+            'dossiersEnvoyes_count' => $dossiersEnvoyes->count(),
+            'dossierEnvoyes_first' => $dossiersEnvoyes->first()
         ]);
         
         return view('dossiers.mes_dossiers', compact('dossiers', 'dossiersEnvoyes'));

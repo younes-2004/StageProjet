@@ -31,10 +31,9 @@ class Transfert extends Model
      * Relation avec le dossier.
      */
     public function dossier()
-    {
-        return $this->belongsTo(Dossier::class, 'dossier_id');
-    }
-
+{
+    return $this->belongsTo(Dossier::class, 'dossier_id');
+}
     /**
      * Relation avec le service source.
      */
@@ -49,18 +48,18 @@ class Transfert extends Model
      * Relation avec l'utilisateur source.
      */
     public function userSource()
-    {
-        return $this->belongsTo(Utilisateur::class, 'user_source_id');
-    }
+{
+    return $this->belongsTo(User::class, 'user_source_id');
+}
 
     /**
      * Relation avec l'utilisateur destination.
      */
     public function serviceDestination()
-    {
-        return $this->belongsTo(Service::class, 'service_destination_id');
-    }
-    public function userDestination()
+{
+    return $this->belongsTo(Service::class, 'service_destination_id');
+}
+public function userDestination()
 {
     return $this->belongsTo(User::class, 'user_destination_id');
 }

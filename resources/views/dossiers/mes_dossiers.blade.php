@@ -1,15 +1,5 @@
 @extends('layouts.app')
 @section('content')
-@php
-    // Solution temporaire : si $dossiersEnvoyes n'est pas défini, le définir manuellement
-    if (!isset($dossiersEnvoyes)) {
-        $dossiersEnvoyes = \App\Models\Transfert::where('user_source_id', auth()->id())
-            ->whereNotNull('date_reception')
-            ->with(['dossier', 'userDestination', 'serviceDestination'])
-            ->orderBy('date_reception', 'desc')
-            ->get();
-    }
-@endphp
 
 
 <div class="container-fluid py-4">
@@ -248,8 +238,16 @@
         </h2>
         <p class="text-muted ms-4">Dossiers transférés et validés</p>
     </div>
+    @php
+        // Get the data directly in the view for testing purposes
+        $directDossiersEnvoyes = \App\Models\Transfert::where('user_source_id', auth()->id())
+            ->whereNotNull('date_reception')
+            ->with(['dossier', 'userDestination', 'serviceDestination'])
+            ->orderBy('date_reception', 'desc')
+            ->get();
+    @endphp
 
-    @if(!isset($dossiersEnvoyes) || $dossiersEnvoyes->isEmpty())
+    @if($directDossiersEnvoyes->isEmpty())
         <div class="alert alert-success text-center">
             <i class="fas fa-history fa-3x text-success mb-3"></i>
             <h4 class="alert-heading">Aucun dossier validé pour le moment</h4>
@@ -308,7 +306,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($dossiersEnvoyes as $transfert)
+                        @foreach($directDossiersEnvoyes as $transfert)
                         <tr class="bg-success-light">
                             <td>
                                 <span class="d-inline-block rounded-circle bg-success me-2" style="width:10px;height:10px"></span>

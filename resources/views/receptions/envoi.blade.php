@@ -96,16 +96,16 @@
                 </div>
                 
                 <div class="mb-4">
-                    <label for="message" class="form-label fw-semibold">
-                        <i class="fas fa-comment text-primary me-1"></i>Message :
-                    </label>
-                    <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="3" placeholder="Ajoutez un message optionnel..."></textarea>
-                    @error('message')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
+    <label for="message" class="form-label fw-semibold">
+        <i class="fas fa-comment text-primary me-1"></i>Commentaire :
+    </label>
+    <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="3" placeholder="Ajoutez un commentaire optionnel..."></textarea>
+    @error('message')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+    @enderror
+</div>
                 
                 <div class="d-flex justify-content-between mt-4">
                     <a href="javascript:history.back()" class="btn btn-secondary px-4">

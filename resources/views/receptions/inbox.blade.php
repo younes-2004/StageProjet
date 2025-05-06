@@ -79,9 +79,10 @@
                             <table class="table table-hover align-middle" id="tableReceptions">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th class="fw-semibold" style="width: 35%;">Titre du dossier</th>
-                                        <th class="fw-semibold" style="width: 20%;">Service</th>
-                                        <th class="fw-semibold" style="width: 20%;">Expéditeur</th>
+                                        <th class="fw-semibold" style="width: 25%;">Titre du dossier</th>
+                                        <th class="fw-semibold" style="width: 15%;">Service</th>
+                                        <th class="fw-semibold" style="width: 15%;">Expéditeur</th>
+                                        <th class="fw-semibold" style="width: 20%;">Commentaire</th>
                                         <th class="fw-semibold text-end" style="width: 25%;">Actions</th>
                                     </tr>
                                 </thead>
@@ -101,6 +102,24 @@
                                                     <i class="fas fa-user-circle me-1"></i>
                                                     {{ $reception->dossier->createur->name ?? 'Inconnu' }}
                                                 </span>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    // Récupérer le transfert correspondant à cette réception
+                                                    $transfert = \App\Models\Transfert::where('dossier_id', $reception->dossier_id)
+                                                        ->where('user_destination_id', auth()->id())
+                                                        ->whereNull('date_reception')
+                                                        ->latest('created_at')
+                                                        ->first();
+                                                @endphp
+                                                @if($transfert && $transfert->commentaire)
+                                                    <span class="text-muted fst-italic">
+                                                        <i class="fas fa-comment me-1"></i>
+                                                        {{ $transfert->commentaire }}
+                                                    </span>
+                                                @else
+                                                    <span class="text-muted">Aucun commentaire</span>
+                                                @endif
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end">

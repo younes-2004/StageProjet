@@ -82,7 +82,7 @@ class ReceptionController extends Controller
             'date_envoi' => Carbon::now(),
             'date_reception' => null,
             'statut' => 'envoyé',
-            'message' => $validated['message'] ?? null,
+           'commentaire' => $validated['message'] ?? null, // Changement de 'message' à 'commentaire'
         ]);
         
         // Récupérer les informations du dossier pour le message de confirmation
