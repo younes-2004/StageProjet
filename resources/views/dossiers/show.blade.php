@@ -82,7 +82,7 @@
     <div class="container py-4">
         <!-- Header -->
         <div class="d-flex align-items-center mb-4">
-            <a href="{{ route('dossiers.mes_dossiers') }}" class="btn btn-outline-secondary btn-sm me-3">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm me-3">
                 <i class="fas fa-chevron-left me-1"></i> Retour
             </a>
             <h1 class="h4 mb-0 text-dark fw-bold">
@@ -160,7 +160,7 @@
             <!-- Boutons d'action -->
             <div class="card-footer d-flex justify-content-between">
                 <div>
-                    <a href="{{ route('dossiers.mes_dossiers') }}" class="btn btn-warning">
+                    <a href="javascript:history.back()" class="btn btn-warning">
                         <i class="fas fa-arrow-left me-2"></i>Retour à la liste
                     </a>
                 </div>
@@ -177,5 +177,29 @@
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script pour gérer les problèmes potentiels avec history.back() -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupérer tous les liens de retour
+            var backLinks = document.querySelectorAll('a[href="javascript:history.back()"]');
+            
+            // Parcourir tous les liens et ajouter un écouteur d'événements
+            backLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Si l'historique est vide ou si c'est la première page visitée
+                    if (window.history.length <= 1 || document.referrer === '') {
+                        // Redirection vers la liste des dossiers (solution de repli)
+                        window.location.href = "{{ route('dossiers.mes_dossiers') }}";
+                    } else {
+                        // Sinon, utiliser l'historique du navigateur
+                        window.history.back();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

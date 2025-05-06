@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-4">
+<div class="container-fluid py-4">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0">
                     <h5 class="mb-0 fw-bold">
@@ -43,17 +43,49 @@
                             <p class="mb-0">Vous n'avez reçu aucun dossier pour le moment.</p>
                         </div>
                     @else
+                        <!-- Barre de recherche pour dossiers reçus -->
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body p-3">
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0">
+                                                <i class="fas fa-search text-muted"></i>
+                                            </span>
+                                            <input type="text" class="form-control border-start-0 search-input" id="searchReceptions" placeholder="Rechercher un dossier...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-primary filter-btn active" data-filter="all" data-target="receptions">
+                                                <i class="fas fa-list-ul me-1"></i> Tous
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary filter-btn" data-filter="titre" data-target="receptions">
+                                                <i class="fas fa-heading me-1"></i> Titre
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary filter-btn" data-filter="service" data-target="receptions">
+                                                <i class="fas fa-building me-1"></i> Service
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary filter-btn" data-filter="expediteur" data-target="receptions">
+                                                <i class="fas fa-user me-1"></i> Expéditeur
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle">
+                            <table class="table table-hover align-middle" id="tableReceptions">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th class="fw-semibold w-25">Titre du dossier</th>
-                                        <th class="fw-semibold w-25">Service</th>
-                                        <th class="fw-semibold w-25">Expéditeur</th>
-                                        <th class="fw-semibold text-end w-25">Actions</th>
+                                        <th class="fw-semibold" style="width: 35%;">Titre du dossier</th>
+                                        <th class="fw-semibold" style="width: 20%;">Service</th>
+                                        <th class="fw-semibold" style="width: 20%;">Expéditeur</th>
+                                        <th class="fw-semibold text-end" style="width: 25%;">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody >
+                                <tbody>
                                     @foreach($receptions as $reception)
                                         @if(!$reception->traite)
                                         <tr class="border-top border-light">
@@ -61,7 +93,8 @@
                                                 <span class="fw-medium">{{ $reception->dossier->titre }}</span>
                                             </td>
                                             <td class="text-muted">
-                                                {{ $reception->dossier->service_id }}
+                                                <i class="fas fa-building me-1 text-secondary"></i>
+                                                {{ $reception->dossier->service->nom ?? $reception->dossier->service_id }}
                                             </td>
                                             <td>
                                                 <span class="badge bg-primary bg-opacity-10 text-primary">
@@ -69,22 +102,25 @@
                                                     {{ $reception->dossier->createur->name ?? 'Inconnu' }}
                                                 </span>
                                             </td>
-                                            <td class="text-end" style="white-space: nowrap; min-width: 200px;">
-    <a href="{{ route('dossiers.show', $reception->dossier_id) }}" 
-       class="btn btn-sm btn-primary px-3 py-1" style="display: inline-block; margin-right: 8px;">
-       <i class="fas fa-eye me-1"></i> Voir
-    </a>
-    
-    <form action="{{ route('receptions.valider', $reception->id) }}" method="POST" style="display: inline-block; margin: 0;">
-        @csrf
-        @method('PATCH')
-        <input type="hidden" name="commentaire_reception" value="">
-        <input type="hidden" name="observations" value="">
-        <button type="submit" class="btn btn-sm btn-success px-3 py-1">
-            <i class="fas fa-check me-1"></i> Valider
-        </button>
-    </form>
-</td></tr>
+                                            <td class="text-end">
+                                                <div class="d-flex justify-content-end">
+                                                    <a href="{{ route('dossiers.show', $reception->dossier_id) }}" 
+                                                    class="btn btn-sm btn-primary px-3 py-1 me-2">
+                                                        <i class="fas fa-eye me-1"></i> Voir
+                                                    </a>
+                                                    
+                                                    <form action="{{ route('receptions.valider', $reception->id) }}" method="POST" style="display: inline-block; margin: 0;">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="hidden" name="commentaire_reception" value="">
+                                                        <input type="hidden" name="observations" value="">
+                                                        <button type="submit" class="btn btn-sm btn-success px-3 py-1">
+                                                            <i class="fas fa-check me-1"></i> Valider
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
                                         @endif
                                     @endforeach
                                 </tbody>
@@ -107,22 +143,81 @@
     </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fonction pour configurer la recherche et le filtrage
+    function setupSearchAndFilter(tableId, searchId, filterTarget) {
+        const searchInput = document.getElementById(searchId);
+        const table = document.getElementById(tableId);
+        if (!searchInput || !table) return;
+        
+        const rows = table.querySelectorAll('tbody tr');
+        
+        // Fonction de recherche
+        searchInput.addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const activeFilter = document.querySelector(`.filter-btn[data-target="${filterTarget}"].active`);
+            const filterType = activeFilter ? activeFilter.dataset.filter : 'all';
+            
+            filterTable(rows, searchText, filterType);
+        });
+        
+        // Configuration des boutons de filtre
+        const filterButtons = document.querySelectorAll(`.filter-btn[data-target="${filterTarget}"]`);
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Retirer la classe active de tous les boutons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ajouter la classe active au bouton cliqué
+                this.classList.add('active');
+                
+                // Appliquer le filtre
+                const searchText = searchInput.value.toLowerCase();
+                const filterType = this.dataset.filter;
+                
+                filterTable(rows, searchText, filterType);
+            });
+        });
+    }
+    
+    function filterTable(rows, searchText, filterType) {
+        rows.forEach(row => {
+            let showRow = false;
+            const cells = row.querySelectorAll('td');
+            
+            if (filterType === 'all') {
+                // Rechercher dans toutes les cellules
+                showRow = Array.from(cells).some(cell => 
+                    cell.textContent.toLowerCase().includes(searchText)
+                );
+            } else if (filterType === 'titre') {
+                // Rechercher dans la colonne Titre (index 0)
+                showRow = cells[0].textContent.toLowerCase().includes(searchText);
+            } else if (filterType === 'service') {
+                // Rechercher dans la colonne Service (index 1)
+                showRow = cells[1].textContent.toLowerCase().includes(searchText);
+            } else if (filterType === 'expediteur') {
+                // Rechercher dans la colonne Expediteur (index 2)
+                showRow = cells[2].textContent.toLowerCase().includes(searchText);
+            }
+            
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
+    
+    // Initialiser la recherche pour la table des réceptions
+    setupSearchAndFilter('tableReceptions', 'searchReceptions', 'receptions');
+});
+</script>
+
 <style>
-    .table td:last-child {
-    white-space: nowrap;
-    width: auto;
-    min-width: 160px;
-}
-
-/* Pour s'assurer que le conteneur flex ne se brise pas */
-.flex-nowrap {
-    flex-wrap: nowrap !important;
-}
-
-/* Pour garantir un espacement adéquat */
-.me-2 {
-    margin-right: 0.5rem !important;
-}
+    /* Style général */
+    .container-fluid {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
     .card {
         border: none;
         border-radius: 0.5rem;
@@ -133,6 +228,12 @@
         padding: 1.25rem 1.5rem;
     }
     
+    /* Style des tableaux */
+    .table {
+        width: 100% !important;
+        table-layout: fixed;
+    }
+    
     .table th {
         font-weight: 600;
         text-transform: uppercase;
@@ -140,14 +241,17 @@
         letter-spacing: 0.5px;
         color: #6c757d;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 0.75rem;
     }
     
     .table td {
         vertical-align: middle;
-        padding: 1rem;
+        padding: 0.75rem;
         border-color: rgba(0, 0, 0, 0.03);
+        font-size: 0.9rem;
     }
     
+    /* Style pour les boutons */
     .btn {
         font-weight: 500;
         border: none;
@@ -169,6 +273,7 @@
         background: linear-gradient(135deg, #198754, #157347);
     }
     
+    /* Style pour les badges et alertes */
     .badge {
         font-weight: 500;
         padding: 0.35em 0.65em;
@@ -179,6 +284,7 @@
         border-radius: 0.5rem;
     }
     
+    /* Style pour la pagination */
     .pagination .page-link {
         border: none;
         color: #6c757d;
@@ -191,13 +297,48 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
-    .gap-2 {
-        gap: 0.5rem;
+    /* Style spécifique pour les actions */
+    .text-end {
+        white-space: nowrap;
     }
-    .table {
-    width: 100% !important;
-    table-layout: fixed;
-}
-
+    
+    /* Style pour la barre de recherche */
+    .input-group-text {
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+    
+    .search-input {
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+    
+    /* Style pour les boutons de filtre */
+    .filter-btn {
+        border-width: 1px;
+        font-size: 0.875rem;
+    }
+    
+    .filter-btn.active {
+        font-weight: 600;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        background-color: #0d6efd;
+        color: white;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .btn-group {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            margin-top: 8px;
+        }
+        
+        .filter-btn {
+            white-space: nowrap;
+        }
+        
+        .table {
+            min-width: 700px;
+        }
+    }
 </style>
 @endsection

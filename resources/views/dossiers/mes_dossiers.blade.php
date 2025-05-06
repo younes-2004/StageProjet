@@ -1,16 +1,27 @@
 @extends('layouts.app')
-
 @section('content')
-<div class="container py-4">
+@php
+    // Solution temporaire : si $dossiersEnvoyes n'est pas défini, le définir manuellement
+    if (!isset($dossiersEnvoyes)) {
+        $dossiersEnvoyes = \App\Models\Transfert::where('user_source_id', auth()->id())
+            ->whereNotNull('date_reception')
+            ->with(['dossier', 'userDestination', 'serviceDestination'])
+            ->orderBy('date_reception', 'desc')
+            ->get();
+    }
+@endphp
+
+
+<div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
         <div>
-            <h1 class="h2 font-weight-bold text-dark">Mes Dossiers</h1>
+            <h1 class="h2 fw-bold text-dark">Mes Dossiers</h1>
             <p class="text-muted mb-0">Gestion complète de vos dossiers judiciaires</p>
         </div>
         <div class="mt-3 mt-md-0">
-            <a href="{{ route('receptions.inbox') }}" class="btn btn-primary btn-lg">
-                <i class="fas fa-inbox mr-2"></i>Boîte de réception
+            <a href="{{ route('receptions.inbox') }}" class="btn btn-primary">
+                <i class="fas fa-inbox me-2"></i>Boîte de réception
             </a>
         </div>
     </div>
@@ -29,48 +40,83 @@
     @if($nonEnvoyes->isNotEmpty())
     <div class="mb-5">
         <div class="mb-3">
-            <h2 class="h4 font-weight-bold text-dark border-left border-dark pl-2 py-1">
-                <i class="fas fa-edit mr-2 text-secondary"></i>
+            <h2 class="h4 fw-bold text-dark border-left border-dark py-1" style="border-left: 4px solid #212529 !important; padding-left: 10px;">
+                <i class="fas fa-edit me-2 text-secondary"></i>
                 Dossiers non envoyés
             </h2>
-            <p class="text-muted ml-4">Dossiers en cours de préparation</p>
+            <p class="text-muted ms-4">Dossiers en cours de préparation</p>
+        </div>
+
+        <!-- Barre de recherche pour dossiers non envoyés -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-body p-3">
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 search-input" id="searchNonEnvoyes" placeholder="Rechercher...">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="all" data-target="nonEnvoyes">
+                                <i class="fas fa-list-ul me-1"></i> Tous
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonEnvoyes">
+                                <i class="fas fa-heading me-1"></i> Titre
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="numero" data-target="nonEnvoyes">
+                                <i class="fas fa-hashtag me-1"></i> Numéro
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="date" data-target="nonEnvoyes">
+                                <i class="fas fa-calendar-alt me-1"></i> Date
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="card shadow-sm">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover mb-0" id="tableNonEnvoyes">
                     <thead class="thead-light">
                         <tr>
-                            <th class="w-16">Numéro</th>
-                            <th class="w-32">Titre</th>
-                            <th class="w-16">Date création</th>
-                            <th class="w-16">Statut</th>
-                            <th class="w-16">Actions</th>
+                            <th style="width: 15%;">Numéro</th>
+                            <th style="width: 25%;">Titre</th>
+                            <th style="width: 20%;">Date création</th>
+                            <th style="width: 15%;">Statut</th>
+                            <th style="width: 25%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($nonEnvoyes as $dossier)
                         <tr>
                             <td>
-                                <span class="d-inline-block rounded-circle bg-secondary mr-2" style="width:12px;height:12px"></span>
+                                <span class="d-inline-block rounded-circle bg-secondary me-2" style="width:10px;height:10px"></span>
                                 {{ $dossier->numero_dossier_judiciaire }}
                             </td>
                             <td>{{ $dossier->titre }}</td>
-                            <td class="text-muted">{{ $dossier->date_creation }}</td>
+                            <td class="text-muted">
+                                <i class="far fa-calendar-alt me-1"></i>
+                                {{ $dossier->created_at ? $dossier->created_at->format('d/m/Y H:i') : ($dossier->date_creation ? $dossier->date_creation->format('d/m/Y H:i') : 'N/A') }}
+                            </td>
                             <td>
-                                <span class="badge badge-secondary  text-dark">
-                                    <i class="fas fa-edit mr-1  text-dark" ></i> Non envoyé
+                                <span class="badge bg-secondary bg-opacity-10 text-dark">
+                                    <i class="fas fa-edit me-1 text-dark"></i> Non envoyé
                                 </span>
                             </td>
                             <td>
                                 <div class="d-flex">
                                     <a href="{{ route('dossiers.show', $dossier->id) }}" 
-                                       class="btn btn-primary btn-sm mr-2">
-                                        <i class="fas fa-eye mr-1"></i> Voir
+                                       class="btn btn-primary btn-sm me-2">
+                                        <i class="fas fa-eye me-1"></i> Voir
                                     </a>
                                     <a href="{{ route('receptions.create-envoi', $dossier->id) }}" 
                                        class="btn btn-success btn-sm">
-                                        <i class="fas fa-paper-plane mr-1"></i> Envoyer
+                                        <i class="fas fa-paper-plane me-1"></i> Envoyer
                                     </a>
                                 </div>
                             </td>
@@ -97,23 +143,58 @@
     @if($enAttente->isNotEmpty())
     <div class="mb-5">
         <div class="mb-3">
-            <h2 class="h4 font-weight-bold text-dark border-left border-warning pl-2 py-1">
-                <i class="fas fa-clock mr-2 text-warning"></i>
+            <h2 class="h4 fw-bold text-dark border-left border-warning py-1" style="border-left: 4px solid #ffc107 !important; padding-left: 10px;">
+                <i class="fas fa-clock me-2 text-warning"></i>
                 Dossiers en attente
             </h2>
-            <p class="text-muted ml-4">Dossiers envoyés en attente de validation</p>
+            <p class="text-muted ms-4">Dossiers envoyés en attente de validation</p>
+        </div>
+
+        <!-- Barre de recherche pour dossiers en attente -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-body p-3">
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 search-input" id="searchEnAttente" placeholder="Rechercher...">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="all" data-target="enAttente">
+                                <i class="fas fa-list-ul me-1"></i> Tous
+                            </button>
+                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="titre" data-target="enAttente">
+                                <i class="fas fa-heading me-1"></i> Titre
+                            </button>
+                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="numero" data-target="enAttente">
+                                <i class="fas fa-hashtag me-1"></i> Numéro
+                            </button>
+                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="destinataire" data-target="enAttente">
+                                <i class="fas fa-user me-1"></i> Destinataire
+                            </button>
+                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="date" data-target="enAttente">
+                                <i class="fas fa-calendar-alt me-1"></i> Date
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="card shadow-sm">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover mb-0" id="tableEnAttente">
                     <thead class="bg-warning-light">
                         <tr>
-                            <th class="w-16">Numéro</th>
-                            <th class="w-32">Titre</th>
-                            <th class="w-16">Destinataire</th>
-                            <th class="w-16">Date Envoi</th>
-                            <th class="w-16">Actions</th>
+                            <th style="width: 15%;">Numéro</th>
+                            <th style="width: 25%;">Titre</th>
+                            <th style="width: 20%;">Destinataire</th>
+                            <th style="width: 20%;">Date Envoi</th>
+                            <th style="width: 20%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -126,18 +207,19 @@
                         @endphp
                         <tr class="bg-warning-light">
                             <td>
-                                <span class="d-inline-block rounded-circle bg-warning mr-2" style="width:12px;height:12px"></span>
+                                <span class="d-inline-block rounded-circle bg-warning me-2" style="width:10px;height:10px"></span>
                                 {{ $dossier->numero_dossier_judiciaire }}
                             </td>
                             <td>{{ $dossier->titre }}</td>
                             <td>{{ $transfert->userDestination->name ?? 'N/A' }}</td>
                             <td class="text-muted">
+                                <i class="far fa-calendar-alt me-1"></i>
                                 {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'N/A' }}
                             </td>
                             <td>
                                 <a href="{{ route('dossiers.show', $dossier->id) }}" 
                                    class="btn btn-primary btn-sm">
-                                    <i class="fas fa-eye mr-1"></i> Voir
+                                    <i class="fas fa-eye me-1"></i> Voir
                                 </a>
                             </td>
                         </tr>
@@ -157,57 +239,93 @@
     </div>
     @endif
 
-    <!-- History Dossiers Section -->
-    <div class="mb-4">
-        <div class="mb-3">
-            <h2 class="h4 font-weight-bold text-dark border-left border-success pl-2 py-1">
-                <i class="fas fa-archive mr-2 text-success"></i>
-                Historique des dossiers validés
-            </h2>
-            <p class="text-muted ml-4">Dossiers transférés et validés</p>
-        </div>
+ <!-- History Dossiers Section -->
+<div class="mb-4">
+    <div class="mb-3">
+        <h2 class="h4 fw-bold text-dark border-left border-success py-1" style="border-left: 4px solid #198754 !important; padding-left: 10px;">
+            <i class="fas fa-archive me-2 text-success"></i>
+            Historique des dossiers validés
+        </h2>
+        <p class="text-muted ms-4">Dossiers transférés et validés</p>
+    </div>
 
-        @if(!isset($dossiersEnvoyes) || $dossiersEnvoyes->isEmpty())
+    @if(!isset($dossiersEnvoyes) || $dossiersEnvoyes->isEmpty())
         <div class="alert alert-success text-center">
             <i class="fas fa-history fa-3x text-success mb-3"></i>
             <h4 class="alert-heading">Aucun dossier validé pour le moment</h4>
             <p class="mb-0">L'historique apparaîtra ici après validation des dossiers</p>
         </div>
-        @else
+    @else
+        <!-- Barre de recherche pour l'historique -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-body p-3">
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 search-input" id="searchHistorique" placeholder="Rechercher...">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="all" data-target="historique">
+                                <i class="fas fa-list-ul me-1"></i> Tous
+                            </button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="titre" data-target="historique">
+                                <i class="fas fa-heading me-1"></i> Titre
+                            </button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="numero" data-target="historique">
+                                <i class="fas fa-hashtag me-1"></i> Numéro
+                            </button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="validateur" data-target="historique">
+                                <i class="fas fa-user-check me-1"></i> Validé par
+                            </button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="service" data-target="historique">
+                                <i class="fas fa-building me-1"></i> Service
+                            </button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="date" data-target="historique">
+                                <i class="fas fa-calendar-alt me-1"></i> Date
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card shadow-sm">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover mb-0" id="tableHistorique">
                     <thead class="bg-success-light">
                         <tr>
-                            <th class="w-16">Numéro</th>
-                            <th class="w-32">Titre</th>
-                            <th class="w-16">Validé par</th>
-                            <th class="w-16">Service</th>
-                            <th class="w-16">Date Envoi</th>
-                            <th class="w-16">Date Validation</th>
+                            <th style="width: 13%;">Numéro</th>
+                            <th style="width: 22%;">Titre</th>
+                            <th style="width: 15%;">Validé par</th>
+                            <th style="width: 15%;">Service</th>
+                            <th style="width: 17.5%;">Date Envoi</th>
+                            <th style="width: 17.5%;">Date Validation</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($dossiersEnvoyes as $transfert)
                         <tr class="bg-success-light">
                             <td>
-                                <span class="d-inline-block rounded-circle bg-success mr-2" style="width:12px;height:12px"></span>
-                                {{ $transfert->dossier->numero_dossier_judiciaire }}
+                                <span class="d-inline-block rounded-circle bg-success me-2" style="width:10px;height:10px"></span>
+                                {{ $transfert->dossier->numero_dossier_judiciaire ?? 'N/A' }}
                             </td>
-                            <td>{{ $transfert->dossier->titre }}</td>
+                            <td>{{ $transfert->dossier->titre ?? 'N/A' }}</td>
                             <td>{{ $transfert->userDestination->name ?? 'N/A' }}</td>
                             <td>{{ $transfert->serviceDestination->nom ?? 'N/A' }}</td>
-                            <td class="text-muted">
+                            <td class="text-muted date-cell">
+                                <i class="far fa-calendar-alt me-1"></i>
                                 {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'N/A' }}
                             </td>
-                            <td>
-                            <span style="color: green; font-size: 0.875rem;">
-    <i class="fas fa-check-circle me-1" style="color: green;"></i>
-    {{ $transfert->date_reception ? $transfert->date_reception->format('d/m/Y H:i') : 'Non validé' }}
-</span>
-
-
-
+                            <td class="date-cell">
+                                <span style="color: green; font-size: 0.875rem;">
+                                    <i class="fas fa-check-circle me-1" style="color: green;"></i>
+                                    {{ $transfert->date_reception ? $transfert->date_reception->format('d/m/Y H:i') : 'Non validé' }}
+                                </span>
                             </td>
                         </tr>
                         @endforeach
@@ -215,14 +333,94 @@
                 </table>
             </div>
         </div>
-        @endif
-    </div>
+    @endif
+</div>
 </div>
 
-<!-- Add Bootstrap CSS and JS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fonction pour filtrer les tableaux
+    function setupSearchAndFilter(tableId, searchId, filterTarget) {
+        const searchInput = document.getElementById(searchId);
+        const table = document.getElementById(tableId);
+        if (!searchInput || !table) return;
+        
+        const rows = table.querySelectorAll('tbody tr');
+        
+        // Fonction de recherche
+        searchInput.addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const activeFilter = document.querySelector(`.filter-btn[data-target="${filterTarget}"].active`);
+            const filterType = activeFilter ? activeFilter.dataset.filter : 'all';
+            
+            filterTable(rows, searchText, filterType);
+        });
+        
+        // Configuration des boutons de filtre
+        const filterButtons = document.querySelectorAll(`.filter-btn[data-target="${filterTarget}"]`);
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Retirer la classe active de tous les boutons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ajouter la classe active au bouton cliqué
+                this.classList.add('active');
+                
+                // Appliquer le filtre
+                const searchText = searchInput.value.toLowerCase();
+                const filterType = this.dataset.filter;
+                
+                filterTable(rows, searchText, filterType);
+            });
+        });
+        
+        // Activer le filtre "Tous" par défaut
+        const defaultFilter = document.querySelector(`.filter-btn[data-target="${filterTarget}"][data-filter="all"]`);
+        if (defaultFilter) defaultFilter.classList.add('active');
+    }
+    
+    function filterTable(rows, searchText, filterType) {
+        rows.forEach(row => {
+            let showRow = false;
+            const cells = row.querySelectorAll('td');
+            
+            if (filterType === 'all') {
+                // Rechercher dans toutes les cellules
+                showRow = Array.from(cells).some(cell => 
+                    cell.textContent.toLowerCase().includes(searchText)
+                );
+            } else if (filterType === 'titre') {
+                // Rechercher dans la colonne Titre (index 1)
+                showRow = cells[1].textContent.toLowerCase().includes(searchText);
+            } else if (filterType === 'numero') {
+                // Rechercher dans la colonne Numéro (index 0)
+                showRow = cells[0].textContent.toLowerCase().includes(searchText);
+            } else if (filterType === 'date') {
+                // Rechercher dans les colonnes de date
+                const dateCells = Array.from(cells).filter(cell => 
+                    cell.textContent.toLowerCase().includes('/')
+                );
+                showRow = dateCells.some(cell => 
+                    cell.textContent.toLowerCase().includes(searchText)
+                );
+            } else if (filterType === 'destinataire' || filterType === 'validateur') {
+                // Rechercher dans la colonne Destinataire/Validateur (index 2)
+                showRow = cells[2].textContent.toLowerCase().includes(searchText);
+            } else if (filterType === 'service') {
+                // Rechercher dans la colonne Service (index 3)
+                showRow = cells[3].textContent.toLowerCase().includes(searchText);
+            }
+            
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
+    
+    // Initialiser les recherches pour chaque tableau
+    setupSearchAndFilter('tableNonEnvoyes', 'searchNonEnvoyes', 'nonEnvoyes');
+    setupSearchAndFilter('tableEnAttente', 'searchEnAttente', 'enAttente');
+    setupSearchAndFilter('tableHistorique', 'searchHistorique', 'historique');
+});
+</script>
 
 <style>
     /* Custom styles */
@@ -235,12 +433,8 @@
     .border-left {
         border-left: 4px solid !important;
     }
-    .w-16 {
-        width: 16.666667%;
-    }
-    .w-32 {
-        width: 33.333333%;
-    }
+    
+    /* Style des boutons */
     .btn-primary {
         background: linear-gradient(to right, #0d6efd, #0b5ed7);
         border: none;
@@ -251,9 +445,123 @@
     }
     .btn:hover {
         opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+    
+    /* Style des tableaux */
+    .table {
+        width: 100% !important;
+        table-layout: fixed;
+    }
+    
+    .table th {
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        padding: 0.75rem;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+    
+    /* Style spécifique pour les cellules de date */
+    .date-cell {
+        background-color: rgba(40, 167, 69, 0.05);
+        white-space: nowrap;
+        font-weight: 500;
+    }
+    
+    /* Aligner les icônes */
+    .text-muted i, 
+    span i {
+        width: 16px;
+        text-align: center;
+    }
+    
+    /* Style au survol des lignes */
     .table-hover tbody tr:hover {
         background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    .bg-success-light tr:hover {
+        background-color: rgba(40, 167, 69, 0.15) !important;
+    }
+    
+    .bg-warning-light tr:hover {
+        background-color: rgba(255, 193, 7, 0.15) !important;
+    }
+    
+    /* Styles de la carte */
+    .card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Styles pour la barre de recherche */
+    .input-group-text {
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+    
+    .search-input {
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+    
+    /* Style pour les boutons de filtre */
+    .filter-btn {
+        border-width: 1px;
+        font-size: 0.875rem;
+    }
+    
+    .filter-btn.active {
+        font-weight: 600;
+        box-shadow: 0 0 0 0.2rem rgba(102, 109, 116, 0.25);
+    }
+    
+    .btn-outline-secondary.active {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-outline-warning.active {
+        background-colorlinear-gradient(to right,rgb(238, 235, 21),rgb(240, 225, 58));;
+        color: #212529;
+    }
+    
+    .btn-outline-success.active {
+        background-color: #198754;
+        color: white;
+    }
+    
+    /* Styles responsifs */
+    @media (max-width: 768px) {
+        .table {
+            width: 100%;
+            min-width: 700px; /* Pour garantir que toutes les colonnes sont visibles */
+        }
+        
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .btn-group {
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            margin-top: 8px;
+        }
+        
+        .filter-btn {
+            white-space: nowrap;
+        }
     }
 </style>
 @endsection

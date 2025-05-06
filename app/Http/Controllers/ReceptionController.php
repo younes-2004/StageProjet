@@ -44,8 +44,10 @@ class ReceptionController extends Controller
         $validated = $request->validate([
             'dossier_id' => 'required|exists:dossiers,id',
             'user_id' => 'required|exists:users,id',
+            'service_id' => 'required|exists:services,id',
+            'message' => 'nullable|string',
         ]);
-
+        
         // Enregistrer l'envoi dans la table Reception
         $reception = new Reception();
         $reception->dossier_id = $validated['dossier_id'];
@@ -53,9 +55,9 @@ class ReceptionController extends Controller
         $reception->date_reception = Carbon::now();
         $reception->traite = false;
         $reception->save();
-
+        
         Log::info('Réception créée', ['reception_id' => $reception->id]);
-
+        
         // Ajouter l'action dans la table historique_actions
         \App\Models\HistoriqueAction::create([
             'dossier_id' => $validated['dossier_id'],
@@ -69,21 +71,28 @@ class ReceptionController extends Controller
         // Récupérer les informations nécessaires
         $userDestination = User::findOrFail($validated['user_id']);
         $userSource = auth()->user();
-    
+        
         // Enregistrer dans la table transferts
-        \App\Models\Transfert::create([
+        $transfert = \App\Models\Transfert::create([
             'dossier_id' => $validated['dossier_id'],
             'service_source_id' => $userSource->service_id,
-            'service_destination_id' => $userDestination->service_id,
+            'service_destination_id' => $validated['service_id'],
             'user_source_id' => $userSource->id,
             'user_destination_id' => $validated['user_id'],
             'date_envoi' => Carbon::now(),
             'date_reception' => null,
             'statut' => 'envoyé',
+            'message' => $validated['message'] ?? null,
         ]);
-
-        return redirect()->route('dossiers.index')
-            ->with('success', 'Le dossier a été envoyé avec succès et l\'action a été enregistrée.');
+        
+        // Récupérer les informations du dossier pour le message de confirmation
+        $dossier = \App\Models\Dossier::findOrFail($validated['dossier_id']);
+        $destinataire = User::findOrFail($validated['user_id']);
+        
+        // Rediriger vers la même page avec un message de confirmation
+        return redirect()->route('receptions.create-envoi', $dossier->id)
+            ->with('success', 'Le dossier "' . $dossier->titre . '" a été envoyé avec succès à ' . $destinataire->name . ' (' . $destinataire->email . ').')
+            ->with('transfert_id', $transfert->id);
     }
 
 /**
@@ -122,7 +131,7 @@ public function inbox()
  */
 public function validerReception(Request $request, $id)
 {
-    // Trouver la réception
+      // Trouver la réception
     $reception = Reception::findOrFail($id);
     
     // Vérifier que l'utilisateur connecté est bien le destinataire
