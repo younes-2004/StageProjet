@@ -84,7 +84,32 @@
         </a>
     </li>
             @endif
+                <!-- resources/views/partials/sidebar.blade.php -->
+<!-- (Partie existante) -->
+
+<li class="menu-item {{ request()->routeIs('dossiers.*') ? 'active' : '' }}">
+    <a href="#" class="menu-link has-dropdown">
+        <i class="fas fa-folder"></i>
+        <span>Gestion des dossiers</span>
+        <i class="fas fa-chevron-right dropdown-icon"></i>
+    </a>
+    <ul class="submenu {{ request()->routeIs('dossiers.*') ? 'expanded' : '' }}">
+        <li class="{{ request()->routeIs('dossiers.dashboard') ? 'active' : '' }}">
+            <a href="{{ route('dossiers.dashboard') }}">Tableau de bord</a>
+        </li>
+        <li class="{{ request()->routeIs('dossiers.mes_dossiers') ? 'active' : '' }}">
+            <a href="{{ route('dossiers.mes_dossiers') }}">Mes dossiers</a>
+        </li>
+        <li class="{{ request()->routeIs('dossiers.create') ? 'active' : '' }}">
+            <a href="{{ route('dossiers.create') }}">Créer un dossier</a>
+        </li>
+        <li class="{{ request()->routeIs('dossiers.search') ? 'active' : '' }}">
+            <a href="{{ route('dossiers.search') }}">Recherche avancée</a>
+        </li>
+    </ul>
+</li>
         </ul>
+        
         
         <div class="sidebar-footer">
             <form method="POST" action="{{ route('logout') }}">
@@ -96,4 +121,5 @@
             </form>
         </div>
     </div>
+
 </div>

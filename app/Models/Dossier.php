@@ -42,4 +42,78 @@ class Dossier extends Model
     {
         return $this->hasMany(HistoriqueAction::class, 'dossier_id');
     }
+    // app/Models/Dossier.php - ajoutez ces méthodes
+
+/**
+ * Obtient le détenteur actuel du dossier
+ */
+public function detenteurActuel()
+{
+    // Cherche le transfert le plus récent avec réception validée
+    $dernierTransfert = Transfert::where('dossier_id', $this->id)
+        ->whereNotNull('date_reception') // Transfert validé
+        ->orderBy('date_reception', 'desc')
+        ->first();
+    
+    if ($dernierTransfert) {
+        return User::find($dernierTransfert->user_destination_id);
+    }
+    
+    // Si aucun transfert validé, le créateur est toujours le détenteur
+    return $this->createur;
+}
+
+/**
+ * Obtient le service actuel qui possède le dossier
+ */
+public function serviceActuel()
+{
+    // Cherche le transfert le plus récent avec réception validée
+    $dernierTransfert = Transfert::where('dossier_id', $this->id)
+        ->whereNotNull('date_reception') // Transfert validé
+        ->orderBy('date_reception', 'desc')
+        ->first();
+    
+    if ($dernierTransfert) {
+        return Service::find($dernierTransfert->service_destination_id);
+    }
+    
+    // Si aucun transfert validé, le service du créateur est toujours le détenteur
+    return $this->service;
+}
+
+/**
+ * Obtient l'historique complet du dossier
+ */
+public function historiqueComplet()
+{
+    return $this->historiqueActions()
+        ->with(['user', 'service'])
+        ->orderBy('date_action', 'desc')
+        ->get();
+}
+
+/**
+ * Obtient le temps de traitement total du dossier (en jours)
+ */
+public function tempsTraitement()
+{
+    $dateCreation = $this->date_creation ?? $this->created_at;
+    
+    if ($this->statut === 'Archivé') {
+        // Si le dossier est archivé, on calcule entre création et archivage
+        $derniereAction = $this->historiqueActions()
+            ->where('action', 'archivage')
+            ->orderBy('date_action', 'desc')
+            ->first();
+            
+        if ($derniereAction) {
+            $dateArchivage = $derniereAction->date_action;
+            return $dateCreation->diffInDays($dateArchivage);
+        }
+    }
+    
+    // Sinon on calcule jusqu'à maintenant
+    return $dateCreation->diffInDays(now());
+}
 }

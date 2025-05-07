@@ -5,6 +5,11 @@ use App\Http\Controllers\DossierController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\ReceptionController;
+use App\Http\Controllers\DossierDashboardController;
+use App\Http\Controllers\DossierSearchController;
+use App\Http\Controllers\DossierExportController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,16 +52,61 @@ Route::middleware(['auth'])->group(function () {
         ->name('receptions.store-envoi');
     Route::get('/inbox', [ReceptionController::class, 'inbox'])
         ->name('receptions.inbox');
-      // Ajoutez cette ligne à votre fichier routes/web.php
-Route::patch('/receptions/{id}/mark-as-read', [ReceptionController::class, 'markAsRead'])
-->name('receptions.mark-as-read');
-});
-Route::middleware(['auth'])->group(function () {
-    // Autres routes...
-
+    Route::patch('/receptions/{id}/mark-as-read', [ReceptionController::class, 'markAsRead'])
+        ->name('receptions.mark-as-read');
+        
     // Route pour afficher le formulaire d'envoi d'un dossier
     Route::get('/dossiers/{dossier}/envoyer', [DossierController::class, 'envoyer'])->name('dossiers.envoyer');
+    
+    // Tableau de bord des dossiers - CORRIGÉ
+    Route::get('/dossiers/dashboard', [DossierDashboardController::class, 'index'])
+        ->name('dossiers.dashboard');
+    
+    // Recherche avancée - CORRIGÉ
+    Route::get('/dossiers/search', [DossierSearchController::class, 'index'])
+        ->name('dossiers.search');
+    
+    // Export de dossiers
+    Route::get('/dossiers/export', [DossierExportController::class, 'export'])
+        ->name('dossiers.export');
+    
+    // Vue détaillée améliorée
+    Route::get('/dossiers/{dossier}/detail', [DossierController::class, 'detail'])
+        ->name('dossiers.detail');
+    
+    // Routes pour l'édition de dossier
+    Route::get('/dossiers/{dossier}/edit', [DossierController::class, 'edit'])
+        ->name('dossiers.edit');
+    Route::put('/dossiers/{dossier}', [DossierController::class, 'update'])
+        ->name('dossiers.update');
+    
+    // Archivage d'un dossier
+    Route::patch('/receptions/{dossier}/archiver', [ReceptionController::class, 'archiver'])
+        ->name('dossiers.archiver');
+    
+    // Routes pour afficher les dossiers validés
+    Route::get('/dossiers-valides', [ReceptionController::class, 'dossiersValides'])
+        ->name('receptions.dossiers_valides');
+    
+    // Routes pour réaffecter un dossier
+    Route::get('/receptions/{dossier}/reaffecter', [ReceptionController::class, 'reaffecter'])
+        ->name('receptions.reaffecter');
+    Route::patch('/receptions/{dossier}/reaffecter', [ReceptionController::class, 'storeReaffectation'])
+        ->name('dossiers.reaffecter.store');
+    
+    // Route pour test du dashboard
+    Route::get('/test-dashboard', function() {
+        return view('dossiers.dashboard', [
+            'totalDossiers' => 0,
+            'dossiersParStatut' => collect(),
+            'dossiersRecents' => collect(),
+            'dossiersParService' => collect(),
+            'transfertsRecents' => collect(),
+            'utilisateursActifs' => collect()
+        ]);
+    })->name('test.dashboard');
 });
+
 // API pour récupérer les utilisateurs d'un service
 Route::get('/api/services/{service}/users', function (\App\Models\Service $service) {
     return $service->users; // Assurez-vous que la relation `users` est définie dans le modèle Service
@@ -69,54 +119,26 @@ Route::prefix('admin')->middleware(['auth', 'role:greffier_en_chef'])->group(fun
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store']);
 });
+
 // Routes pour validation et réaffectation
-Route::patch('/receptions/{id}/valider', [App\Http\Controllers\ReceptionController::class, 'validerReception'])->name('receptions.valider');
-Route::post('/receptions/reassigner', [App\Http\Controllers\ReceptionController::class, 'reassignerDossier'])->name('receptions.reassigner');
-// Route pour afficher les dossiers validés
-Route::get('/dossiers-valides', [ReceptionController::class, 'dossiersValides'])
-    ->name('receptions.dossiers-valides');
-    Route::middleware(['auth'])->group(function () {
-        // Route pour archiver un dossier
-    Route::patch('/receptions/{dossier}/archiver', [ReceptionController::class, 'archiver'])->name('dossiers.archiver');
-  
-    });         
-// 
+Route::patch('/receptions/{id}/valider', [ReceptionController::class, 'validerReception'])->name('receptions.valider');
+Route::post('/receptions/reassigner', [ReceptionController::class, 'reassignerDossier'])->name('receptions.reassigner');
+
 // Route pour réaffecter un dossier validé
 Route::post('/dossiers-valides/reassigner', [ReceptionController::class, 'reassignerDossierValide'])
     ->name('receptions.reassigner-valide');
-    Route::middleware(['auth'])->group(function () {
-        // Autres routes...
-    
-        // Route pour afficher les dossiers validés
-        Route::get('/dossiers-valides', [ReceptionController::class, 'dossiersValides'])->name('receptions.dossiers_valides');
-    });
-    
-    Route::middleware(['auth'])->group(function () {
-        // Route pour afficher le formulaire de réaffectation
-        Route::get('/receptions/{dossier}/reaffecter', [ReceptionController::class, 'reaffecter'])->name('receptions.reaffecter');
-        Route::patch('/receptions/{dossier}/reaffecter', [ReceptionController::class, 'storeReaffectation'])->name('dossiers.reaffecter.store');
-        
-    });
-// Routes pour la gestion des utilisateurs
+
+// Routes pour la gestion des utilisateurs et services (greffier en chef)
 Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
-    Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{user}', [App\Http\Controllers\UserController::class, 'show'])->name('users.show');
-    Route::get('/users/{user}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
-    // Routes pour la gestion des utilisateurs
-Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
-    Route::resource('users', App\Http\Controllers\UserController::class);
-});
-// Routes pour la gestion des services (à ajouter dans le groupe middleware greffier_en_chef)
-Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
-    // Routes existantes...
+    // Gestion des utilisateurs
+    Route::resource('users', UserController::class);
     
-    // Routes pour la gestion des services
-    Route::resource('services', App\Http\Controllers\ServiceController::class);
+    // Gestion des services
+    Route::resource('services', ServiceController::class);
 });
+
+Route::get('/test-route', function() {
+    return 'Test route fonctionne !';
 });
-// Auth routes
+
 require __DIR__.'/auth.php';

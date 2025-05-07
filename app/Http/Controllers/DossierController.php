@@ -132,5 +132,126 @@ public function show(Dossier $dossier)
     // Retourner la vue avec les détails du dossier
     return view('dossiers.show', compact('dossier'));
 }
+// app/Http/Controllers/DossierController.php - méthodes à ajouter
+
+/**
+ * Affiche la vue détaillée d'un dossier
+ *
+ * @param Dossier $dossier
+ * @return \Illuminate\View\View
+ */
+public function detail(Dossier $dossier)
+{
+    // Vérifier que l'utilisateur a accès au dossier
+    $this->authorizeView($dossier);
+    
+    return view('dossiers.detail', compact('dossier'));
+}
+
+/**
+ * Affiche le formulaire d'édition d'un dossier
+ *
+ * @param Dossier $dossier
+ * @return \Illuminate\View\View
+ */
+public function edit(Dossier $dossier)
+{
+    // Vérifier que l'utilisateur peut éditer le dossier
+    $this->authorizeEdit($dossier);
+    
+    $services = \App\Models\Service::all();
+    
+    return view('dossiers.edit', compact('dossier', 'services'));
+}
+
+/**
+ * Met à jour un dossier existant
+ *
+ * @param \Illuminate\Http\Request $request
+ * @param Dossier $dossier
+ * @return \Illuminate\Http\RedirectResponse
+ */
+public function update(Request $request, Dossier $dossier)
+{
+    // Vérifier que l'utilisateur peut éditer le dossier
+    $this->authorizeEdit($dossier);
+    
+    // Validation des données
+    $validated = $request->validate([
+        'titre' => 'required|string|max:255',
+        'contenu' => 'required|string',
+        'genre' => 'required|string|max:255',
+    ]);
+    
+    // Mise à jour du dossier
+    $dossier->update($validated);
+    
+    // Enregistrement dans l'historique
+    \App\Models\HistoriqueAction::create([
+        'dossier_id' => $dossier->id,
+        'user_id' => auth()->id(),
+        'service_id' => auth()->user()->service_id,
+        'action' => 'modification',
+        'description' => 'Modification du dossier avec le numéro ' . $dossier->numero_dossier_judiciaire,
+        'date_action' => now(),
+    ]);
+    
+    return redirect()->route('dossiers.detail', $dossier->id)
+        ->with('success', 'Le dossier a été mis à jour avec succès.');
+}
+
+/**
+ * Vérifier si l'utilisateur peut voir le dossier
+ *
+ * @param Dossier $dossier
+ * @return void
+ */
+private function authorizeView(Dossier $dossier)
+{
+    $currentUserId = auth()->id();
+    
+    // L'utilisateur est le créateur du dossier
+    $isCreator = ($dossier->createur_id === $currentUserId);
+    
+    // L'utilisateur est un récepteur du dossier
+    $isReceiver = \App\Models\Reception::where('dossier_id', $dossier->id)
+        ->where('user_id', $currentUserId)
+        ->exists();
+        
+    // L'utilisateur a validé ce dossier
+    $hasValidated = \App\Models\DossierValide::where('dossier_id', $dossier->id)
+        ->where('user_id', $currentUserId)
+        ->exists();
+        
+    // L'utilisateur est greffier en chef (peut voir tous les dossiers)
+    $isChiefClerk = (auth()->user()->role === 'greffier_en_chef');
+    
+    // Autoriser l'accès si l'utilisateur remplit au moins une des conditions
+    if (!$isCreator && !$isReceiver && !$hasValidated && !$isChiefClerk) {
+        abort(403, 'Accès non autorisé. Vous n\'êtes ni le créateur ni un destinataire autorisé de ce dossier.');
+    }
+}
+
+/**
+ * Vérifier si l'utilisateur peut éditer le dossier
+ *
+ * @param Dossier $dossier
+ * @return void
+ */
+private function authorizeEdit(Dossier $dossier)
+{
+    $currentUserId = auth()->id();
+    
+    // L'utilisateur est le créateur du dossier
+    $isCreator = ($dossier->createur_id === $currentUserId);
+    
+    // L'utilisateur est greffier en chef (peut éditer tous les dossiers)
+    $isChiefClerk = (auth()->user()->role === 'greffier_en_chef');
+    
+    // Autoriser l'édition si l'utilisateur est créateur ou greffier en chef
+    if (!$isCreator && !$isChiefClerk) {
+        abort(403, 'Accès non autorisé. Seul le créateur ou un greffier en chef peut modifier ce dossier.');
+    }
+}
 
 }
