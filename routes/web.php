@@ -110,9 +110,13 @@ Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
 Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
     Route::resource('users', App\Http\Controllers\UserController::class);
 });
+// Routes pour la gestion des services (à ajouter dans le groupe middleware greffier_en_chef)
+Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
+    // Routes existantes...
     
-    // Ou utiliser la méthode raccourcie si vous préférez
-    // Route::resource('users', App\Http\Controllers\UserController::class);
+    // Routes pour la gestion des services
+    Route::resource('services', App\Http\Controllers\ServiceController::class);
+});
 });
 // Auth routes
 require __DIR__.'/auth.php';

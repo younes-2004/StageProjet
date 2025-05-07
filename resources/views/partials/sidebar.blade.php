@@ -1,15 +1,17 @@
 <!-- resources/views/partials/sidebar.blade.php -->
-<div class="sidebar-wrapper">
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="sidebar-logo" onerror="this.src='{{ asset('images/logo-placeholder.png') }}'">
-                <h5 class="sidebar-title">GestDoss</h5>
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo-container">
+            <!-- Si vous avez un logo, utilisez-le ici -->
+            <div class="sidebar-logo">
+                <i class="fas fa-balance-scale"></i>
             </div>
-            <button class="btn sidebar-toggle d-lg-none" id="sidebarToggle">
-                <i class="fas fa-times"></i>
-            </button>
+            <h5 class="sidebar-title">GestDoss</h5>
         </div>
+        <button class="sidebar-close" id="sidebarClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
         
         <div class="sidebar-user">
             <div class="user-avatar">
@@ -20,6 +22,7 @@
                 <span class="user-role">{{ Auth::user()->role == 'greffier_en_chef' ? 'Greffier en chef' : 'Greffier' }}</span>
             </div>
         </div>
+        
         
         <ul class="sidebar-menu">
             <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -68,22 +71,18 @@
                         </li>
                     </ul>
                 </li>
-                
-                <li class="menu-item {{ request()->routeIs('services.*') ? 'active' : '' }}">
-                    <a href="#" class="menu-link has-dropdown">
-                        <i class="fas fa-building"></i>
-                        <span>Gestion des services</span>
-                        <i class="fas fa-chevron-right dropdown-icon"></i>
-                    </a>
-                    <ul class="submenu {{ request()->routeIs('services.*') ? 'expanded' : '' }}">
-                        <li class="{{ request()->routeIs('services.index') ? 'active' : '' }}">
-                            <a href="#">Liste des services</a>
-                        </li>
-                        <li class="{{ request()->routeIs('services.create') ? 'active' : '' }}">
-                            <a href="#">Ajouter un service</a>
-                        </li>
-                    </ul>
-                </li>
+              
+    
+    <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+        <!-- Code existant pour les utilisateurs -->
+    </li>
+    
+    <li class="menu-item {{ request()->routeIs('services.*') ? 'active' : '' }}">
+        <a href="{{ route('services.index') }}" class="menu-link">
+            <i class="fas fa-building"></i>
+            <span>Gestion des services</span>
+        </a>
+    </li>
             @endif
         </ul>
         
@@ -98,4 +97,3 @@
         </div>
     </div>
 </div>
-```

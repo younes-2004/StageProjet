@@ -1,13 +1,18 @@
 <nav class="bg-white border-b border-gray-200">
     <div class="flex items-center justify-between px-4 py-3">
-        <!-- Partie principale avec les liens (à gauche) -->
-        <div class="flex items-center space-x-uniform overflow-x-auto">
+        <!-- Ajout d'un espace vide à gauche pour le bouton de menu -->
+        <div class="w-12 flex-shrink-0 md:w-16">
+            <!-- Espace réservé qui correspond à la largeur du bouton de menu -->
+        </div>
+        
+        <!-- Partie principale avec les liens (au centre) -->
+        <div class="flex items-center space-x-uniform overflow-x-auto flex-grow justify-center">
             <!-- Élément 1 -->
             <a href="{{ route('dossiers.mes_dossiers') }}" class="flex items-center text-blue-600 font-medium nav-item">
                 <span class="bg-blue-100 text-blue-600 p-2 rounded-md mr-2">
                     <i class="fas fa-home"></i>
                 </span>
-                Principale
+                <span class="nav-text">Principale</span>
             </a>
             
             <!-- Élément 2 -->
@@ -15,23 +20,31 @@
                 <span class="bg-gray-100 text-gray-600 p-2 rounded-md mr-2">
                     <i class="fas fa-tag"></i>
                 </span>
-                Nouveau Dossier
+                <span class="nav-text">Nouveau Dossier</span>
             </a>
+            
             @if(Auth::user()->role == 'greffier_en_chef')
-    <a href="{{ route('users.index') }}" class="nav-item">
-        <span class="bg-gray-100 text-gray-600 p-2 rounded-md mr-2">
-            <i class="fas fa-users"></i>
-        </span>
-        Gestion des utilisateurs
-    </a>
-@endif
+                <a href="{{ route('users.index') }}" class="flex items-center text-gray-700 font-medium nav-item">
+                    <span class="bg-gray-100 text-gray-600 p-2 rounded-md mr-2">
+                        <i class="fas fa-users"></i>
+                    </span>
+                    <span class="nav-text">Utilisateurs</span>
+                </a>
+                
+                <a href="{{ route('services.index') }}" class="flex items-center text-gray-700 font-medium nav-item">
+                    <span class="bg-gray-100 text-gray-600 p-2 rounded-md mr-2">
+                        <i class="fas fa-building"></i>
+                    </span>
+                    <span class="nav-text">Services</span>
+                </a>
+            @endif
             
             <!-- Élément 3 -->
             <a href="{{ route('receptions.inbox') }}" class="flex items-center text-gray-700 font-medium nav-item">
                 <span class="bg-gray-100 text-gray-600 p-2 rounded-md mr-2">
                     <i class="fas fa-inbox"></i>
                 </span>
-                Boîte de réception
+                <span class="nav-text">Boîte de réception</span>
             </a>
             
             <!-- Élément 4 -->
@@ -39,18 +52,18 @@
                 <span class="bg-gray-100 text-gray-600 p-2 rounded-md mr-2">
                     <i class="fas fa-check-circle"></i>
                 </span>
-                Dossiers validés
+                <span class="nav-text">Dossiers validés</span>
             </a>
         </div>
         
         <!-- Menu utilisateur (à droite) -->
-        <div class="relative" x-data="{ open: false }">
+        <div class="relative flex-shrink-0" x-data="{ open: false }">
             <div>
                 <button @click="open = !open" class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
                     <span class="bg-gray-100 text-gray-600 p-2 rounded-full">
                         <i class="fas fa-user"></i>
                     </span>
-                    <span class="font-medium">{{ Auth::user()->name }}</span>
+                    <span class="font-medium md:inline hidden">{{ Auth::user()->name }}</span>
                     <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
@@ -76,7 +89,7 @@
     <style>
         /* Style pour assurer un espacement uniforme */
         .space-x-uniform > * {
-            margin-right: 3rem;
+            margin-right: 1.5rem; /* Espacement entre les éléments */
         }
         
         .space-x-uniform > *:last-child {
@@ -88,15 +101,27 @@
             height: 40px;
             display: flex;
             align-items: center;
+            transition: all 0.3s ease; /* Animation douce au survol */
+            padding: 0 0.5rem;
+            border-radius: 0.375rem;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(237, 242, 247, 0.5); /* Fond léger au survol */
+        }
+        
+        .nav-text {
+            white-space: nowrap; /* Empêche le texte de se couper */
         }
         
         /* Assurer que les icônes ont une taille constante */
-        .nav-item span:first-child {
+        .nav-item span:first-of-type {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
         }
         
         /* Styles pour les badges (pour assurer une apparence cohérente) */
@@ -105,13 +130,32 @@
         }
         
         /* Ajustement pour éviter l'écrasement sur les petits écrans */
+        @media (max-width: 1024px) {
+            .space-x-uniform > * {
+                margin-right: 0.75rem;
+            }
+            
+            .nav-item {
+                padding: 0 0.25rem;
+            }
+        }
+        
         @media (max-width: 768px) {
             .overflow-x-auto {
                 padding-bottom: 0.5rem;
+                justify-content: flex-start; /* Alignement à gauche sur petit écran */
+            }
+            
+            .nav-text {
+                display: none; /* Cache le texte */
+            }
+            
+            .nav-item span:first-of-type {
+                margin-right: 0; /* Pas besoin de marge quand il n'y a pas de texte */
             }
             
             .space-x-uniform > * {
-                margin-right: 1rem;
+                margin-right: 0.5rem;
             }
         }
     </style>
