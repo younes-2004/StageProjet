@@ -97,6 +97,22 @@ Route::post('/dossiers-valides/reassigner', [ReceptionController::class, 'reassi
         Route::patch('/receptions/{dossier}/reaffecter', [ReceptionController::class, 'storeReaffectation'])->name('dossiers.reaffecter.store');
         
     });
-
+// Routes pour la gestion des utilisateurs
+Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
+    Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}', [App\Http\Controllers\UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
+    // Routes pour la gestion des utilisateurs
+Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
+    Route::resource('users', App\Http\Controllers\UserController::class);
+});
+    
+    // Ou utiliser la méthode raccourcie si vous préférez
+    // Route::resource('users', App\Http\Controllers\UserController::class);
+});
 // Auth routes
 require __DIR__.'/auth.php';

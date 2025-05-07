@@ -16,8 +16,15 @@
                     <i class="fas fa-tag"></i>
                 </span>
                 Nouveau Dossier
-                <span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full ml-2">50 nouveaux</span>
             </a>
+            @if(Auth::user()->role == 'greffier_en_chef')
+    <a href="{{ route('users.index') }}" class="nav-item">
+        <span class="bg-gray-100 text-gray-600 p-2 rounded-md mr-2">
+            <i class="fas fa-users"></i>
+        </span>
+        Gestion des utilisateurs
+    </a>
+@endif
             
             <!-- Élément 3 -->
             <a href="{{ route('receptions.inbox') }}" class="flex items-center text-gray-700 font-medium nav-item">
@@ -25,7 +32,6 @@
                     <i class="fas fa-inbox"></i>
                 </span>
                 Boîte de réception
-                <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full ml-2">50 nouveaux</span>
             </a>
             
             <!-- Élément 4 -->
@@ -34,7 +40,6 @@
                     <i class="fas fa-check-circle"></i>
                 </span>
                 Dossiers validés
-                <span class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full ml-2">50 nouveaux</span>
             </a>
         </div>
         
