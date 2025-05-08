@@ -40,6 +40,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes pour les dossiers
     Route::get('/dossiers/create', [DossierController::class, 'create'])->name('dossiers.create');
+    Route::get('/dossiers/dashboard', [DossierDashboardController::class, 'index'])->name('dossiers.dashboard');
+    Route::get('/dossiers/search', [DossierSearchController::class, 'index'])->name('dossiers.search');
+    Route::get('/dossiers/export', [DossierExportController::class, 'export'])->name('dossiers.export');
     Route::post('/dossiers', [DossierController::class, 'store'])->name('dossiers.store');
     Route::get('/mes-dossiers', [DossierController::class, 'mesDossiers'])->name('dossiers.mes_dossiers');
     Route::get('/dossiers/{dossier}', [DossierController::class, 'show'])->name('dossiers.show');

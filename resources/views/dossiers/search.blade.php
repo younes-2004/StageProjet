@@ -1,5 +1,3 @@
-// resources/views/dossiers/search.blade.php
-
 @extends('layouts.app')
 
 @section('content')
@@ -215,15 +213,13 @@
                                     <td>{{ $dossier->date_creation ? $dossier->date_creation->format('d/m/Y') : ($dossier->created_at ? $dossier->created_at->format('d/m/Y') : 'N/A') }}</td>
                                     <td>
                                         <div class="d-flex gap-1">
-                                            <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            
-                                            @if(auth()->user()->role == 'greffier_en_chef' || $dossier->createur_id == auth()->id())
-                                            <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            @endif
+                                             <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-eye"></i>consulter
+        </a>
+        <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning">
+            <i class="fas fa-edit"></i>modifier
+        </a>
+                                         
                                         </div>
                                     </td>
                                 </tr>

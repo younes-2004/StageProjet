@@ -1,7 +1,16 @@
-
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .bg-indigo {
+        background-color: #6610f2 !important;
+    }
+    
+    .bg-pink {
+        background-color: #d63384 !important;
+    }
+</style>
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -27,8 +36,11 @@
                         <div class="col-md-3">
                             <div class="card 
                                 @if($statut->statut == 'Créé') bg-info 
-                                @elseif($statut->statut == 'Validé') bg-success 
                                 @elseif($statut->statut == 'En attente') bg-warning 
+                                @elseif($statut->statut == 'Validé') bg-success 
+                                @elseif($statut->statut == 'En traitement') bg-primary
+                                @elseif($statut->statut == 'Transmis') bg-indigo
+                                @elseif($statut->statut == 'Réaffecté') bg-pink
                                 @elseif($statut->statut == 'Archivé') bg-secondary 
                                 @else bg-light text-dark @endif 
                                 text-white">
@@ -96,8 +108,11 @@
                                     <td>
                                         <span class="badge 
                                             @if($dossier->statut == 'Créé') bg-info 
-                                            @elseif($dossier->statut == 'Validé') bg-success 
                                             @elseif($dossier->statut == 'En attente') bg-warning 
+                                            @elseif($dossier->statut == 'Validé') bg-success 
+                                            @elseif($dossier->statut == 'En traitement') bg-primary
+                                            @elseif($dossier->statut == 'Transmis') bg-indigo
+                                            @elseif($dossier->statut == 'Réaffecté') bg-pink
                                             @elseif($dossier->statut == 'Archivé') bg-secondary 
                                             @else bg-light text-dark @endif">
                                             {{ $dossier->statut }}
@@ -106,11 +121,17 @@
                                     <td>{{ $dossier->createur->name }}</td>
                                     <td>{{ $dossier->service->nom }}</td>
                                     <td>{{ $dossier->created_at->format('d/m/Y H:i') }}</td>
-                                    <td>
-                                        <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
+                                   <!-- Changez cette ligne dans le tableau des dossiers récents -->
+<td>
+    <div class="btn-group">
+        <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-eye"></i>consulter
+        </a>
+        <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning">
+            <i class="fas fa-edit"></i>modifier
+        </a>
+    </div>
+</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -135,7 +156,7 @@
                                     <th>De</th>
                                     <th>À</th>
                                     <th>Date d'envoi</th>
-                                    <th>Date de réception</th>
+                                    <th>Date de réception et validation</th>
                                     <th>Statut</th>
                                 </tr>
                             </thead>
@@ -157,6 +178,7 @@
                                             @elseif($transfert->statut == 'validé') bg-success 
                                             @elseif($transfert->statut == 'refusé') bg-danger
                                             @elseif($transfert->statut == 'réaffectation') bg-warning
+                                            @elseif($transfert->statut == 'transmis') bg-indigo
                                             @else bg-light text-dark @endif">
                                             {{ $transfert->statut }}
                                         </span>
@@ -228,8 +250,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const statutColors = [
         @foreach($dossiersParStatut as $statut)
             @if($statut->statut == 'Créé') 'rgba(13, 202, 240, 0.7)'
-            @elseif($statut->statut == 'Validé') 'rgba(25, 135, 84, 0.7)'
             @elseif($statut->statut == 'En attente') 'rgba(255, 193, 7, 0.7)'
+            @elseif($statut->statut == 'Validé') 'rgba(25, 135, 84, 0.7)'
+            @elseif($statut->statut == 'En traitement') 'rgba(13, 110, 253, 0.7)'
+            @elseif($statut->statut == 'Transmis') 'rgba(102, 16, 242, 0.7)'
+            @elseif($statut->statut == 'Réaffecté') 'rgba(214, 51, 132, 0.7)'
             @elseif($statut->statut == 'Archivé') 'rgba(108, 117, 125, 0.7)'
             @else 'rgba(173, 181, 189, 0.7)' @endif,
         @endforeach

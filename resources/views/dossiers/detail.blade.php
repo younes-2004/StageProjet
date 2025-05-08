@@ -1,5 +1,3 @@
-// resources/views/dossiers/detail.blade.php
-
 @extends('layouts.app')
 
 @section('content')
@@ -71,29 +69,29 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white">
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('dossiers.mes_dossiers') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-1"></i> Retour
-                        </a>
-                        <div>
-                            @if($dossier->detenteurActuel()->id == auth()->id())
-                                <a href="{{ route('receptions.create-envoi', $dossier->id) }}" class="btn btn-success">
-                                    <i class="fas fa-paper-plane me-1"></i> Envoyer
-                                </a>
-                                
-                                @if($dossier->statut != 'Archivé')
-                                    <form action="{{ route('dossiers.archiver', $dossier->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-secondary ms-2">
-                                            <i class="fas fa-archive me-1"></i> Archiver
-                                        </button>
-                                    </form>
-                                @endif
-                            @endif
-                        </div>
-                    </div>
-                </div>
+    <div class="d-flex justify-content-between">
+        <button onclick="window.history.back()" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Retour
+        </button>
+        <div>
+            @if($dossier->detenteurActuel()->id == auth()->id())
+                <a href="{{ route('receptions.create-envoi', $dossier->id) }}" class="btn btn-success">
+                    <i class="fas fa-paper-plane me-1"></i> Envoyer
+                </a>
+                
+                @if($dossier->statut != 'Archivé')
+                    <form action="{{ route('dossiers.archiver', $dossier->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-secondary ms-2">
+                            <i class="fas fa-archive me-1"></i> Archiver
+                        </button>
+                    </form>
+                @endif
+            @endif
+        </div>
+    </div>
+</div>
             </div>
         </div>
         

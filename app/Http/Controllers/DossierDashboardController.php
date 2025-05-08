@@ -22,7 +22,7 @@ class DossierDashboardController extends Controller
         // Dossiers récents
         $dossiersRecents = Dossier::with(['createur', 'service'])
             ->orderBy('created_at', 'desc')
-            ->limit(10)
+            ->limit(20)
             ->get();
         
         // Statistiques par service
@@ -31,7 +31,7 @@ class DossierDashboardController extends Controller
         // Statistiques des transferts
         $transfertsRecents = Transfert::with(['dossier', 'userSource', 'userDestination', 'serviceSource', 'serviceDestination'])
             ->orderBy('created_at', 'desc')
-            ->limit(10)
+            ->limit(100)
             ->get();
             
         // Statistiques des utilisateurs les plus actifs
@@ -41,8 +41,7 @@ class DossierDashboardController extends Controller
             ->orderBy('dossiers_created_count', 'desc')
             ->limit(5)
             ->get();
-            dd('La méthode index est bien appelée');
-            
+        
         return view('dossiers.dashboard', compact(
             'totalDossiers', 
             'dossiersParStatut', 
@@ -51,6 +50,5 @@ class DossierDashboardController extends Controller
             'transfertsRecents',
             'utilisateursActifs'
         ));
-
     }
 }

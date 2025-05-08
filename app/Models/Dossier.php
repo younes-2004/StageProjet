@@ -116,4 +116,17 @@ public function tempsTraitement()
     // Sinon on calcule jusqu'à maintenant
     return $dateCreation->diffInDays(now());
 }
+// Dans app/Models/Dossier.php
+protected $casts = [
+    'date_creation' => 'datetime',
+    // autres champs...
+];
+
+// Ou
+protected $dates = [
+    'date_creation',
+    'created_at',
+    'updated_at',
+    // autres dates...
+];
 }

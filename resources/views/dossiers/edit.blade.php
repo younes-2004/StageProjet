@@ -1,5 +1,3 @@
-// resources/views/dossiers/edit.blade.php
-
 @extends('layouts.app')
 
 @section('content')

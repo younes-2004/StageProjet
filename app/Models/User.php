@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Dossier;
 
 class User extends Authenticatable
 {
@@ -53,4 +54,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Service::class, 'service_id');
     }
+    /**
+ * Relation avec les dossiers créés par cet utilisateur.
+ */
+public function dossiersCreated()
+{
+    return $this->hasMany(Dossier::class, 'createur_id');
+}
 }
