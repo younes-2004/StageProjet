@@ -31,7 +31,7 @@ class HistoriqueAction extends Model
     /**
      * Relation avec l'utilisateur.
      */
-    public function user()
+    public function utilisateur()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -43,6 +43,11 @@ class HistoriqueAction extends Model
     {
         return $this->belongsTo(Service::class, 'service_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     // app/Models/HistoriqueAction.php
 
 protected $casts = [

@@ -138,6 +138,15 @@ Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
     
     // Gestion des services
     Route::resource('services', ServiceController::class);
+     // Historique des actions
+     Route::get('/historique', [App\Http\Controllers\HistoriqueActionController::class, 'index'])->name('historique.index');
+     Route::get('/historique/export', [App\Http\Controllers\HistoriqueActionController::class, 'export'])->name('historique.export');
+     Route::get('/historique/{id}', [App\Http\Controllers\HistoriqueActionController::class, 'show'])->name('historique.show');
+     
+     // Transferts
+     Route::get('/transferts', [App\Http\Controllers\TransfertController::class, 'index'])->name('transferts.index');
+     Route::get('/transferts/export', [App\Http\Controllers\TransfertController::class, 'export'])->name('transferts.export');
+     Route::get('/transferts/{id}', [App\Http\Controllers\TransfertController::class, 'show'])->name('transferts.show');
 });
 
 Route::get('/test-route', function() {

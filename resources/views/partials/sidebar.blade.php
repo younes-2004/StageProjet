@@ -71,7 +71,7 @@
             <li class="menu-header">Administration</li>
             
             <!-- NOUVELLE SECTION : Historique des actions -->
-            <li class="menu-item {{ request()->routeIs('historique.*') ? 'active' : '' }}">
+            <li class="menu-item {{ request()->routeIs('admin.historique.*') ? 'active' : '' }}">
                 <a href="{{ route('historique.index') }}" class="menu-link">
                     <i class="fas fa-history"></i>
                     <span>Historique des actions</span>
@@ -79,7 +79,7 @@
             </li>
             
             <!-- NOUVELLE SECTION : Transferts -->
-            <li class="menu-item {{ request()->routeIs('transferts.*') ? 'active' : '' }}">
+            <li class="menu-item {{ request()->routeIs('admin.transferts.*') ? 'active' : '' }}">
                 <a href="{{ route('transferts.index') }}" class="menu-link">
                     <i class="fas fa-exchange-alt"></i>
                     <span>Transferts</span>
