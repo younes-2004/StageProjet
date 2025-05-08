@@ -147,6 +147,9 @@ Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
      Route::get('/transferts', [App\Http\Controllers\TransfertController::class, 'index'])->name('transferts.index');
      Route::get('/transferts/export', [App\Http\Controllers\TransfertController::class, 'export'])->name('transferts.export');
      Route::get('/transferts/{id}', [App\Http\Controllers\TransfertController::class, 'show'])->name('transferts.show');
+     Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
+    ->name('dossiers.destroy')
+    ->middleware('role:greffier_en_chef');
 });
 
 Route::get('/test-route', function() {

@@ -253,5 +253,31 @@ private function authorizeEdit(Dossier $dossier)
         abort(403, 'Accès non autorisé. Seul le créateur ou un greffier en chef peut modifier ce dossier.');
     }
 }
+public function destroy(Dossier $dossier)
+{
+    // Vérifier que l'utilisateur a le rôle de greffier en chef
+    if (auth()->user()->role !== 'greffier_en_chef') {
+        abort(403, 'Vous n\'êtes pas autorisé à supprimer des dossiers.');
+    }
+
+    try {
+        // Supprimer les enregistrements associés
+        \App\Models\HistoriqueAction::where('dossier_id', $dossier->id)->delete();
+        \App\Models\Transfert::where('dossier_id', $dossier->id)->delete();
+        \App\Models\Reception::where('dossier_id', $dossier->id)->delete();
+        \App\Models\DossierValide::where('dossier_id', $dossier->id)->delete();
+
+        // Supprimer le dossier
+        $dossier->delete();
+
+        // Redirection avec message de succès
+        return redirect()->route('dossiers.search')
+            ->with('success', 'Le dossier a été supprimé avec succès.');
+    } catch (\Exception $e) {
+        // Gérer les erreurs de suppression
+        return redirect()->route('dossiers.search')
+            ->with('error', 'Une erreur est survenue lors de la suppression du dossier : ' . $e->getMessage());
+    }
+}
 
 }

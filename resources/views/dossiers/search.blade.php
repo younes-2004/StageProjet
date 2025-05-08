@@ -219,6 +219,17 @@
         <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning">
             <i class="fas fa-edit"></i>modifier
         </a>
+        @if(auth()->user()->role === 'greffier_en_chef')
+<form action="{{ route('dossiers.destroy', $dossier->id) }}" method="POST" 
+      class="d-inline delete-dossier-form" 
+      data-dossier-titre="{{ $dossier->titre }}">
+    @csrf
+    @method('DELETE')
+    <button type="button" class="btn btn-sm btn-danger delete-dossier-btn">
+        <i class="fas fa-trash-alt"></i>supprimer
+    </button>
+</form>
+@endif
                                          
                                         </div>
                                     </td>
@@ -243,6 +254,28 @@
             </div>
         </div>
     </div>
+    <!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmation de suppression</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer le dossier <strong id="deleteDossierTitre"></strong> ?</p>
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Cette action est irréversible.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 <script>
@@ -257,6 +290,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         form.submit();
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuration de la suppression de dossier
+    const deleteButtons = document.querySelectorAll('.delete-dossier-btn');
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    let currentForm = null;
+
+    // Intercepter le clic sur les boutons de suppression
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Récupérer le formulaire et le titre du dossier
+            currentForm = this.closest('form');
+            const dossierTitre = currentForm.getAttribute('data-dossier-titre');
+            
+            // Mettre à jour le texte dans le modal
+            document.getElementById('deleteDossierTitre').textContent = dossierTitre;
+            
+            // Afficher le modal de confirmation
+            deleteModal.show();
+        });
+    });
+
+    // Gérer la confirmation de suppression
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if (currentForm) {
+            // Afficher un message d'avertissement
+            alert('La suppression de dossier est temporairement désactivée pour des raisons de sécurité.');
+            
+            // Fermer le modal
+            deleteModal.hide();
+        }
     });
 });
 </script>
