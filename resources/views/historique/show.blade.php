@@ -7,10 +7,10 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-history text-primary me-2"></i>Détails de l'action
+                        <i class="fas fa-history text-primary me-2"></i>تفاصيل الإجراء
                     </h5>
                     <a href="{{ route('historique.index') }}" class="btn btn-sm btn-secondary">
-                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                        <i class="fas fa-arrow-left me-1"></i> العودة إلى القائمة
                     </a>
                 </div>
 
@@ -19,24 +19,24 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0 fw-semibold">Informations de l'action</h6>
+                                    <h6 class="mb-0 fw-semibold">معلومات الإجراء</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">ID</label>
+                                        <label class="form-label text-muted">المعرف</label>
                                         <p class="fw-medium">{{ $historique->id }}</p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Date</label>
+                                        <label class="form-label text-muted">التاريخ</label>
                                         <p class="fw-medium">
                                             <i class="far fa-calendar-alt me-1"></i>
-                                            {{ $historique->date_action ? $historique->date_action->format('d/m/Y H:i') : 'N/A' }}
+                                            {{ $historique->date_action ? $historique->date_action->format('d/m/Y H:i') : 'غير متوفر' }}
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Type d'action</label>
+                                        <label class="form-label text-muted">نوع الإجراء</label>
                                         <p>
                                             <span class="badge 
                                                 @if($historique->action == 'creation') bg-success 
@@ -44,14 +44,21 @@
                                                 @elseif($historique->action == 'transfert') bg-primary 
                                                 @elseif($historique->action == 'validation') bg-warning
                                                 @elseif($historique->action == 'archivage') bg-secondary 
+                                                @elseif($historique->action == 'reaffectation') bg-info
                                                 @else bg-light text-dark @endif">
-                                                {{ ucfirst($historique->action) }}
+                                                @if($historique->action == 'creation') إنشاء 
+                                                @elseif($historique->action == 'modification') تعديل 
+                                                @elseif($historique->action == 'transfert') تحويل 
+                                                @elseif($historique->action == 'validation') تصديق
+                                                @elseif($historique->action == 'archivage') أرشفة
+                                                @elseif($historique->action == 'réaffectation') إعادة تعيين
+                                                @else {{ ucfirst($historique->action) }} @endif
                                             </span>
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Description</label>
+                                        <label class="form-label text-muted">الوصف</label>
                                         <p class="fw-medium">{{ $historique->description }}</p>
                                     </div>
                                 </div>
@@ -61,32 +68,32 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0 fw-semibold">Informations associées</h6>
+                                    <h6 class="mb-0 fw-semibold">المعلومات المرتبطة</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Utilisateur</label>
+                                        <label class="form-label text-muted">المستخدم</label>
                                         <p class="fw-medium">
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $historique->user->name ?? 'N/A' }}
+                                            {{ $historique->user->name ?? 'غير متوفر' }}
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Service</label>
+                                        <label class="form-label text-muted">القسم</label>
                                         <p class="fw-medium">
                                             <i class="fas fa-building me-1"></i>
-                                            {{ $historique->service->nom ?? 'N/A' }}
+                                            {{ $historique->service->nom ?? 'غير متوفر' }}
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Dossier</label>
+                                        <label class="form-label text-muted">الملف</label>
                                         <p class="fw-medium">
                                             <a href="{{ route('dossiers.show', $historique->dossier_id) }}" class="text-decoration-none">
                                                 <i class="fas fa-folder me-1"></i>
-                                                {{ $historique->dossier->numero_dossier_judiciaire ?? 'N/A' }} - 
-                                                {{ $historique->dossier->titre ?? 'N/A' }}
+                                                {{ $historique->dossier->numero_dossier_judiciaire ?? 'غير متوفر' }} - 
+                                                {{ $historique->dossier->titre ?? 'غير متوفر' }}
                                             </a>
                                         </p>
                                     </div>

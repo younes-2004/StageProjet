@@ -2,92 +2,88 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Réaffecter le dossier : {{ $dossier->titre }}</h1>
+    <h1 class="mb-4">إعادة تعيين الملف: {{ $dossier->titre }}</h1>
 
-                    <form method="POST" action="{{ route('dossiers.reaffecter.store', $dossier->id) }}">
-                        @csrf
-                        @method('PATCH')
-                        
-                        <div class="mb-4">
-                            <label for="dossier_info" class="form-label fw-semibold">
-                                <i class="fas fa-info-circle text-primary me-1"></i>Informations du dossier
-                            </label>
-                            <div class="p-3 bg-light border-0 rounded-3">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>ID:</strong> {{ $dossier->id }}</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>Titre:</strong> {{ $dossier->titre ?? 'Non défini' }}</p>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>Référence:</strong> {{ $dossier->reference ?? 'Non définie' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="service_id" class="form-label fw-semibold">
-                                <i class="fas fa-building text-primary me-1"></i>Service :
-                            </label>
-                            <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required onchange="updateUsersList()">
-                                <option value="">-- Choisir un service --</option>
-                                @foreach($services as $service)
-                                    <option value="{{ $service->id }}">{{ $service->nom }}</option>
-                                @endforeach
-                            </select>
-                            @error('service_id')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="user_id" class="form-label fw-semibold">
-                                <i class="fas fa-user text-primary me-1"></i>Réaffecter à :
-                            </label>
-                            <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
-                                <option value="">-- Choisir un utilisateur --</option>
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}">
-                                        {{ $user->name }} ({{ $user->email ?? '' }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('user_id')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="commentaire" class="form-label fw-semibold">
-                                <i class="fas fa-comment text-primary me-1"></i>Commentaire :
-                            </label>
-                            <textarea id="commentaire" name="commentaire" class="form-control @error('commentaire') is-invalid @enderror" rows="3" placeholder="Ajoutez un commentaire optionnel..."></textarea>
-                            @error('commentaire')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-secondary px-4">
-                                <i class="fas fa-times me-1"></i> Annuler
-                            </a>
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="fas fa-share me-1"></i> Réaffecter
-                            </button>
-                        </div>
-                    </form>
+    <form method="POST" action="{{ route('dossiers.reaffecter.store', $dossier->id) }}">
+        @csrf
+        @method('PATCH')
+        
+        <div class="mb-4">
+            <label for="dossier_info" class="form-label fw-semibold">
+                <i class="fas fa-info-circle text-primary me-1"></i>معلومات الملف
+            </label>
+            <div class="p-3 bg-light border-0 rounded-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>الرقم:</strong> {{ $dossier->id }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>العنوان:</strong> {{ $dossier->titre ?? 'غير محدد' }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>المرجع:</strong> {{ $dossier->reference ?? 'غير محدد' }}</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        
+        <div class="mb-4">
+            <label for="service_id" class="form-label fw-semibold">
+                <i class="fas fa-building text-primary me-1"></i>القسم:
+            </label>
+            <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required onchange="updateUsersList()">
+                <option value="">-- اختر قسماً --</option>
+                @foreach($services as $service)
+                    <option value="{{ $service->id }}">{{ $service->nom }}</option>
+                @endforeach
+            </select>
+            @error('service_id')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="mb-4">
+            <label for="user_id" class="form-label fw-semibold">
+                <i class="fas fa-user text-primary me-1"></i>إعادة تعيين إلى:
+            </label>
+            <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
+                <option value="">-- اختر مستخدماً --</option>
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}">
+                        {{ $user->name }} ({{ $user->email ?? '' }})
+                    </option>
+                @endforeach
+            </select>
+            @error('user_id')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="mb-4">
+            <label for="commentaire" class="form-label fw-semibold">
+                <i class="fas fa-comment text-primary me-1"></i>تعليق:
+            </label>
+            <textarea id="commentaire" name="commentaire" class="form-control @error('commentaire') is-invalid @enderror" rows="3" placeholder="أضف تعليقاً اختيارياً..."></textarea>
+            @error('commentaire')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ route('dossiers.show', $dossier->id) }}" class="btn btn-secondary px-4">
+                <i class="fas fa-times me-1"></i> إلغاء
+            </a>
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="fas fa-share me-1"></i> إعادة تعيين
+            </button>
+        </div>
+    </form>
 </div>
 
 <style>

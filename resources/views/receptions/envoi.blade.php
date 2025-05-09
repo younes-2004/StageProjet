@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Envoyer le dossier : {{ $dossier->titre }}</h1>
+    <h1 class="mb-4">إرسال الملف: {{ $dossier->titre }}</h1>
     
     <div class="row justify-content-center">
         <div class="col-md-10">
@@ -15,12 +15,12 @@
                                 <i class="fas fa-check"></i>
                             </div>
                             <div class="confirmation-content">
-                                <h5 class="mb-1 fw-bold">Dossier envoyé avec succès!</h5>
+                                <h5 class="mb-1 fw-bold">تم إرسال الملف بنجاح!</h5>
                                 <p class="mb-0">{{ session('success') }}</p>
                             </div>
                             <div class="ms-auto">
                                 <a href="{{ route('dossiers.index') }}" class="btn btn-sm btn-success">
-                                    <i class="fas fa-list me-1"></i> Voir mes dossiers
+                                    <i class="fas fa-list me-1"></i> عرض ملفاتي
                                 </a>
                             </div>
                         </div>
@@ -42,18 +42,18 @@
                 
                 <div class="mb-4">
                     <label for="dossier_info" class="form-label fw-semibold">
-                        <i class="fas fa-info-circle text-primary me-1"></i>Informations du dossier
+                        <i class="fas fa-info-circle text-primary me-1"></i>معلومات الملف
                     </label>
                     <div class="p-3 bg-light border-0 rounded-3">
                         <div class="row">
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>ID:</strong> {{ $dossier->id }}</p>
+                                <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>الرقم:</strong> {{ $dossier->id }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>Titre:</strong> {{ $dossier->titre ?? 'Non défini' }}</p>
+                                <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>العنوان:</strong> {{ $dossier->titre ?? 'غير محدد' }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>Référence:</strong> {{ $dossier->reference ?? 'Non définie' }}</p>
+                                <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>المرجع:</strong> {{ $dossier->reference ?? 'غير محدد' }}</p>
                             </div>
                         </div>
                     </div>
@@ -61,10 +61,10 @@
                 
                 <div class="mb-4">
                     <label for="service_id" class="form-label fw-semibold">
-                        <i class="fas fa-building text-primary me-1"></i>Service destinataire :
+                        <i class="fas fa-building text-primary me-1"></i>القسم المستلم:
                     </label>
                     <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required onchange="updateUsersList()">
-                        <option value="">-- Choisir un service --</option>
+                        <option value="">-- اختر قسماً --</option>
                         @foreach($services as $service)
                             <option value="{{ $service->id }}">{{ $service->nom }}</option>
                         @endforeach
@@ -78,10 +78,10 @@
                 
                 <div class="mb-4">
                     <label for="user_id" class="form-label fw-semibold">
-                        <i class="fas fa-user text-primary me-1"></i>Utilisateur destinataire :
+                        <i class="fas fa-user text-primary me-1"></i>المستخدم المستلم:
                     </label>
                     <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
-                        <option value="">-- Choisir un utilisateur --</option>
+                        <option value="">-- اختر مستخدماً --</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}">
                                 {{ $user->name }} ({{ $user->email }})
@@ -97,9 +97,9 @@
                 
                 <div class="mb-4">
     <label for="message" class="form-label fw-semibold">
-        <i class="fas fa-comment text-primary me-1"></i>Commentaire :
+        <i class="fas fa-comment text-primary me-1"></i>تعليق:
     </label>
-    <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="3" placeholder="Ajoutez un commentaire optionnel..."></textarea>
+    <textarea id="message" name="message" class="form-control @error('message') is-invalid @enderror" rows="3" placeholder="أضف تعليقاً اختيارياً..."></textarea>
     @error('message')
         <span class="invalid-feedback" role="alert">
             <strong>{{ $message }}</strong>
@@ -109,10 +109,10 @@
                 
                 <div class="d-flex justify-content-between mt-4">
                     <a href="javascript:history.back()" class="btn btn-secondary px-4">
-                        <i class="fas fa-times me-1"></i> Annuler
+                        <i class="fas fa-times me-1"></i> إلغاء
                     </a>
                     <button type="submit" class="btn btn-primary px-4">
-                        <i class="fas fa-paper-plane me-1"></i> Envoyer
+                        <i class="fas fa-paper-plane me-1"></i> إرسال
                     </button>
                 </div>
             </form>

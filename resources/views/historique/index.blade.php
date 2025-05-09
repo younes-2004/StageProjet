@@ -7,12 +7,12 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0">
                     <h5 class="mb-0 fw-bold fs-3">
-                        <i class="fas fa-history text-primary me-2"></i>Historique des actions
+                        <i class="fas fa-history text-primary me-2"></i>سجل الإجراءات
                     </h5>
                     
                     <!-- Bouton d'exportation -->
                     <a href="{{ route('historique.export', request()->query()) }}" class="btn btn-primary">
-                        <i class="fas fa-download me-1"></i> Exporter
+                        <i class="fas fa-download me-1"></i> تصدير
                     </a>
                 </div>
 
@@ -22,7 +22,7 @@
                         <div class="col-md-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h6 class="text-muted mb-1">Actions par type</h6>
+                                    <h6 class="text-muted mb-1">الإجراءات حسب النوع</h6>
                                     <div class="chart-container" style="height: 150px;">
                                         <canvas id="actionsParTypeChart"></canvas>
                                     </div>
@@ -32,7 +32,7 @@
                         <div class="col-md-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h6 class="text-muted mb-1">Actions par jour</h6>
+                                    <h6 class="text-muted mb-1">الإجراءات حسب اليوم</h6>
                                     <div class="chart-container" style="height: 150px;">
                                         <canvas id="actionsParJourChart"></canvas>
                                     </div>
@@ -42,7 +42,7 @@
                         <div class="col-md-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h6 class="text-muted mb-1">Actions par service</h6>
+                                    <h6 class="text-muted mb-1">الإجراءات حسب القسم</h6>
                                     <div class="chart-container" style="height: 150px;">
                                         <canvas id="actionsParServiceChart"></canvas>
                                     </div>
@@ -52,11 +52,11 @@
                         <div class="col-md-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body">
-                                    <h6 class="text-muted mb-1">Utilisateurs les plus actifs</h6>
+                                    <h6 class="text-muted mb-1">المستخدمون الأكثر نشاطًا</h6>
                                     <ul class="list-group list-group-flush">
                                         @foreach($utilisateursActifs as $user)
                                             <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
-                                                <span>{{ $user->utilisateur->name ?? 'N/A' }}</span>
+                                                <span>{{ $user->utilisateur->name ?? 'غير متوفر' }}</span>
                                                 <span class="badge bg-primary rounded-pill">{{ $user->total }}</span>
                                             </li>
                                         @endforeach
@@ -69,19 +69,42 @@
                     <!-- Filtres avancés -->
                     <div class="card shadow-sm mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0 fw-semibold">Filtres avancés</h6>
+                            <h6 class="mb-0 fw-semibold">تصفية متقدمة</h6>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('historique.index') }}" method="GET" id="searchForm">
                                 <div class="row g-3">
                                     <!-- Action -->
                                     <div class="col-md-4">
-                                        <label for="action" class="form-label">Type d'action</label>
+                                        <label for="action" class="form-label">نوع الإجراء 
+                                            <button type="button" class="btn btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-caret-up"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                @foreach($actions as $action)
+                                                    <li><a class="dropdown-item" href="#" onclick="document.getElementById('action').value='{{ $action }}'; document.getElementById('searchForm').submit();">
+                                                        @if($action == 'creation') إنشاء 
+                                                        @elseif($action == 'modification') تعديل 
+                                                        @elseif($action == 'transfert') تحويل 
+                                                        @elseif($action == 'validation') تصديق
+                                                        @elseif($action == 'archivage') أرشفة
+                                                        @elseif($action == 'réaffectation') إعادة تعيين
+                                                        @else {{ ucfirst($action) }} @endif
+                                                    </a></li>
+                                                @endforeach
+                                            </ul>
+                                        </label>
                                         <select id="action" name="action" class="form-select">
-                                            <option value="">Toutes les actions</option>
+                                            <option value="" style="text-align: left">جميع الإجراءات</option>
                                             @foreach($actions as $action)
                                                 <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
-                                                    {{ ucfirst($action) }}
+                                                    @if($action == 'creation') إنشاء 
+                                                    @elseif($action == 'modification') تعديل 
+                                                    @elseif($action == 'transfert') تحويل 
+                                                    @elseif($action == 'validation') تصديق
+                                                    @elseif($action == 'archivage') أرشفة
+                                                    @elseif($action == 'réaffectation') إعادة تعيين
+                                                    @else {{ ucfirst($action) }} @endif
                                                 </option>
                                             @endforeach
                                         </select>
@@ -89,9 +112,9 @@
                                     
                                     <!-- Utilisateur -->
                                     <div class="col-md-4">
-                                        <label for="user_id" class="form-label">Utilisateur</label>
-                                        <select id="user_id" name="user_id" class="form-select">
-                                            <option value="">Tous les utilisateurs</option>
+                                        <label for="user_id" class="form-label">المستخدم</label>
+                                        <select id="user_id" name="user_id" class="form-select text-start" dir="ltr">
+                                            <option value="">جميع المستخدمين</option>
                                             @foreach($users as $user)
                                                 <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
                                                     {{ $user->name }} {{ $user->fname }}
@@ -102,9 +125,9 @@
                                     
                                     <!-- Service -->
                                     <div class="col-md-4">
-                                        <label for="service_id" class="form-label">Service</label>
-                                        <select id="service_id" name="service_id" class="form-select">
-                                            <option value="">Tous les services</option>
+                                        <label for="service_id" class="form-label">القسم</label>
+                                        <select id="service_id" name="service_id" class="form-select text-start" dir="ltr">
+                                            <option value="">جميع الأقسام</option>
                                             @foreach($services as $service)
                                                 <option value="{{ $service->id }}" {{ request('service_id') == $service->id ? 'selected' : '' }}>
                                                     {{ $service->nom }}
@@ -115,9 +138,9 @@
                                     
                                     <!-- Dossier -->
                                     <div class="col-md-4">
-                                        <label for="dossier_id" class="form-label">Dossier</label>
-                                        <select id="dossier_id" name="dossier_id" class="form-select">
-                                            <option value="">Tous les dossiers</option>
+                                        <label for="dossier_id" class="form-label">الملف</label>
+                                        <select id="dossier_id" name="dossier_id" class="form-select text-start" dir="ltr">
+                                            <option value="">جميع الملفات</option>
                                             @foreach($dossiers as $dossier)
                                                 <option value="{{ $dossier->id }}" {{ request('dossier_id') == $dossier->id ? 'selected' : '' }}>
                                                     {{ $dossier->numero_dossier_judiciaire }} - {{ $dossier->titre }}
@@ -128,38 +151,38 @@
                                     
                                     <!-- Date début -->
                                     <div class="col-md-4">
-                                        <label for="date_debut" class="form-label">Date de début</label>
-                                        <input type="date" id="date_debut" name="date_debut" class="form-control" value="{{ request('date_debut') }}">
+                                        <label for="date_debut" class="form-label">تاريخ البداية</label>
+                                        <input type="date" id="date_debut" name="date_debut" class="form-control text-start" dir="ltr" value="{{ request('date_debut') }}">
                                     </div>
                                     
                                     <!-- Date fin -->
                                     <div class="col-md-4">
-                                        <label for="date_fin" class="form-label">Date de fin</label>
-                                        <input type="date" id="date_fin" name="date_fin" class="form-control" value="{{ request('date_fin') }}">
+                                        <label for="date_fin" class="form-label">تاريخ النهاية</label>
+                                        <input type="date" id="date_fin" name="date_fin" class="form-control text-start" dir="ltr" value="{{ request('date_fin') }}">
                                     </div>
                                     
                                     <!-- Recherche par mot-clé -->
                                     <div class="col-md-8">
-                                        <label for="keyword" class="form-label">Mot-clé dans la description</label>
-                                        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="Rechercher..." value="{{ request('keyword') }}">
+                                        <label for="keyword" class="form-label">كلمة مفتاحية في الوصف</label>
+                                        <input type="text" id="keyword" name="keyword" class="form-control text-start" dir="ltr" placeholder="بحث..." value="{{ request('keyword') }}">
                                     </div>
                                     
                                     <!-- Boutons de tri -->
                                     <div class="col-md-4">
                                         <div class="row">
                                             <div class="col-6">
-                                                <label for="sort_by" class="form-label">Trier par</label>
-                                                <select id="sort_by" name="sort_by" class="form-select">
-                                                    <option value="date_action" {{ request('sort_by') == 'date_action' ? 'selected' : '' }}>Date</option>
-                                                    <option value="action" {{ request('sort_by') == 'action' ? 'selected' : '' }}>Type d'action</option>
-                                                    <option value="description" {{ request('sort_by') == 'description' ? 'selected' : '' }}>Description</option>
+                                                <label for="sort_by" class="form-label">ترتيب حسب</label>
+                                                <select id="sort_by" name="sort_by" class="form-select text-start" dir="ltr">
+                                                    <option value="date_action" {{ request('sort_by') == 'date_action' ? 'selected' : '' }}>التاريخ</option>
+                                                    <option value="action" {{ request('sort_by') == 'action' ? 'selected' : '' }}>نوع الإجراء</option>
+                                                    <option value="description" {{ request('sort_by') == 'description' ? 'selected' : '' }}>الوصف</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="sort_direction" class="form-label">Ordre</label>
-                                                <select id="sort_direction" name="sort_direction" class="form-select">
-                                                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>Décroissant</option>
-                                                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>Croissant</option>
+                                                <label for="sort_direction" class="form-label">الترتيب</label>
+                                                <select id="sort_direction" name="sort_direction" class="form-select text-start" dir="ltr">
+                                                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>تنازلي</option>
+                                                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>تصاعدي</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -168,10 +191,10 @@
                                     <!-- Boutons d'action -->
                                     <div class="col-12 text-end mt-3">
                                         <button type="button" id="resetButton" class="btn btn-secondary me-2">
-                                            <i class="fas fa-redo me-1"></i>Réinitialiser
+                                            <i class="fas fa-redo me-1"></i>إعادة تعيين
                                         </button>
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-search me-1"></i>Filtrer
+                                            <i class="fas fa-search me-1"></i>تصفية
                                         </button>
                                     </div>
                                 </div>
@@ -182,8 +205,8 @@
                     <!-- Liste des actions -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 fw-semibold">Liste des actions</h6>
-                            <span class="badge bg-primary">{{ $historiques->total() }} résultat(s)</span>
+                            <h6 class="mb-0 fw-semibold">قائمة الإجراءات</h6>
+                            <span class="badge bg-primary">{{ $historiques->total() }} نتيجة</span>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -191,12 +214,13 @@
                                     <thead class="bg-light">
                                         <tr>
                                             <th style="width: 5%;">#</th>
-                                            <th style="width: 15%;">Date</th>
-                                            <th style="width: 10%;">Action</th>
-                                            <th style="width: 15%;">Utilisateur</th>
-                                            <th style="width: 15%;">Service</th>
-                                            <th style="width: 15%;">Dossier</th>
-                                            <th style="width: 25%;">Description</th>
+                                            <th style="width: 12%;">التاريخ</th>
+                                            <th style="width: 10%;">الإجراء</th>
+                                            <th style="width: 12%;">المستخدم</th>
+                                            <th style="width: 10%;">القسم</th>
+                                            <th style="width: 12%;">الملف</th>
+                                            <th style="width: 30%;">الوصف</th>
+                                            <th style="width: 9%;">عمليات</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -206,7 +230,7 @@
                                                 <td>
                                                     <span class="text-muted">
                                                         <i class="far fa-calendar-alt me-1"></i>
-                                                        {{ $historique->date_action ? $historique->date_action->format('d/m/Y H:i') : 'N/A' }}
+                                                        {{ $historique->date_action ? $historique->date_action->format('d/m/Y H:i') : 'غير متوفر' }}
                                                     </span>
                                                 </td>
                                                 <td>
@@ -216,24 +240,36 @@
                                                         @elseif($historique->action == 'transfert') bg-primary 
                                                         @elseif($historique->action == 'validation') bg-warning
                                                         @elseif($historique->action == 'archivage') bg-secondary 
+                                                        @elseif($historique->action == 'reaffectation') bg-info
                                                         @else bg-light text-dark @endif">
-                                                        {{ ucfirst($historique->action) }}
+                                                        @if($historique->action == 'creation') إنشاء 
+                                                        @elseif($historique->action == 'modification') تعديل 
+                                                        @elseif($historique->action == 'transfert') تحويل 
+                                                        @elseif($historique->action == 'validation') تصديق
+                                                        @elseif($historique->action == 'archivage') أرشفة 
+                                                        @elseif($historique->action == 'réaffectation') إعادة تعيين
+                                                        @else {{ ucfirst($historique->action) }} @endif
                                                     </span>
                                                 </td>
-                                                <td>{{ $historique->user->name ?? 'N/A' }}</td>
-                                                <td>{{ $historique->service->nom ?? 'N/A' }}</td>
+                                                <td>{{ $historique->user->name ?? 'غير متوفر' }}</td>
+                                                <td>{{ $historique->service->nom ?? 'غير متوفر' }}</td>
                                                 <td>
                                                     <a href="{{ route('dossiers.show', $historique->dossier_id) }}" class="text-decoration-none">
-                                                        {{ $historique->dossier->numero_dossier_judiciaire ?? 'N/A' }}
+                                                        {{ $historique->dossier->numero_dossier_judiciaire ?? 'غير متوفر' }}
                                                     </a>
                                                 </td>
-                                                <td>{{ $historique->description }}</td>
+                                                <td class="text-truncate" title="{{ $historique->description }}">{{ $historique->description }}</td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('historique.show', $historique->id) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i> عرض
+                                                    </a>
+                                                </td>
                                             </tr>
                                         @empty
                                             <tr>
                                                 <td colspan="7" class="text-center py-3">
                                                     <i class="fas fa-info-circle text-info me-1"></i>
-                                                    Aucune action trouvée avec les critères sélectionnés
+                                                    لم يتم العثور على أي إجراء بالمعايير المحددة
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -276,7 +312,13 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: [
                     @foreach($actionsParType as $action)
-                        '{{ ucfirst($action->action) }}',
+                        @if($action->action == 'creation') 'إنشاء',
+                        @elseif($action->action == 'modification') 'تعديل',
+                        @elseif($action->action == 'transfert') 'تحويل',
+                        @elseif($action->action == 'validation') 'تصديق',
+                        @elseif($action->action == 'archivage') 'أرشفة',
+                        @elseif($action->action == 'réaffectation') 'إعادة تعيين',
+                        @else '{{ ucfirst($action->action) }}', @endif
                     @endforeach
                 ],
                 datasets: [{
@@ -286,11 +328,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         @endforeach
                     ],
                     backgroundColor: [
-                        'rgba(25, 135, 84, 0.7)',
-                        'rgba(13, 202, 240, 0.7)',
-                        'rgba(13, 110, 253, 0.7)',
-                        'rgba(255, 193, 7, 0.7)',
-                        'rgba(108, 117, 125, 0.7)'
+                        'rgba(25, 135, 84, 0.7)',   /* creation / إنشاء */
+                        'rgba(13, 202, 240, 0.7)',  /* modification / تعديل */
+                        'rgba(13, 110, 253, 0.7)',  /* transfert / تحويل */
+                        'rgba(255, 193, 7, 0.7)',   /* validation / تصديق */
+                        'rgba(108, 117, 125, 0.7)', /* archivage / أرشفة */
+                        'rgba(23, 162, 184, 0.7)'   /* reaffectation / إعادة تعيين */
                     ],
                     borderWidth: 1
                 }]
@@ -325,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endforeach
                 ],
                 datasets: [{
-                    label: 'Actions',
+                    label: 'الإجراءات',
                     data: [
                         @foreach($actionsParJour as $action)
                             {{ $action->total }},
@@ -373,11 +416,11 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: [
                     @foreach($actionsParService as $action)
-                        '{{ $action->service->nom ?? 'N/A' }}',
+                        '{{ $action->service->nom ?? 'غير متوفر' }}',
                     @endforeach
                 ],
                 datasets: [{
-                    label: 'Actions',
+                    label: 'الإجراءات',
                     data: [
                         @foreach($actionsParService as $action)
                             {{ $action->total }},
@@ -501,6 +544,21 @@ document.addEventListener('DOMContentLoaded', function() {
         .chart-container {
             height: 200px !important;
         }
+    }
+    
+    /* RTL support for Arabic */
+    body {
+        direction: rtl;
+        text-align: right;
+    }
+    
+    .me-1, .me-2 {
+        margin-left: 0.25rem !important;
+        margin-right: 0 !important;
+    }
+    
+    .me-2 {
+        margin-left: 0.5rem !important;
     }
 </style>
 @endsection

@@ -8,12 +8,12 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0">
                     <h5 class="mb-0 fw-bold fs-3">
-                        <i class="fas fa-check-circle text-success me-2"></i>Mes dossiers validés
+                        <i class="fas fa-check-circle text-success me-2"></i>ملفاتي المتحقق منها
                     </h5>
                     
                     <!-- Lien vers la boîte de réception -->
                     <a href="{{ route('receptions.inbox') }}" class="btn btn-primary">
-                        <i class="fas fa-inbox me-1"></i> Retour à la boîte de réception
+                        <i class="fas fa-inbox me-1"></i> العودة إلى صندوق الوارد
                     </a>
                 </div>
 
@@ -36,7 +36,7 @@
                     
                     <div class="alert alert-info mb-3">
                         <i class="fas fa-info-circle me-2"></i>
-                        Nombre de dossiers validés trouvés : {{ $dossiersValides->count() }}
+                        عدد الملفات المتحقق منها: {{ $dossiersValides->count() }}
                     </div>
                     
                     <!-- Tableau 1: Dossiers validés non réaffectés -->
@@ -44,9 +44,9 @@
                         <div class="mb-3">
                             <h2 class="h3 section-title text-dark border-left border-dark pl-2 py-2" style="border-left: 6px solid #212529 !important; padding-left: 15px; margin-bottom: 8px;">
                                 <i class="fas fa-edit me-2 text-secondary"></i>
-                                Dossiers validés non réaffectés
+                                الملفات المتحقق منها غير المعاد تعيينها
                             </h2>
-                            <p class="text-muted ms-4 fs-6">Dossiers en attente de réaffectation</p>
+                            <p class="text-muted ms-4 fs-6">الملفات في انتظار إعادة التعيين</p>
                         </div>
                         
                         <!-- Barre de recherche pour dossiers validés non réaffectés -->
@@ -58,25 +58,25 @@
                                             <span class="input-group-text bg-white border-end-0">
                                                 <i class="fas fa-search text-muted"></i>
                                             </span>
-                                            <input type="text" class="form-control border-start-0 search-input" id="searchNonReaffectes" placeholder="Rechercher...">
+                                            <input type="text" class="form-control border-start-0 search-input" id="searchNonReaffectes" placeholder="بحث...">
                                         </div>
                                     </div>
                                     <div class="col-md-8">
                                         <div class="btn-group" role="group">
                                             <button type="button" class="btn btn-outline-secondary filter-btn active" data-filter="all" data-target="nonReaffectes">
-                                                <i class="fas fa-list-ul me-1"></i> Tous
+                                                <i class="fas fa-list-ul me-1"></i> الكل
                                             </button>
                                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonReaffectes">
-                                                <i class="fas fa-heading me-1"></i> Titre
+                                                <i class="fas fa-heading me-1"></i> العنوان
                                             </button>
                                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="date" data-target="nonReaffectes">
-                                                <i class="fas fa-calendar-alt me-1"></i> Date
+                                                <i class="fas fa-calendar-alt me-1"></i> التاريخ
                                             </button>
                                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="service" data-target="nonReaffectes">
-                                                <i class="fas fa-building me-1"></i> Service
+                                                <i class="fas fa-building me-1"></i> القسم
                                             </button>
                                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="expediteur" data-target="nonReaffectes">
-                                                <i class="fas fa-user me-1"></i> Expéditeur
+                                                <i class="fas fa-user me-1"></i> المرسل
                                             </button>
                                         </div>
                                     </div>
@@ -88,11 +88,11 @@
                             <table class="table table-hover align-middle table-bordered border-light" id="tableNonReaffectes">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th style="width: 25%;">Titre du dossier</th>
-                                        <th style="width: 20%;">Date de validation</th>
-                                        <th style="width: 15%;">Service</th>
-                                        <th style="width: 15%;">Expéditeur</th>
-                                        <th class="text-center" style="width: 25%;">Actions</th>
+                                        <th style="width: 25%;">عنوان الملف</th>
+                                        <th style="width: 20%;">تاريخ التحقق</th>
+                                        <th style="width: 15%;">القسم</th>
+                                        <th style="width: 15%;">المرسل</th>
+                                        <th class="text-center" style="width: 25%;">إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -113,7 +113,7 @@
                                         <tr>
                                             <td colspan="5" class="text-center py-3">
                                                 <i class="fas fa-info-circle text-info me-2"></i>
-                                                Aucun dossier validé non réaffecté trouvé
+                                                لم يتم العثور على ملفات متحقق منها غير معاد تعيينها
                                             </td>
                                         </tr>
                                     @else
@@ -127,7 +127,7 @@
                                                 <!-- Date de validation -->
                                                 <td class="text-muted">
                                                     <i class="far fa-calendar-check me-1"></i>
-                                                    {{ $dossierValide->date_validation ? $dossierValide->date_validation->format('d/m/Y H:i') : 'N/A' }}
+                                                    {{ $dossierValide->date_validation ? $dossierValide->date_validation->format('d/m/Y H:i') : 'غير متوفر' }}
                                                 </td>
                                                 
                                                 <!-- Service -->
@@ -136,7 +136,7 @@
                                                     @if($dossierValide->dossier->service)
                                                         {{ $dossierValide->dossier->service->nom }}
                                                     @else
-                                                        Service ID: {{ $dossierValide->dossier->service_id }}
+                                                        رقم القسم: {{ $dossierValide->dossier->service_id }}
                                                     @endif
                                                 </td>
                                                 
@@ -144,7 +144,7 @@
                                                 <td>
                                                     <span class="badge bg-primary bg-opacity-10 text-primary">
                                                         <i class="fas fa-user-circle me-1"></i>
-                                                        {{ $dossierValide->dossier->createur->name ?? 'Inconnu' }}
+                                                        {{ $dossierValide->dossier->createur->name ?? 'غير معروف' }}
                                                     </span>
                                                 </td>
                                                 
@@ -155,24 +155,24 @@
                                                             <!-- Bouton pour consulter les détails -->
                                                             <a href="{{ route('dossiers.show', $dossierValide->dossier_id) }}" 
                                                             class="btn btn-primary">
-                                                                <i class="fas fa-eye"></i> Consulter
+                                                                <i class="fas fa-eye"></i> عرض
                                                             </a>
                                                             
                                                             <!-- Bouton pour réaffecter -->
                                                             <a href="{{ route('receptions.reaffecter', $dossierValide->dossier_id) }}" 
                                                             class="btn btn-warning">
-                                                                <i class="fas fa-share"></i> Réaffecter
+                                                                <i class="fas fa-share"></i> إعادة تعيين
                                                             </a>
                                                             
                                                             <!-- Bouton pour archiver -->
                                                             <form action="{{ route('dossiers.archiver', $dossierValide->dossier_id) }}" 
                                                                 method="POST" 
                                                                 style="display: inline;" 
-                                                                onsubmit="return confirm('Êtes-vous sûr de vouloir archiver ce dossier?');">
+                                                                onsubmit="return confirm('هل أنت متأكد من أنك تريد أرشفة هذا الملف؟');">
                                                                 @csrf
                                                                 @method('PATCH')
                                                                 <button type="submit" class="btn btn-secondary">
-                                                                    <i class="fas fa-archive"></i> Archiver
+                                                                    <i class="fas fa-archive"></i> أرشفة
                                                                 </button>
                                                             </form>
                                                         </div>
@@ -191,9 +191,9 @@
                         <div class="mb-3">
                             <h2 class="h3 section-title text-dark border-left border-warning pl-2 py-2" style="border-left: 6px solid #ffc107 !important; padding-left: 15px; margin-bottom: 8px;">
                                 <i class="fas fa-clock me-2 text-warning"></i>
-                                Dossiers réaffectés non validés
+                                الملفات المعاد تعيينها غير المتحقق منها
                             </h2>
-                            <p class="text-muted ms-4 fs-6">Dossiers réaffectés en attente de validation</p>
+                            <p class="text-muted ms-4 fs-6">الملفات المعاد تعيينها في انتظار التحقق</p>
                         </div>
                         
                         <!-- Barre de recherche pour dossiers réaffectés non validés -->
@@ -205,25 +205,25 @@
                                             <span class="input-group-text bg-white border-end-0">
                                                 <i class="fas fa-search text-muted"></i>
                                             </span>
-                                            <input type="text" class="form-control border-start-0 search-input" id="searchReaffectes" placeholder="Rechercher...">
+                                            <input type="text" class="form-control border-start-0 search-input" id="searchReaffectes" placeholder="بحث...">
                                         </div>
                                     </div>
                                     <div class="col-md-8">
                                         <div class="btn-group" role="group">
                                             <button type="button" class="btn btn-outline-warning filter-btn active" data-filter="all" data-target="reaffectes">
-                                                <i class="fas fa-list-ul me-1"></i> Tous
+                                                <i class="fas fa-list-ul me-1"></i> الكل
                                             </button>
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="numero" data-target="reaffectes">
-                                                <i class="fas fa-hashtag me-1"></i> Numéro
+                                                <i class="fas fa-hashtag me-1"></i> الرقم
                                             </button>
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="titre" data-target="reaffectes">
-                                                <i class="fas fa-heading me-1"></i> Titre
+                                                <i class="fas fa-heading me-1"></i> العنوان
                                             </button>
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="destinataire" data-target="reaffectes">
-                                                <i class="fas fa-user me-1"></i> Destinataire
+                                                <i class="fas fa-user me-1"></i> المستلم
                                             </button>
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="date" data-target="reaffectes">
-                                                <i class="fas fa-calendar-alt me-1"></i> Date
+                                                <i class="fas fa-calendar-alt me-1"></i> التاريخ
                                             </button>
                                         </div>
                                     </div>
@@ -235,11 +235,11 @@
                             <table class="table table-hover align-middle table-bordered border-light" id="tableReaffectes">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th style="width: 15%;">Numéro</th>
-                                        <th style="width: 25%;">Titre du dossier</th>
-                                        <th style="width: 20%;">Destinataire</th>
-                                        <th style="width: 25%;">Date réaffectation</th>
-                                        <th class="text-center" style="width: 15%;">Actions</th>
+                                        <th style="width: 15%;">الرقم</th>
+                                        <th style="width: 25%;">عنوان الملف</th>
+                                        <th style="width: 20%;">المستلم</th>
+                                        <th style="width: 25%;">تاريخ إعادة التعيين</th>
+                                        <th class="text-center" style="width: 15%;">إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -257,7 +257,7 @@
                                         <tr>
                                             <td colspan="5" class="text-center py-3">
                                                 <i class="fas fa-info-circle text-info me-2"></i>
-                                                Aucun dossier réaffecté en attente de validation
+                                                لا توجد ملفات معاد تعيينها في انتظار التحقق
                                             </td>
                                         </tr>
                                     @else
@@ -265,23 +265,23 @@
                                             <tr>
                                                 <td>
                                                     <span class="d-inline-block rounded-circle bg-warning me-2" style="width:10px;height:10px"></span>
-                                                    {{ $transfert->dossier->numero_dossier_judiciaire ?? 'N/A' }}
+                                                    {{ $transfert->dossier->numero_dossier_judiciaire ?? 'غير متوفر' }}
                                                 </td>
-                                                <td class="fw-medium">{{ $transfert->dossier->titre ?? 'Sans titre' }}</td>
+                                                <td class="fw-medium">{{ $transfert->dossier->titre ?? 'بدون عنوان' }}</td>
                                                 <td>
                                                     <span class="badge bg-info bg-opacity-10 text-info">
                                                         <i class="fas fa-user-circle me-1"></i>
-                                                        {{ $transfert->userDestination->name ?? 'N/A' }}
+                                                        {{ $transfert->userDestination->name ?? 'غير متوفر' }}
                                                     </span>
                                                 </td>
                                                 <td class="text-muted">
                                                     <i class="far fa-calendar-alt me-1"></i>
-                                                    {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'N/A' }}
+                                                    {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'غير متوفر' }}
                                                 </td>
                                                 <td class="text-center">
                                                     <a href="{{ route('dossiers.show', $transfert->dossier_id) }}" 
                                                     class="btn btn-sm btn-primary px-3 py-1">
-                                                        <i class="fas fa-eye me-1"></i> Consulter
+                                                        <i class="fas fa-eye me-1"></i> عرض
                                                     </a>
                                                 </td>
                                             </tr>
@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
             noResultsRow.classList.add('no-results-row');
             noResultsRow.innerHTML = `<td colspan="${colCount}" class="text-center py-3">
                 <i class="fas fa-search text-muted me-2"></i>
-                Aucun résultat trouvé pour cette recherche
+                لم يتم العثور على نتائج لهذا البحث
             </td>`;
             
             // Ajouter la ligne au tableau

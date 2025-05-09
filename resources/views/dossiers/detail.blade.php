@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
-        <!-- Informations du dossier -->
+        <!-- معلومات الملف -->
         <div class="col-md-8">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
@@ -22,17 +22,17 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">Numéro du dossier judiciaire</h6>
+                            <h6 class="text-muted mb-2">رقم الملف القضائي</h6>
                             <p class="fs-5">{{ $dossier->numero_dossier_judiciaire }}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">Genre</h6>
+                            <h6 class="text-muted mb-2">النوع</h6>
                             <p class="fs-5">{{ $dossier->genre }}</p>
                         </div>
                     </div>
                     
                     <div class="mb-4">
-                        <h6 class="text-muted mb-2">Contenu</h6>
+                        <h6 class="text-muted mb-2">المحتوى</h6>
                         <div class="p-3 bg-light rounded">
                             {{ $dossier->contenu }}
                         </div>
@@ -40,43 +40,43 @@
                     
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <h6 class="text-muted mb-2">Date de création</h6>
-                            <p><i class="far fa-calendar-alt me-1"></i> {{ $dossier->date_creation ? $dossier->date_creation->format('d/m/Y') : ($dossier->created_at ? $dossier->created_at->format('d/m/Y') : 'N/A') }}</p>
+                            <h6 class="text-muted mb-2">تاريخ الإنشاء</h6>
+                            <p><i class="far fa-calendar-alt me-1"></i> {{ $dossier->date_creation ? $dossier->date_creation->format('d/m/Y') : ($dossier->created_at ? $dossier->created_at->format('d/m/Y') : 'غير محدد') }}</p>
                         </div>
                         <div class="col-md-4">
-                            <h6 class="text-muted mb-2">Créé par</h6>
-                            <p><i class="far fa-user me-1"></i> {{ $dossier->createur->name ?? 'N/A' }}</p>
+                            <h6 class="text-muted mb-2">تم الإنشاء بواسطة</h6>
+                            <p><i class="far fa-user me-1"></i> {{ $dossier->createur->name ?? 'غير محدد' }}</p>
                         </div>
                         <div class="col-md-4">
-                            <h6 class="text-muted mb-2">Service d'origine</h6>
-                            <p><i class="far fa-building me-1"></i> {{ $dossier->service->nom ?? 'N/A' }}</p>
+                            <h6 class="text-muted mb-2">الخدمة الأصلية</h6>
+                            <p><i class="far fa-building me-1"></i> {{ $dossier->service->nom ?? 'غير محدد' }}</p>
                         </div>
                     </div>
                     
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <h6 class="text-muted mb-2">Détenteur actuel</h6>
-                            <p><i class="far fa-user-circle me-1"></i> {{ $dossier->detenteurActuel()->name ?? 'N/A' }}</p>
+                            <h6 class="text-muted mb-2">الحائز الحالي</h6>
+                            <p><i class="far fa-user-circle me-1"></i> {{ $dossier->detenteurActuel()->name ?? 'غير محدد' }}</p>
                         </div>
                         <div class="col-md-4">
-                            <h6 class="text-muted mb-2">Service actuel</h6>
-                            <p><i class="far fa-building me-1"></i> {{ $dossier->serviceActuel()->nom ?? 'N/A' }}</p>
+                            <h6 class="text-muted mb-2">الخدمة الحالية</h6>
+                            <p><i class="far fa-building me-1"></i> {{ $dossier->serviceActuel()->nom ?? 'غير محدد' }}</p>
                         </div>
                         <div class="col-md-4">
-                            <h6 class="text-muted mb-2">Temps de traitement</h6>
-                            <p><i class="far fa-clock me-1"></i> {{ $dossier->tempsTraitement() }} jours</p>
+                            <h6 class="text-muted mb-2">مدة المعالجة</h6>
+                            <p><i class="far fa-clock me-1"></i> {{ $dossier->tempsTraitement() }} يوم</p>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer bg-white">
     <div class="d-flex justify-content-between">
         <button onclick="window.history.back()" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Retour
+            <i class="fas fa-arrow-left me-1"></i> عودة
         </button>
         <div>
             @if($dossier->detenteurActuel()->id == auth()->id())
                 <a href="{{ route('receptions.create-envoi', $dossier->id) }}" class="btn btn-success">
-                    <i class="fas fa-paper-plane me-1"></i> Envoyer
+                    <i class="fas fa-paper-plane me-1"></i> إرسال
                 </a>
                 
                 @if($dossier->statut != 'Archivé')
@@ -84,7 +84,7 @@
                         @csrf
                         @method('PATCH')
                         <button type="submit" class="btn btn-secondary ms-2">
-                            <i class="fas fa-archive me-1"></i> Archiver
+                            <i class="fas fa-archive me-1"></i> أرشفة
                         </button>
                     </form>
                 @endif
@@ -95,13 +95,13 @@
             </div>
         </div>
         
-        <!-- Informations supplémentaires -->
+        <!-- معلومات إضافية -->
         <div class="col-md-4">
-            <!-- Détails du détenteur actuel -->
+            <!-- تفاصيل الحائز الحالي -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
                     <h6 class="mb-0 fw-semibold">
-                        <i class="fas fa-user text-primary me-2"></i>Détenteur actuel
+                        <i class="fas fa-user text-primary me-2"></i>الحائز الحالي
                     </h6>
                 </div>
                 <div class="card-body">
@@ -112,19 +112,19 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">{{ $dossier->detenteurActuel()->name ?? 'N/A' }}</h6>
+                            <h6 class="mb-0">{{ $dossier->detenteurActuel()->name ?? 'غير محدد' }}</h6>
                             <p class="text-muted mb-0">{{ $dossier->detenteurActuel()->email ?? '' }}</p>
-                            <p class="text-muted mb-0">{{ $dossier->detenteurActuel()->role == 'greffier_en_chef' ? 'Greffier en chef' : 'Greffier' }}</p>
+                            <p class="text-muted mb-0">{{ $dossier->detenteurActuel()->role == 'greffier_en_chef' ? 'كاتب رئيسي' : 'كاتب' }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Historique des actions -->
+            <!-- سجل الإجراءات -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
                     <h6 class="mb-0 fw-semibold">
-                        <i class="fas fa-history text-primary me-2"></i>Historique des actions
+                        <i class="fas fa-history text-primary me-2"></i>سجل الإجراءات
                     </h6>
                 </div>
                 <div class="card-body p-0">
@@ -147,7 +147,30 @@
                                     @else fa-cog @endif text-white"></i>
                             </div>
                             <div class="timeline-content">
-                                <h6 class="mb-0">{{ ucfirst($action->action) }}</h6>
+                                <h6 class="mb-0">
+                                    @switch($action->action)
+                                        @case('creation')
+                                            إنشاء
+                                            @break
+                                        @case('transfert')
+                                            تحويل
+                                            @break
+                                        @case('validation')
+                                            التحقق
+                                            @break
+                                        @case('modification')
+                                            تعديل
+                                            @break
+                                        @case('reassignation')
+                                            إعادة التخصيص
+                                            @break
+                                        @case('archivage')
+                                            أرشفة
+                                            @break
+                                        @default
+                                            {{ $action->action }}
+                                    @endswitch
+                                </h6>
                                 <p class="text-muted mb-1">{{ $action->date_action->format('d/m/Y H:i') }}</p>
                                 <p class="mb-0">{{ $action->description }}</p>
                                 <div class="text-muted small">
@@ -165,7 +188,7 @@
 </div>
 
 <style>
-    /* Style pour la timeline */
+    /* النمط الخاص بالجدول الزمني */
     .timeline {
         position: relative;
         max-height: 400px;

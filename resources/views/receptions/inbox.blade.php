@@ -7,10 +7,10 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-inbox text-primary me-2"></i>Mes dossiers reçus
+                        <i class="fas fa-inbox text-primary me-2"></i>ملفاتي المستلمة
                     </h5>
                     <a href="{{ route('receptions.dossiers_valides') }}" class="btn btn-primary">
-                        <i class="fas fa-check-circle me-1"></i> Voir les dossiers validés
+                        <i class="fas fa-check-circle me-1"></i> عرض الملفات المتحقق منها
                     </a>
                 </div>
 
@@ -33,14 +33,14 @@
                     
                     <div class="alert alert-info mb-4">
                         <i class="fas fa-info-circle me-2"></i>
-                        Nombre de dossiers reçus trouvés : {{ $receptions->count() }}
+                        عدد الملفات المستلمة: {{ $receptions->count() }}
                     </div>
 
                     @if($receptions->isEmpty())
                         <div class="alert alert-info text-center py-4">
                             <i class="fas fa-inbox-open fa-2x mb-3 text-info"></i>
-                            <h5 class="alert-heading">Aucun dossier reçu</h5>
-                            <p class="mb-0">Vous n'avez reçu aucun dossier pour le moment.</p>
+                            <h5 class="alert-heading">لا توجد ملفات مستلمة</h5>
+                            <p class="mb-0">لم تستلم أي ملفات حتى الآن.</p>
                         </div>
                     @else
                         <!-- Barre de recherche pour dossiers reçus -->
@@ -52,22 +52,22 @@
                                             <span class="input-group-text bg-white border-end-0">
                                                 <i class="fas fa-search text-muted"></i>
                                             </span>
-                                            <input type="text" class="form-control border-start-0 search-input" id="searchReceptions" placeholder="Rechercher un dossier...">
+                                            <input type="text" class="form-control border-start-0 search-input" id="searchReceptions" placeholder="البحث عن ملف...">
                                         </div>
                                     </div>
                                     <div class="col-md-8">
                                         <div class="btn-group" role="group">
                                             <button type="button" class="btn btn-outline-primary filter-btn active" data-filter="all" data-target="receptions">
-                                                <i class="fas fa-list-ul me-1"></i> Tous
+                                                <i class="fas fa-list-ul me-1"></i> الكل
                                             </button>
                                             <button type="button" class="btn btn-outline-primary filter-btn" data-filter="titre" data-target="receptions">
-                                                <i class="fas fa-heading me-1"></i> Titre
+                                                <i class="fas fa-heading me-1"></i> العنوان
                                             </button>
                                             <button type="button" class="btn btn-outline-primary filter-btn" data-filter="service" data-target="receptions">
-                                                <i class="fas fa-building me-1"></i> Service
+                                                <i class="fas fa-building me-1"></i> القسم
                                             </button>
                                             <button type="button" class="btn btn-outline-primary filter-btn" data-filter="expediteur" data-target="receptions">
-                                                <i class="fas fa-user me-1"></i> Expéditeur
+                                                <i class="fas fa-user me-1"></i> المرسل
                                             </button>
                                         </div>
                                     </div>
@@ -79,11 +79,11 @@
                             <table class="table table-hover align-middle" id="tableReceptions">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th class="fw-semibold" style="width: 25%;">Titre du dossier</th>
-                                        <th class="fw-semibold" style="width: 15%;">Service</th>
-                                        <th class="fw-semibold" style="width: 15%;">Expéditeur</th>
-                                        <th class="fw-semibold" style="width: 20%;">Commentaire</th>
-                                        <th class="fw-semibold text-end" style="width: 25%;">Actions</th>
+                                        <th class="fw-semibold" style="width: 25%;">عنوان الملف</th>
+                                        <th class="fw-semibold" style="width: 15%;">القسم</th>
+                                        <th class="fw-semibold" style="width: 15%;">المرسل</th>
+                                        <th class="fw-semibold" style="width: 20%;">تعليق</th>
+                                        <th class="fw-semibold text-end" style="width: 25%;">إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -100,7 +100,7 @@
                                             <td>
                                                 <span class="badge bg-primary bg-opacity-10 text-primary">
                                                     <i class="fas fa-user-circle me-1"></i>
-                                                    {{ $reception->dossier->createur->name ?? 'Inconnu' }}
+                                                    {{ $reception->dossier->createur->name ?? 'غير معروف' }}
                                                 </span>
                                             </td>
                                             <td>
@@ -118,14 +118,14 @@
                                                         {{ $transfert->commentaire }}
                                                     </span>
                                                 @else
-                                                    <span class="text-muted">Aucun commentaire</span>
+                                                    <span class="text-muted">لا يوجد تعليق</span>
                                                 @endif
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end">
                                                     <a href="{{ route('dossiers.show', $reception->dossier_id) }}" 
                                                     class="btn btn-sm btn-primary px-3 py-1 me-2">
-                                                        <i class="fas fa-eye me-1"></i> Voir
+                                                        <i class="fas fa-eye me-1"></i> عرض
                                                     </a>
                                                     
                                                     <form action="{{ route('receptions.valider', $reception->id) }}" method="POST" style="display: inline-block; margin: 0;">
@@ -134,7 +134,7 @@
                                                         <input type="hidden" name="commentaire_reception" value="">
                                                         <input type="hidden" name="observations" value="">
                                                         <button type="submit" class="btn btn-sm btn-success px-3 py-1">
-                                                            <i class="fas fa-check me-1"></i> Valider
+                                                            <i class="fas fa-check me-1"></i> تحقق
                                                         </button>
                                                     </form>
                                                 </div>
@@ -148,8 +148,8 @@
                         
                         <div class="alert alert-info mt-4">
                             <i class="fas fa-info-circle me-2"></i>
-                            <strong>Note :</strong> Les dossiers validés seront disponibles dans la section 
-                            <a href="{{ route('receptions.dossiers_valides') }}" class="fw-bold">Dossiers validés</a>.
+                            <strong>ملاحظة:</strong> الملفات المتحقق منها ستكون متاحة في قسم 
+                            <a href="{{ route('receptions.dossiers_valides') }}" class="fw-bold">الملفات المتحقق منها</a>.
                         </div>
                         
                         <div class="d-flex justify-content-center mt-3">

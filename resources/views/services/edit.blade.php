@@ -7,10 +7,10 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-building text-primary me-2"></i>Modifier le service
+                        <i class="fas fa-building text-primary me-2"></i>تعديل القسم
                     </h5>
                     <a href="{{ route('services.index') }}" class="btn btn-sm btn-secondary">
-                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                        <i class="fas fa-arrow-left me-1"></i> العودة إلى القائمة
                     </a>
                 </div>
 
@@ -38,12 +38,12 @@
                         <!-- Informations du service -->
                         <div class="card mb-4">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0 fw-semibold">Informations du service</h6>
+                                <h6 class="mb-0 fw-semibold">معلومات القسم</h6>
                             </div>
                             <div class="card-body">
                                 <!-- Nom -->
                                 <div class="mb-3">
-                                    <label for="nom" class="form-label">Nom du service</label>
+                                    <label for="nom" class="form-label">اسم القسم</label>
                                     <input id="nom" type="text" class="form-control @error('nom') is-invalid @enderror" 
                                            name="nom" value="{{ old('nom', $service->nom) }}" required autofocus>
                                     @error('nom')
@@ -55,7 +55,7 @@
 
                                 <!-- Description -->
                                 <div class="mb-3">
-                                    <label for="description" class="form-label">Description</label>
+                                    <label for="description" class="form-label">الوصف</label>
                                     <textarea id="description" class="form-control @error('description') is-invalid @enderror" 
                                               name="description" rows="4">{{ old('description', $service->description) }}</textarea>
                                     @error('description')
@@ -70,14 +70,14 @@
                         <!-- Statut du service -->
                         <div class="card mb-4">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0 fw-semibold">Statistiques</h6>
+                                <h6 class="mb-0 fw-semibold">إحصائيات</h6>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="card bg-light">
                                             <div class="card-body text-center">
-                                                <h6 class="fw-bold">Utilisateurs rattachés</h6>
+                                                <h6 class="fw-bold">المستخدمون المرتبطون</h6>
                                                 <div class="display-4 fw-bold text-primary">{{ $service->users()->count() }}</div>
                                             </div>
                                         </div>
@@ -85,7 +85,7 @@
                                     <div class="col-md-6">
                                         <div class="card bg-light">
                                             <div class="card-body text-center">
-                                                <h6 class="fw-bold">Dossiers liés</h6>
+                                                <h6 class="fw-bold">الملفات المرتبطة</h6>
                                                 <div class="display-4 fw-bold text-primary">{{ $service->dossiers()->count() }}</div>
                                             </div>
                                         </div>
@@ -97,10 +97,10 @@
                         <!-- Boutons d'action -->
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('services.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times me-1"></i> Annuler
+                                <i class="fas fa-times me-1"></i> إلغاء
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i> Enregistrer les modifications
+                                <i class="fas fa-save me-1"></i> حفظ التعديلات
                             </button>
                         </div>
                     </form>

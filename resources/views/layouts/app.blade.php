@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="rtl">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -32,7 +31,7 @@
         /* Style pour ajuster le contenu principal quand la sidebar est présente */
         @media (min-width: 992px) {
             .has-sidebar .min-h-screen {
-                margin-left: 260px;
+                margin-right: 260px; /* Changer margin-left en margin-right pour RTL */
                 width: calc(100% - 260px);
             }
         }
@@ -40,7 +39,7 @@
         /* Style responsive pour les petits écrans */
         @media (max-width: 991.98px) {
             .sidebar-wrapper {
-                transform: translateX(-100%);
+                transform: translateX(100%); /* Inverser pour RTL */
                 transition: transform 0.3s ease;
             }
             
@@ -51,7 +50,7 @@
             .sidebar-overlay {
                 position: fixed;
                 top: 0;
-                left: 0;
+                right: 0; /* Changer left en right pour RTL */
                 width: 100%;
                 height: 100%;
                 background-color: rgba(0, 0, 0, 0.5);
@@ -64,234 +63,23 @@
             }
         }
         
-/* CSS pour la sidebar */
+/* CSS pour la sidebar - Ajusté pour RTL */
 .sidebar-wrapper {
     position: fixed;
     top: 0;
-    left: 0;
-    height: 100%;
-    width: 260px;
-    background-color: #2c3e50;
-    color: #ecf0f1;
-    z-index: 999;
-    transition: all 0.3s ease;
-}
-
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logo-container {
-    display: flex;
-    align-items: center;
-}
-
-.sidebar-logo {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
-
-.sidebar-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0;
-    color: #ecf0f1;
-}
-
-.sidebar-toggle {
-    font-size: 18px;
-    color: #ecf0f1;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-.sidebar-user {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #3498db;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-    font-size: 20px;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.user-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0;
-}
-
-.user-role {
-    font-size: 12px;
-    color: #bdc3c7;
-}
-
-.sidebar-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    flex-grow: 1;
-    overflow-y: auto;
-}
-
-.menu-header {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #bdc3c7;
-    padding: 15px 20px 5px;
-    margin-top: 10px;
-}
-
-.menu-item {
-    position: relative;
-    margin: 2px 0;
-}
-
-.menu-item.active .menu-link {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #3498db;
-    border-left: 3px solid #3498db;
-}
-
-.menu-link {
-    display: flex;
-    align-items: center;
-    padding: 12px 20px;
-    color: #ecf0f1;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border-left: 3px solid transparent;
-}
-
-.menu-link:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #3498db;
-}
-
-.menu-link i {
-    margin-right: 10px;
-    width: 20px;
-    text-align: center;
-}
-
-.menu-link span {
-    flex-grow: 1;
-}
-
-.has-dropdown .dropdown-icon {
-    font-size: 10px;
-    transition: transform 0.3s ease;
-}
-
-.menu-item.active .has-dropdown .dropdown-icon {
-    transform: rotate(90deg);
-}
-
-.submenu {
-    list-style: none;
-    padding-left: 50px;
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.submenu.expanded {
-    max-height: 200px;
-}
-
-.submenu li {
-    margin: 2px 0;
-}
-
-.submenu li a {
-    display: block;
-    padding: 8px 10px;
-    color: #bdc3c7;
-    text-decoration: none;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-}
-
-.submenu li a:hover {
-    color: #3498db;
-}
-
-.submenu li.active a {
-    color: #3498db;
-    font-weight: 600;
-}
-
-.sidebar-footer {
-    padding: 15px 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.btn-logout {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 8px 12px;
-    color: #ecf0f1;
-    background-color: rgba(231, 76, 60, 0.2);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-logout:hover {
-    background-color: rgba(231, 76, 60, 0.4);
-}
-
-.btn-logout i {
-    margin-right: 10px;
-}
-
-/* Style amélioré pour la sidebar */
-.sidebar-wrapper {
-    position: fixed;
-    top: 0;
-    left: -280px; /* Commence hors de l'écran */
+    right: -280px; /* Changer left en right pour RTL */
     height: 100%;
     width: 280px;
     background: linear-gradient(135deg,rgba(6, 50, 80, 0.54),rgba(19, 41, 55, 0.71));
     color: #ecf0f1;
     z-index: 1000;
     transition: all 0.3s ease;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1); /* Inverser l'ombre pour RTL */
     overflow-y: auto;
 }
 
 .sidebar-wrapper.active {
-    left: 0; /* S'affiche à l'écran */
+    right: 0; /* Changer left en right pour RTL */
 }
 
 .sidebar-header {
@@ -310,7 +98,7 @@
 .sidebar-logo {
     width: 35px;
     height: 35px;
-    margin-right: 12px;
+    margin-left: 12px; /* Changer margin-right en margin-left pour RTL */
     background-color: #3498db;
     border-radius: 8px;
     display: flex;
@@ -363,7 +151,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 15px;
+    margin-left: 15px; /* Changer margin-right en margin-left pour RTL */
     font-size: 22px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -427,6 +215,7 @@
     text-decoration: none;
     transition: all 0.2s ease;
     border-radius: 8px;
+    text-align: right; /* Ajouter pour RTL */
 }
 
 .menu-link:hover {
@@ -435,7 +224,7 @@
 }
 
 .menu-link i {
-    margin-right: 12px;
+    margin-left: 12px; /* Changer margin-right en margin-left pour RTL */
     width: 20px;
     text-align: center;
     font-size: 16px;
@@ -449,6 +238,7 @@
 
 .has-dropdown .dropdown-icon {
     font-size: 10px;
+    transform: rotate(180deg); /* Inverser pour RTL */
     transition: transform 0.3s ease;
 }
 
@@ -458,7 +248,7 @@
 
 .submenu {
     list-style: none;
-    padding: 5px 0 5px 35px;
+    padding: 5px 35px 5px 0; /* Inverser le padding pour RTL */
     max-height: 0;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -480,6 +270,7 @@
     font-size: 13px;
     transition: all 0.2s ease;
     border-radius: 6px;
+    text-align: right; /* Ajouter pour RTL */
 }
 
 .submenu li a:hover {
@@ -510,6 +301,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
+    text-align: right; /* Ajouter pour RTL */
 }
 
 .btn-logout:hover {
@@ -519,7 +311,7 @@
 }
 
 .btn-logout i {
-    margin-right: 10px;
+    margin-left: 10px; /* Changer margin-right en margin-left pour RTL */
     font-size: 16px;
 }
 
@@ -544,7 +336,7 @@
 .sidebar-overlay {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0; /* Changer left en right pour RTL */
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
@@ -561,11 +353,11 @@
 
 /* Ajustement pour le contenu principal */
 .main-content {
-    transition: margin-left 0.3s ease;
+    transition: margin-right 0.3s ease; /* Changer margin-left en margin-right pour RTL */
 }
 
 .main-content.sidebar-active {
-    margin-left: 280px;
+    margin-right: 280px; /* Changer margin-left en margin-right pour RTL */
 }
 
 /* Animation pour le bouton menu */
@@ -591,8 +383,8 @@
         <!-- Overlay pour fermer la sidebar -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         
-        <!-- Bouton hamburger fixe en haut à gauche -->
-        <button class="position-fixed top-0 start-0 mt-3 ms-3 btn btn-primary rounded-circle shadow menu-toggle" id="menuToggle" style="z-index: 999; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+        <!-- Bouton hamburger fixe en haut à droite (au lieu de gauche) -->
+        <button class="position-fixed top-0 end-0 mt-3 me-3 btn btn-primary rounded-circle shadow menu-toggle" id="menuToggle" style="z-index: 999; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
             <i class="fas fa-bars"></i>
         </button>
     @endif
@@ -613,14 +405,14 @@
         
         <!-- Page Content -->
         <main>
-            @yield('content', 'Contenu par défaut ici')
+            @yield('content', 'المحتوى الافتراضي هنا')
         </main>
     </div>
     
     <!-- Inclusion des scripts spécifiques -->
     @yield('scripts')
     
-    <!-- Script pour la sidebar -->
+    <!-- Script pour la sidebar - Ajusté pour RTL -->
     <script>
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');

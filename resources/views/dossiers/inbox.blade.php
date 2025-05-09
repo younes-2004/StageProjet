@@ -6,7 +6,7 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Mes dossiers reçus</h5>
+                    <h5 class="mb-0">الملفات المستلمة</h5>
                 </div>
 
                 <div class="card-body">
@@ -15,7 +15,7 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    
+
                     @if (session('error'))
                         <div class="alert alert-danger" role="alert">
                             {{ session('error') }}
@@ -24,38 +24,38 @@
 
                     @if($receptions->isEmpty())
                         <div class="alert alert-info">
-                            Vous n'avez reçu aucun dossier pour le moment.
+                            لم تستلم أي ملفات حتى الآن.
                         </div>
                     @else
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Dossier</th>
-                                        <th>Référence</th>
-                                        <th>Expéditeur</th>
-                                        <th>Date de réception</th>
-                                        <th>Actions</th>
+                                        <th>المعرف</th>
+                                        <th>الملف</th>
+                                        <th>المرجع</th>
+                                        <th>المرسل</th>
+                                        <th>تاريخ الاستلام</th>
+                                        <th>الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($receptions as $reception)
                                         <tr>
                                             <td>{{ $reception->id }}</td>
-                                            <td>{{ $reception->dossier->titre ?? 'Sans titre' }}</td>
-                                            <td>{{ $reception->dossier->reference ?? 'N/A' }}</td>
-                                            <td>{{ $reception->dossier->user->name ?? 'Inconnu' }}</td>
-                                            <td>{{ $reception->date_reception ? $reception->date_reception->format('d/m/Y H:i') : 'N/A' }}</td>
+                                            <td>{{ $reception->dossier->titre ?? 'بدون عنوان' }}</td>
+                                            <td>{{ $reception->dossier->reference ?? 'غير محدد' }}</td>
+                                            <td>{{ $reception->dossier->user->name ?? 'مجهول' }}</td>
+                                            <td>{{ $reception->date_reception ? $reception->date_reception->format('d/m/Y H:i') : 'غير محدد' }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="{{ route('dossiers.show', $reception->dossier_id) }}" 
-                                                       class="btn btn-sm btn-primary">
-                                                        Consulter
+                                                    <a href="{{ route('dossiers.show', $reception->dossier_id) }}"
+                                                        class="btn btn-sm btn-primary">
+                                                        عرض
                                                     </a>
-                                                    <a href="{{ route('receptions.mark-as-read', $reception->id) }}" 
-                                                       class="btn btn-sm btn-success">
-                                                        Marquer comme lu
+                                                    <a href="{{ route('receptions.mark-as-read', $reception->id) }}"
+                                                        class="btn btn-sm btn-success">
+                                                        تمييز كمقروء
                                                     </a>
                                                 </div>
                                             </td>
@@ -64,7 +64,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="d-flex justify-content-center mt-4">
                             {{ $receptions->links() }}
                         </div>

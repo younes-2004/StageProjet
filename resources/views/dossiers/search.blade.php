@@ -219,7 +219,7 @@
         <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning">
             <i class="fas fa-edit"></i>modifier
         </a>
-        @if(auth()->user()->role === 'greffier_en_chef')
+      @if(auth()->user()->role === 'greffier_en_chef')
 <form action="{{ route('dossiers.destroy', $dossier->id) }}" method="POST" 
       class="d-inline delete-dossier-form" 
       data-dossier-titre="{{ $dossier->titre }}">
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
         if (currentForm) {
             // Afficher un message d'avertissement
-            alert('La suppression de dossier est temporairement désactivée pour des raisons de sécurité.');
+            currentForm.submit();
             
             // Fermer le modal
             deleteModal.hide();

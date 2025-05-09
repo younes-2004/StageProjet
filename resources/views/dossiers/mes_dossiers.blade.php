@@ -6,12 +6,12 @@
     <!-- Header Section -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
         <div>
-            <h1 class="h2 fw-bold text-dark">Mes Dossiers</h1>
-            <p class="text-muted mb-0">Gestion complète de vos dossiers judiciaires</p>
+            <h1 class="h2 fw-bold text-dark">ملفاتي</h1>
+            <p class="text-muted mb-0">إدارة كاملة لملفاتك القضائية</p>
         </div>
         <div class="mt-3 mt-md-0">
             <a href="{{ route('receptions.inbox') }}" class="btn btn-primary">
-                <i class="fas fa-inbox me-2"></i>Boîte de réception
+                <i class="fas fa-inbox me-2"></i>صندوق الوارد
             </a>
         </div>
     </div>
@@ -32,9 +32,9 @@
         <div class="mb-3">
             <h2 class="h4 fw-bold text-dark border-left border-dark py-1" style="border-left: 4px solid #212529 !important; padding-left: 10px;">
                 <i class="fas fa-edit me-2 text-secondary"></i>
-                Dossiers non envoyés
+                الملفات غير المرسلة
             </h2>
-            <p class="text-muted ms-4">Dossiers en cours de préparation</p>
+            <p class="text-muted ms-4">ملفات قيد الإعداد</p>
         </div>
 
         <!-- Barre de recherche pour dossiers non envoyés -->
@@ -46,22 +46,22 @@
                             <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0 search-input" id="searchNonEnvoyes" placeholder="Rechercher...">
+                            <input type="text" class="form-control border-start-0 search-input" id="searchNonEnvoyes" placeholder="بحث...">
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="all" data-target="nonEnvoyes">
-                                <i class="fas fa-list-ul me-1"></i> Tous
+                                <i class="fas fa-list-ul me-1"></i> الكل
                             </button>
                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonEnvoyes">
-                                <i class="fas fa-heading me-1"></i> Titre
+                                <i class="fas fa-heading me-1"></i> العنوان
                             </button>
                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="numero" data-target="nonEnvoyes">
-                                <i class="fas fa-hashtag me-1"></i> Numéro
+                                <i class="fas fa-hashtag me-1"></i> الرقم
                             </button>
                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="date" data-target="nonEnvoyes">
-                                <i class="fas fa-calendar-alt me-1"></i> Date
+                                <i class="fas fa-calendar-alt me-1"></i> التاريخ
                             </button>
                         </div>
                     </div>
@@ -74,11 +74,11 @@
                 <table class="table table-hover mb-0" id="tableNonEnvoyes">
                     <thead class="thead-light">
                         <tr>
-                            <th style="width: 15%;">Numéro</th>
-                            <th style="width: 25%;">Titre</th>
-                            <th style="width: 20%;">Date création</th>
-                            <th style="width: 15%;">Statut</th>
-                            <th style="width: 25%;">Actions</th>
+                            <th style="width: 15%;">الرقم</th>
+                            <th style="width: 25%;">العنوان</th>
+                            <th style="width: 20%;">تاريخ الإنشاء</th>
+                            <th style="width: 15%;">الحالة</th>
+                            <th style="width: 25%;">إجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,18 +95,18 @@
                             </td>
                             <td>
                                 <span class="badge bg-secondary bg-opacity-10 text-dark">
-                                    <i class="fas fa-edit me-1 text-dark"></i> Non envoyé
+                                    <i class="fas fa-edit me-1 text-dark"></i> غير مرسل
                                 </span>
                             </td>
                             <td>
                                 <div class="d-flex">
                                     <a href="{{ route('dossiers.show', $dossier->id) }}" 
                                        class="btn btn-primary btn-sm me-2">
-                                        <i class="fas fa-eye me-1"></i> Voir
+                                        <i class="fas fa-eye me-1"></i> عرض
                                     </a>
                                     <a href="{{ route('receptions.create-envoi', $dossier->id) }}" 
                                        class="btn btn-success btn-sm">
-                                        <i class="fas fa-paper-plane me-1"></i> Envoyer
+                                        <i class="fas fa-paper-plane me-1"></i> إرسال
                                     </a>
                                 </div>
                             </td>
@@ -135,9 +135,9 @@
         <div class="mb-3">
             <h2 class="h4 fw-bold text-dark border-left border-warning py-1" style="border-left: 4px solid #ffc107 !important; padding-left: 10px;">
                 <i class="fas fa-clock me-2 text-warning"></i>
-                Dossiers en attente
+                الملفات قيد الانتظار
             </h2>
-            <p class="text-muted ms-4">Dossiers envoyés en attente de validation</p>
+            <p class="text-muted ms-4">ملفات مرسلة في انتظار التحقق</p>
         </div>
 
         <!-- Barre de recherche pour dossiers en attente -->
@@ -149,25 +149,25 @@
                             <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0 search-input" id="searchEnAttente" placeholder="Rechercher...">
+                            <input type="text" class="form-control border-start-0 search-input" id="searchEnAttente" placeholder="بحث...">
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="all" data-target="enAttente">
-                                <i class="fas fa-list-ul me-1"></i> Tous
+                                <i class="fas fa-list-ul me-1"></i> الكل
                             </button>
                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="titre" data-target="enAttente">
-                                <i class="fas fa-heading me-1"></i> Titre
+                                <i class="fas fa-heading me-1"></i> العنوان
                             </button>
                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="numero" data-target="enAttente">
-                                <i class="fas fa-hashtag me-1"></i> Numéro
+                                <i class="fas fa-hashtag me-1"></i> الرقم
                             </button>
                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="destinataire" data-target="enAttente">
-                                <i class="fas fa-user me-1"></i> Destinataire
+                                <i class="fas fa-user me-1"></i> المستلم
                             </button>
                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="date" data-target="enAttente">
-                                <i class="fas fa-calendar-alt me-1"></i> Date
+                                <i class="fas fa-calendar-alt me-1"></i> التاريخ
                             </button>
                         </div>
                     </div>
@@ -180,11 +180,11 @@
                 <table class="table table-hover mb-0" id="tableEnAttente">
                     <thead class="bg-warning-light">
                         <tr>
-                            <th style="width: 15%;">Numéro</th>
-                            <th style="width: 25%;">Titre</th>
-                            <th style="width: 20%;">Destinataire</th>
-                            <th style="width: 20%;">Date Envoi</th>
-                            <th style="width: 20%;">Actions</th>
+                            <th style="width: 15%;">الرقم</th>
+                            <th style="width: 25%;">العنوان</th>
+                            <th style="width: 20%;">المستلم</th>
+                            <th style="width: 20%;">تاريخ الإرسال</th>
+                            <th style="width: 20%;">إجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -209,7 +209,7 @@
                             <td>
                                 <a href="{{ route('dossiers.show', $dossier->id) }}" 
                                    class="btn btn-primary btn-sm">
-                                    <i class="fas fa-eye me-1"></i> Voir
+                                    <i class="fas fa-eye me-1"></i> عرض
                                 </a>
                             </td>
                         </tr>
@@ -224,8 +224,8 @@
     @if($nonEnvoyes->isEmpty() && $enAttente->isEmpty())
     <div class="alert alert-info text-center mb-5">
         <i class="fas fa-check-circle fa-3x text-info mb-3"></i>
-        <h4 class="alert-heading">Tous vos dossiers ont été validés</h4>
-        <p class="mb-0">Aucun dossier en attente de traitement</p>
+        <h4 class="alert-heading">تم التحقق من جميع ملفاتك</h4>
+        <p class="mb-0">لا توجد ملفات في انتظار المعالجة</p>
     </div>
     @endif
 
@@ -234,9 +234,9 @@
     <div class="mb-3">
         <h2 class="h4 fw-bold text-dark border-left border-success py-1" style="border-left: 4px solid #198754 !important; padding-left: 10px;">
             <i class="fas fa-archive me-2 text-success"></i>
-            Historique des dossiers validés
+            سجل الملفات المصادق عليها
         </h2>
-        <p class="text-muted ms-4">Dossiers transférés et validés</p>
+        <p class="text-muted ms-4">الملفات المنقولة والمصادق عليها</p>
     </div>
     @php
         // Get the data directly in the view for testing purposes
@@ -250,8 +250,8 @@
     @if($directDossiersEnvoyes->isEmpty())
         <div class="alert alert-success text-center">
             <i class="fas fa-history fa-3x text-success mb-3"></i>
-            <h4 class="alert-heading">Aucun dossier validé pour le moment</h4>
-            <p class="mb-0">L'historique apparaîtra ici après validation des dossiers</p>
+            <h4 class="alert-heading">لا توجد ملفات مصادق عليها حاليًا</h4>
+            <p class="mb-0">سيظهر السجل هنا بعد المصادقة على الملفات</p>
         </div>
     @else
         <!-- Barre de recherche pour l'historique -->
@@ -263,28 +263,28 @@
                             <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0 search-input" id="searchHistorique" placeholder="Rechercher...">
+                            <input type="text" class="form-control border-start-0 search-input" id="searchHistorique" placeholder="بحث...">
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="all" data-target="historique">
-                                <i class="fas fa-list-ul me-1"></i> Tous
+                                <i class="fas fa-list-ul me-1"></i> الكل
                             </button>
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="titre" data-target="historique">
-                                <i class="fas fa-heading me-1"></i> Titre
+                                <i class="fas fa-heading me-1"></i> العنوان
                             </button>
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="numero" data-target="historique">
-                                <i class="fas fa-hashtag me-1"></i> Numéro
+                                <i class="fas fa-hashtag me-1"></i> الرقم
                             </button>
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="validateur" data-target="historique">
-                                <i class="fas fa-user-check me-1"></i> Validé par
+                                <i class="fas fa-user-check me-1"></i> صادق عليه
                             </button>
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="service" data-target="historique">
-                                <i class="fas fa-building me-1"></i> Service
+                                <i class="fas fa-building me-1"></i> القسم
                             </button>
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="date" data-target="historique">
-                                <i class="fas fa-calendar-alt me-1"></i> Date
+                                <i class="fas fa-calendar-alt me-1"></i> التاريخ
                             </button>
                         </div>
                     </div>
@@ -297,12 +297,12 @@
                 <table class="table table-hover mb-0" id="tableHistorique">
                     <thead class="bg-success-light">
                         <tr>
-                            <th style="width: 13%;">Numéro</th>
-                            <th style="width: 22%;">Titre</th>
-                            <th style="width: 15%;">Validé par</th>
-                            <th style="width: 15%;">Service</th>
-                            <th style="width: 17.5%;">Date Envoi</th>
-                            <th style="width: 17.5%;">Date Validation</th>
+                            <th style="width: 13%;">الرقم</th>
+                            <th style="width: 22%;">العنوان</th>
+                            <th style="width: 15%;">صادق عليه</th>
+                            <th style="width: 15%;">القسم</th>
+                            <th style="width: 17.5%;">تاريخ الإرسال</th>
+                            <th style="width: 17.5%;">تاريخ المصادقة</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -322,7 +322,7 @@
                             <td class="date-cell">
                                 <span style="color: green; font-size: 0.875rem;">
                                     <i class="fas fa-check-circle me-1" style="color: green;"></i>
-                                    {{ $transfert->date_reception ? $transfert->date_reception->format('d/m/Y H:i') : 'Non validé' }}
+                                    {{ $transfert->date_reception ? $transfert->date_reception->format('d/m/Y H:i') : 'غير مصادق عليه' }}
                                 </span>
                             </td>
                         </tr>

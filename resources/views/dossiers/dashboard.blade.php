@@ -9,24 +9,51 @@
     .bg-pink {
         background-color: #d63384 !important;
     }
+    /* Styles améliorés pour les boutons d'action */
+    .btn-action {
+        margin: 0 2px;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-weight: 500;
+    }
+    
+    .btn-action i {
+        margin-left: 5px;
+    }
+    
+    /* Style spécifique pour le bouton consulter */
+    .btn-primary.btn-action {
+        border-radius: 4px;
+    }
+    
+    /* Style spécifique pour le bouton modifier */
+    .btn-warning.btn-action {
+        border-radius: 4px;
+    }
+    
+    /* Ajustement du groupe de boutons */
+    .btn-group .btn {
+        border-radius: 4px !important;
+        margin: 0 2px;
+    }
 </style>
 
-<div class="container-fluid py-4">
+<div class="container-fluid py-4" dir="rtl">
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-chart-line text-primary me-2"></i>Tableau de bord des dossiers
+                        <i class="fas fa-chart-line text-primary me-2"></i>لوحة معلومات الملفات
                     </h5>
                 </div>
                 <div class="card-body">
-                    <!-- Statistiques générales -->
+                    <!-- الإحصائيات العامة -->
                     <div class="row g-3 mb-4">
                         <div class="col-md-3">
                             <div class="card bg-primary text-white">
                                 <div class="card-body text-center p-3">
-                                    <h6 class="mb-1">Total des dossiers</h6>
+                                    <h6 class="mb-1">إجمالي الملفات</h6>
                                     <h3 class="mb-0 fw-bold">{{ $totalDossiers }}</h3>
                                 </div>
                             </div>
@@ -45,7 +72,16 @@
                                 @else bg-light text-dark @endif 
                                 text-white">
                                 <div class="card-body text-center p-3">
-                                    <h6 class="mb-1">{{ $statut->statut }}</h6>
+                                    <h6 class="mb-1">
+                                        @if($statut->statut == 'Créé') تم الإنشاء
+                                        @elseif($statut->statut == 'En attente') قيد الانتظار
+                                        @elseif($statut->statut == 'Validé') تمت المصادقة 
+                                        @elseif($statut->statut == 'En traitement') قيد المعالجة
+                                        @elseif($statut->statut == 'Transmis') تم الإرسال
+                                        @elseif($statut->statut == 'Réaffecté') تمت إعادة التخصيص
+                                        @elseif($statut->statut == 'Archivé') مؤرشف
+                                        @else {{ $statut->statut }} @endif
+                                    </h6>
                                     <h3 class="mb-0 fw-bold">{{ $statut->total }}</h3>
                                 </div>
                             </div>
@@ -53,12 +89,12 @@
                         @endforeach
                     </div>
                     
-                    <!-- Graphiques -->
+                    <!-- الرسوم البيانية -->
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="card h-100">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0">Dossiers par service</h6>
+                                    <h6 class="mb-0">الملفات حسب القسم</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="chartDossiersParService" height="250"></canvas>
@@ -68,7 +104,7 @@
                         <div class="col-md-6">
                             <div class="card h-100">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0">Dossiers par statut</h6>
+                                    <h6 class="mb-0">الملفات حسب الحالة</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="chartDossiersParStatut" height="250"></canvas>
@@ -79,11 +115,11 @@
                 </div>
             </div>
             
-            <!-- Dossiers récents -->
+            <!-- الملفات الأخيرة -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
                     <h5 class="mb-0 fw-semibold">
-                        <i class="fas fa-folder-open text-primary me-2"></i>Dossiers récents
+                        <i class="fas fa-folder-open text-primary me-2"></i>الملفات الأخيرة
                     </h5>
                 </div>
                 <div class="card-body p-0">
@@ -91,21 +127,28 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Titre</th>
-                                    <th>Statut</th>
-                                    <th>Créateur</th>
-                                    <th>Service</th>
-                                    <th>Date de création</th>
-                                    <th>Actions</th>
+                                <th>رقم الملف القانوني</th>
+                                <th>العنوان</th>
+                                <th>الحالة</th>
+                                <th>المنشئ</th>
+                                <th>القسم</th>
+                                <th>تاريخ الإنشاء</th>
+                                <th>الإجراءات</th>
+                                   
+                                    
+                                  
+                                    
+                                    
+                                    
+                                   
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($dossiersRecents as $dossier)
                                 <tr>
-                                    <td>{{ $dossier->id }}</td>
-                                    <td>{{ $dossier->titre }}</td>
-                                    <td>
+                                <td>{{ $dossier->numero_dossier_judiciaire }}</td>
+                                <td>{{ $dossier->titre }}</td>
+                                <td>
                                         <span class="badge 
                                             @if($dossier->statut == 'Créé') bg-info 
                                             @elseif($dossier->statut == 'En attente') bg-warning 
@@ -115,23 +158,35 @@
                                             @elseif($dossier->statut == 'Réaffecté') bg-pink
                                             @elseif($dossier->statut == 'Archivé') bg-secondary 
                                             @else bg-light text-dark @endif">
-                                            {{ $dossier->statut }}
+                                            @if($dossier->statut == 'Créé') تم الإنشاء
+                                            @elseif($dossier->statut == 'En attente') قيد الانتظار
+                                            @elseif($dossier->statut == 'Validé') تمت المصادقة 
+                                            @elseif($dossier->statut == 'En traitement') قيد المعالجة
+                                            @elseif($dossier->statut == 'Transmis') تم الإرسال
+                                            @elseif($dossier->statut == 'Réaffecté') تمت إعادة التخصيص
+                                            @elseif($dossier->statut == 'Archivé') مؤرشف
+                                            @else {{ $dossier->statut }} @endif
                                         </span>
                                     </td>
                                     <td>{{ $dossier->createur->name }}</td>
                                     <td>{{ $dossier->service->nom }}</td>
                                     <td>{{ $dossier->created_at->format('d/m/Y H:i') }}</td>
-                                   <!-- Changez cette ligne dans le tableau des dossiers récents -->
-<td>
-    <div class="btn-group">
-        <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary">
-            <i class="fas fa-eye"></i>consulter
-        </a>
-        <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning">
-            <i class="fas fa-edit"></i>modifier
-        </a>
-    </div>
-</td>
+                                    <td>
+                                        <div class="btn-group">
+                                        <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning btn-action">
+                                                <i class="fas fa-edit"></i>تعديل
+                                            </a>
+                                            <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary btn-action">
+                                                <i class="fas fa-eye"></i>عرض
+                                            </a>
+                                        </div>
+                                    </td>
+                                   
+                                  
+                                   
+                                   
+                                   
+                                   
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -140,11 +195,11 @@
                 </div>
             </div>
             
-            <!-- Transferts récents -->
+            <!-- التحويلات الأخيرة -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
                     <h5 class="mb-0 fw-semibold">
-                        <i class="fas fa-exchange-alt text-primary me-2"></i>Transferts récents
+                        <i class="fas fa-exchange-alt text-primary me-2"></i>التحويلات الأخيرة
                     </h5>
                 </div>
                 <div class="card-body p-0">
@@ -152,26 +207,26 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th>Dossier</th>
-                                    <th>De</th>
-                                    <th>À</th>
-                                    <th>Date d'envoi</th>
-                                    <th>Date de réception et validation</th>
-                                    <th>Statut</th>
+                                <th>الملف</th>
+                                <th>من</th>
+                                <th>إلى</th>
+                                <th>تاريخ الإرسال</th>
+                                <th>تاريخ الاستلام والتحقق</th>
+                                    <th>الحالة</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($transfertsRecents as $transfert)
                                 <tr>
-                                    <td>
+                                <td>
                                         <a href="{{ route('dossiers.show', $transfert->dossier_id) }}">
                                             {{ $transfert->dossier->titre }}
                                         </a>
                                     </td>
-                                    <td>{{ $transfert->userSource->name ?? 'N/A' }}</td>
-                                    <td>{{ $transfert->userDestination->name ?? 'N/A' }}</td>
-                                    <td>{{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'N/A' }}</td>
-                                    <td>{{ $transfert->date_reception ? $transfert->date_reception->format('d/m/Y H:i') : 'En attente' }}</td>
+                                    <td>{{ $transfert->userSource->name ?? 'غير متوفر' }}</td>
+                                    <td>{{ $transfert->userDestination->name ?? 'غير متوفر' }}</td>
+                                    <td>{{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'غير متوفر' }}</td>
+                                    <td>{{ $transfert->date_reception ? $transfert->date_reception->format('d/m/Y H:i') : 'قيد الانتظار' }}</td>
                                     <td>
                                         <span class="badge 
                                             @if($transfert->statut == 'envoyé') bg-info 
@@ -180,9 +235,18 @@
                                             @elseif($transfert->statut == 'réaffectation') bg-warning
                                             @elseif($transfert->statut == 'transmis') bg-indigo
                                             @else bg-light text-dark @endif">
-                                            {{ $transfert->statut }}
+                                            @if($transfert->statut == 'envoyé') تم الإرسال
+                                            @elseif($transfert->statut == 'validé') تمت المصادقة
+                                            @elseif($transfert->statut == 'refusé') مرفوض
+                                            @elseif($transfert->statut == 'réaffectation') إعادة تخصيص
+                                            @elseif($transfert->statut == 'transmis') تم التحويل
+                                            @else {{ $transfert->statut }} @endif
                                         </span>
                                     </td>
+                                   
+                                   
+                                   
+                                   
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -216,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: serviceLabels,
             datasets: [{
-                label: 'Nombre de dossiers',
+                label: 'عدد الملفات',
                 data: serviceData,
                 backgroundColor: 'rgba(13, 110, 253, 0.7)',
                 borderColor: 'rgba(13, 110, 253, 1)',
@@ -237,7 +301,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Graphique Dossiers par statut
     const statutLabels = [
         @foreach($dossiersParStatut as $statut)
-            "{{ $statut->statut }}",
+            @if($statut->statut == 'Créé') "تم الإنشاء"
+            @elseif($statut->statut == 'En attente') "قيد الانتظار"
+            @elseif($statut->statut == 'Validé') "تمت المصادقة"
+            @elseif($statut->statut == 'En traitement') "قيد المعالجة"
+            @elseif($statut->statut == 'Transmis') "تم الإرسال"
+            @elseif($statut->statut == 'Réaffecté') "تمت إعادة التخصيص"
+            @elseif($statut->statut == 'Archivé') "مؤرشف"
+            @else "{{ $statut->statut }}" @endif,
         @endforeach
     ];
     

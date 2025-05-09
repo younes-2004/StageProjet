@@ -7,10 +7,10 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-exchange-alt text-primary me-2"></i>Détails du transfert
+                        <i class="fas fa-exchange-alt text-primary me-2"></i>تفاصيل التحويل
                     </h5>
                     <a href="{{ route('transferts.index') }}" class="btn btn-sm btn-secondary">
-                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                        <i class="fas fa-arrow-left me-1"></i> العودة إلى القائمة
                     </a>
                 </div>
 
@@ -20,16 +20,16 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0 fw-semibold">Informations du transfert</h6>
+                                    <h6 class="mb-0 fw-semibold">معلومات التحويل</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">ID du transfert</label>
+                                        <label class="form-label text-muted">رقم التحويل</label>
                                         <p class="fw-medium">{{ $transfert->id }}</p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Statut</label>
+                                        <label class="form-label text-muted">الحالة</label>
                                         <p>
                                             <span class="badge 
                                                 @if($transfert->statut == 'envoyé') bg-info 
@@ -38,21 +38,33 @@
                                                 @elseif($transfert->statut == 'refusé') bg-danger
                                                 @elseif($transfert->statut == 'réaffectation') bg-warning 
                                                 @else bg-secondary @endif">
-                                                {{ ucfirst($transfert->statut) }}
+                                                @if($transfert->statut == 'envoyé')
+                                                    مرسل
+                                                @elseif($transfert->statut == 'reçu')
+                                                    مستلم
+                                                @elseif($transfert->statut == 'validé')
+                                                    متحقق
+                                                @elseif($transfert->statut == 'refusé')
+                                                    مرفوض
+                                                @elseif($transfert->statut == 'réaffectation')
+                                                    إعادة تعيين
+                                                @else
+                                                    {{ ucfirst($transfert->statut) }}
+                                                @endif
                                             </span>
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Date d'envoi</label>
+                                        <label class="form-label text-muted">تاريخ الإرسال</label>
                                         <p>
                                             <i class="far fa-calendar-alt me-1"></i>
-                                            {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'N/A' }}
+                                            {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'غير متوفر' }}
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Date de réception</label>
+                                        <label class="form-label text-muted">تاريخ الاستلام</label>
                                         <p>
                                             @if($transfert->date_reception)
                                                 <span class="text-success">
@@ -62,20 +74,20 @@
                                             @else
                                                 <span class="text-warning">
                                                     <i class="fas fa-clock me-1"></i>
-                                                    En attente
+                                                    قيد الانتظار
                                                 </span>
                                             @endif
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Commentaire</label>
+                                        <label class="form-label text-muted">تعليق</label>
                                         <p class="fst-italic text-muted">
                                             @if($transfert->commentaire)
                                                 <i class="fas fa-comment me-1"></i>
                                                 {{ $transfert->commentaire }}
                                             @else
-                                                Aucun commentaire
+                                                لا يوجد تعليق
                                             @endif
                                         </p>
                                     </div>
@@ -87,34 +99,34 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0 fw-semibold">Informations du dossier</h6>
+                                    <h6 class="mb-0 fw-semibold">معلومات الملف</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Numéro</label>
+                                        <label class="form-label text-muted">الرقم</label>
                                         <p>
                                             <a href="{{ route('dossiers.show', $transfert->dossier_id) }}" class="text-decoration-none">
                                                 <i class="fas fa-hashtag me-1"></i>
-                                                {{ $transfert->dossier->numero_dossier_judiciaire ?? 'N/A' }}
+                                                {{ $transfert->dossier->numero_dossier_judiciaire ?? 'غير متوفر' }}
                                             </a>
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Titre</label>
-                                        <p>{{ $transfert->dossier->titre ?? 'N/A' }}</p>
+                                        <label class="form-label text-muted">العنوان</label>
+                                        <p>{{ $transfert->dossier->titre ?? 'غير متوفر' }}</p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Genre</label>
-                                        <p>{{ $transfert->dossier->genre ?? 'N/A' }}</p>
+                                        <label class="form-label text-muted">النوع</label>
+                                        <p>{{ $transfert->dossier->genre ?? 'غير متوفر' }}</p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Date de création</label>
+                                        <label class="form-label text-muted">تاريخ الإنشاء</label>
                                         <p>
                                             <i class="far fa-calendar-alt me-1"></i>
-                                            {{ $transfert->dossier->date_creation ? $transfert->dossier->date_creation->format('d/m/Y') : 'N/A' }}
+                                            {{ $transfert->dossier->date_creation ? $transfert->dossier->date_creation->format('d/m/Y') : 'غير متوفر' }}
                                         </p>
                                     </div>
                                 </div>
@@ -128,23 +140,23 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0 fw-semibold">Source du transfert</h6>
+                                    <h6 class="mb-0 fw-semibold">مصدر التحويل</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Utilisateur source</label>
+                                        <label class="form-label text-muted">المستخدم المصدر</label>
                                         <p>
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $transfert->userSource->name ?? 'N/A' }}
-                                            ({{ $transfert->userSource->email ?? 'N/A' }})
+                                            {{ $transfert->userSource->name ?? 'غير متوفر' }}
+                                            ({{ $transfert->userSource->email ?? 'غير متوفر' }})
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Service source</label>
+                                        <label class="form-label text-muted">قسم المصدر</label>
                                         <p>
                                             <i class="fas fa-building me-1"></i>
-                                            {{ $transfert->serviceSource->nom ?? 'N/A' }}
+                                            {{ $transfert->serviceSource->nom ?? 'غير متوفر' }}
                                         </p>
                                     </div>
                                 </div>
@@ -155,23 +167,23 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0 fw-semibold">Destination du transfert</h6>
+                                    <h6 class="mb-0 fw-semibold">وجهة التحويل</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Utilisateur destinataire</label>
+                                        <label class="form-label text-muted">المستخدم المستلم</label>
                                         <p>
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $transfert->userDestination->name ?? 'N/A' }}
-                                            ({{ $transfert->userDestination->email ?? 'N/A' }})
+                                            {{ $transfert->userDestination->name ?? 'غير متوفر' }}
+                                            ({{ $transfert->userDestination->email ?? 'غير متوفر' }})
                                         </p>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">Service destination</label>
+                                        <label class="form-label text-muted">قسم الوجهة</label>
                                         <p>
                                             <i class="fas fa-building me-1"></i>
-                                            {{ $transfert->serviceDestination->nom ?? 'N/A' }}
+                                            {{ $transfert->serviceDestination->nom ?? 'غير متوفر' }}
                                         </p>
                                     </div>
                                 </div>
@@ -184,12 +196,12 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h6 class="mb-0 fw-semibold">Actions</h6>
+                                    <h6 class="mb-0 fw-semibold">إجراءات</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <a href="{{ route('dossiers.show', $transfert->dossier_id) }}" class="btn btn-primary">
-                                            <i class="fas fa-file-alt me-1"></i> Consulter le dossier
+                                            <i class="fas fa-file-alt me-1"></i> عرض الملف
                                         </a>
                                         
                                         @if($transfert->statut === 'envoyé')
@@ -197,7 +209,7 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-success">
-                                                    <i class="fas fa-check me-1"></i> Valider le transfert
+                                                    <i class="fas fa-check me-1"></i> التحقق من التحويل
                                                 </button>
                                             </form>
                                         @endif

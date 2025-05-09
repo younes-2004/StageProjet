@@ -7,10 +7,10 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-user-edit text-primary me-2"></i>Modifier l'utilisateur
+                        <i class="fas fa-user-edit text-primary me-2"></i>تعديل المستخدم
                     </h5>
                     <a href="{{ route('users.index') }}" class="btn btn-sm btn-secondary">
-                        <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                        <i class="fas fa-arrow-left me-1"></i> العودة إلى القائمة
                     </a>
                 </div>
 
@@ -35,16 +35,16 @@
                         @csrf
                         @method('PUT')
 
-                        <!-- Informations principales -->
+                        <!-- المعلومات الرئيسية -->
                         <div class="card mb-4">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0 fw-semibold">Informations personnelles</h6>
+                                <h6 class="mb-0 fw-semibold">المعلومات الشخصية</h6>
                             </div>
                             <div class="card-body">
-                                <!-- Nom et Prénom -->
+                                <!-- الاسم واسم العائلة -->
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="name" class="form-label">Nom</label>
+                                        <label for="name" class="form-label">الاسم</label>
                                         <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" 
                                                name="name" value="{{ old('name', $user->name) }}" required autofocus>
                                         @error('name')
@@ -54,7 +54,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="fname" class="form-label">Prénom</label>
+                                        <label for="fname" class="form-label">اسم العائلة</label>
                                         <input id="fname" type="text" class="form-control @error('fname') is-invalid @enderror" 
                                                name="fname" value="{{ old('fname', $user->fname) }}" required>
                                         @error('fname')
@@ -65,9 +65,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Email -->
+                                <!-- البريد الإلكتروني -->
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
+                                    <label for="email" class="form-label">البريد الإلكتروني</label>
                                     <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" 
                                            name="email" value="{{ old('email', $user->email) }}" required>
                                     @error('email')
@@ -79,18 +79,18 @@
                             </div>
                         </div>
 
-                        <!-- Rôle et Service -->
+                        <!-- الدور والخدمة -->
                         <div class="card mb-4">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0 fw-semibold">Rôle et Service</h6>
+                                <h6 class="mb-0 fw-semibold">الدور والخدمة</h6>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="role" class="form-label">Rôle</label>
+                                        <label for="role" class="form-label">الدور</label>
                                         <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required>
-                                            <option value="greffier" {{ (old('role', $user->role) == 'greffier') ? 'selected' : '' }}>Greffier</option>
-                                            <option value="greffier_en_chef" {{ (old('role', $user->role) == 'greffier_en_chef') ? 'selected' : '' }}>Greffier en chef</option>
+                                            <option value="greffier" {{ (old('role', $user->role) == 'greffier') ? 'selected' : '' }}>كاتب الضبط</option>
+                                            <option value="greffier_en_chef" {{ (old('role', $user->role) == 'greffier_en_chef') ? 'selected' : '' }}>رئيس كتبة الضبط</option>
                                         </select>
                                         @error('role')
                                             <span class="invalid-feedback" role="alert">
@@ -99,7 +99,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="service_id" class="form-label">Service</label>
+                                        <label for="service_id" class="form-label">الخدمة</label>
                                         <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required>
                                             @foreach($services as $service)
                                                 <option value="{{ $service->id }}" {{ (old('service_id', $user->service_id) == $service->id) ? 'selected' : '' }}>
@@ -117,18 +117,18 @@
                             </div>
                         </div>
 
-                        <!-- Mot de passe -->
+                        <!-- كلمة المرور -->
                         <div class="card mb-4">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0 fw-semibold">Changer le mot de passe (optionnel)</h6>
+                                <h6 class="mb-0 fw-semibold">تغيير كلمة المرور (اختياري)</h6>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="password" class="form-label">Nouveau mot de passe</label>
+                                        <label for="password" class="form-label">كلمة المرور الجديدة</label>
                                         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" 
                                                name="password">
-                                        <div class="form-text">Laissez vide pour conserver le mot de passe actuel</div>
+                                        <div class="form-text">اترك فارغًا للاحتفاظ بكلمة المرور الحالية</div>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -136,7 +136,7 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+                                        <label for="password_confirmation" class="form-label">تأكيد كلمة المرور</label>
                                         <input id="password_confirmation" type="password" class="form-control" 
                                                name="password_confirmation">
                                     </div>
@@ -144,13 +144,13 @@
                             </div>
                         </div>
 
-                        <!-- Boutons d'action -->
+                        <!-- أزرار الإجراء -->
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('users.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times me-1"></i> Annuler
+                                <i class="fas fa-times me-1"></i> إلغاء
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i> Enregistrer les modifications
+                                <i class="fas fa-save me-1"></i> حفظ التعديلات
                             </button>
                         </div>
                     </form>
@@ -246,4 +246,3 @@
     }
 </style>
 @endsection
-```

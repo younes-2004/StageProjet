@@ -7,7 +7,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0">
                     <h5 class="mb-0 fw-bold fs-3">
-                        <i class="fas fa-users text-primary me-2"></i>Gestion des utilisateurs
+                        <i class="fas fa-users text-primary me-2"></i>إدارة المستخدمين
                     </h5>
                 </div>
 
@@ -33,13 +33,13 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="user-list-tab" data-bs-toggle="tab" data-bs-target="#user-list" 
                                     type="button" role="tab" aria-controls="user-list" aria-selected="true">
-                                <i class="fas fa-list me-2"></i>Liste des utilisateurs
+                                <i class="fas fa-list me-2"></i>قائمة المستخدمين
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="add-user-tab" data-bs-toggle="tab" data-bs-target="#add-user" 
                                     type="button" role="tab" aria-controls="add-user" aria-selected="false">
-                                <i class="fas fa-user-plus me-2"></i>Ajouter un utilisateur
+                                <i class="fas fa-user-plus me-2"></i>إضافة مستخدم
                             </button>
                         </li>
                     </ul>
@@ -58,22 +58,22 @@
                                                     <i class="fas fa-search text-muted"></i>
                                                 </span>
                                                 <input type="text" class="form-control border-start-0 search-input" 
-                                                       id="searchUsers" placeholder="Rechercher un utilisateur...">
+                                                       id="searchUsers" placeholder="البحث عن مستخدم...">
                                             </div>
                                         </div>
                                         <div class="col-md-8">
                                             <div class="btn-group filter-group" role="group">
                                                 <button type="button" class="btn btn-outline-primary filter-btn active" data-filter="all">
-                                                    <i class="fas fa-list-ul me-1"></i> Tous
+                                                    <i class="fas fa-list-ul me-1"></i> الكل
                                                 </button>
                                                 <button type="button" class="btn btn-outline-primary filter-btn" data-filter="name">
-                                                    <i class="fas fa-user me-1"></i> Nom
+                                                    <i class="fas fa-user me-1"></i> الاسم
                                                 </button>
                                                 <button type="button" class="btn btn-outline-primary filter-btn" data-filter="role">
-                                                    <i class="fas fa-user-tag me-1"></i> Role
+                                                    <i class="fas fa-user-tag me-1"></i> الدور
                                                 </button>
                                                 <button type="button" class="btn btn-outline-primary filter-btn" data-filter="service">
-                                                    <i class="fas fa-building me-1"></i> Service
+                                                    <i class="fas fa-building me-1"></i> الخدمة
                                                 </button>
                                             </div>
                                         </div>
@@ -87,12 +87,12 @@
                                     <thead class="bg-light">
                                         <tr>
                                             <th style="width: 3%;">#</th>
-                                            <th style="width: 15%;">Nom</th>
-                                            <th style="width: 15%;">Prénom</th>
-                                            <th style="width: 20%;">Email</th>
-                                            <th style="width: 12%;">Role</th>
-                                            <th style="width: 15%;">Service</th>
-                                            <th style="width: 30%;" class="text-center">Actions</th>
+                                            <th style="width: 15%;">الاسم</th>
+                                            <th style="width: 15%;">اسم العائلة</th>
+                                            <th style="width: 20%;">البريد الإلكتروني</th>
+                                            <th style="width: 12%;">الدور</th>
+                                            <th style="width: 15%;">الخدمة</th>
+                                            <th style="width: 30%;" class="text-center">الإجراءات</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -104,27 +104,26 @@
                                                 <td>{{ $user->email }}</td>
                                                 <td>
                                                     <span class="badge {{ $user->role == 'greffier_en_chef' ? 'bg-danger' : 'bg-primary' }}">
-                                                        {{ $user->role == 'greffier_en_chef' ? 'Greffier en chef' : 'Greffier' }}
+                                                        {{ $user->role == 'greffier_en_chef' ? 'رئيس كتبة الضبط' : 'كاتب الضبط' }}
                                                     </span>
                                                 </td>
-                                                <td>{{ $user->service->nom ?? 'Non assigné' }}</td>
-                                              <!-- Dans la partie HTML - Remplacer la colonne des actions par ceci: -->
-<td class="text-center">
-    <div class="action-buttons">
-        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary action-btn">
-            <i class="fas fa-edit me-1"></i> Modifier
-        </a>
-        
-        <form action="{{ route('users.destroy', $user->id) }}" method="POST" 
-              class="d-inline delete-user-form" data-user-name="{{ $user->name }} {{ $user->fname }}">
-            @csrf
-            @method('DELETE')
-            <button type="button" class="btn btn-sm btn-danger delete-user-btn action-btn">
-                <i class="fas fa-trash-alt me-1"></i> Supprimer
-            </button>
-        </form>
-    </div>
-</td>
+                                                <td>{{ $user->service->nom ?? 'غير معين' }}</td>
+                                                <td class="text-center">
+                                                    <div class="action-buttons">
+                                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary action-btn">
+                                                            <i class="fas fa-edit me-1"></i> تعديل
+                                                        </a>
+                                                        
+                                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" 
+                                                              class="d-inline delete-user-form" data-user-name="{{ $user->name }} {{ $user->fname }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="button" class="btn btn-sm btn-danger delete-user-btn action-btn">
+                                                                <i class="fas fa-trash-alt me-1"></i> حذف
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -142,7 +141,7 @@
                             <!-- Using the existing registration form -->
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h5 class="mb-0">Ajouter un nouvel utilisateur</h5>
+                                    <h5 class="mb-0">إضافة مستخدم جديد</h5>
                                 </div>
                                 <div class="card-body">
                                     <form method="POST" action="{{ route('users.store') }}">
@@ -151,7 +150,7 @@
                                         <!-- Nom -->
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="name" class="form-label">Nom</label>
+                                                <label for="name" class="form-label">اسم</label>
                                                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" 
                                                        name="name" value="{{ old('name') }}" required autofocus>
                                                 @error('name')
@@ -163,7 +162,7 @@
 
                                             <!-- Prénom -->
                                             <div class="col-md-6">
-                                                <label for="fname" class="form-label">Prénom</label>
+                                                <label for="fname" class="form-label">اسم العائلة</label>
                                                 <input id="fname" type="text" class="form-control @error('fname') is-invalid @enderror" 
                                                        name="fname" value="{{ old('fname') }}" required>
                                                 @error('fname')
@@ -176,7 +175,7 @@
 
                                         <!-- Email -->
                                         <div class="mb-3">
-                                            <label for="email" class="form-label">Email</label>
+                                            <label for="email" class="form-label">البريد الإلكتروني</label>
                                             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" 
                                                    name="email" value="{{ old('email') }}" required>
                                             @error('email')
@@ -189,7 +188,7 @@
                                         <!-- Mot de passe -->
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="password" class="form-label">Mot de passe</label>
+                                                <label for="password" class="form-label">كلمة المرور</label>
                                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" 
                                                        name="password" required>
                                                 @error('password')
@@ -201,7 +200,7 @@
 
                                             <!-- Confirmation du mot de passe -->
                                             <div class="col-md-6">
-                                                <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+                                                <label for="password_confirmation" class="form-label">تأكيد كلمة المرور</label>
                                                 <input id="password_confirmation" type="password" class="form-control" 
                                                        name="password_confirmation" required>
                                             </div>
@@ -210,11 +209,11 @@
                                         <!-- Rôle -->
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="role" class="form-label">Rôle</label>
+                                                <label for="role" class="form-label">الدور</label>
                                                 <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required>
-                                                    <option value="" disabled selected>Sélectionner un rôle</option>
-                                                    <option value="greffier" {{ old('role') == 'greffier' ? 'selected' : '' }}>Greffier</option>
-                                                    <option value="greffier_en_chef" {{ old('role') == 'greffier_en_chef' ? 'selected' : '' }}>Greffier en chef</option>
+                                                    <option value="" disabled selected>اختر دور</option>
+                                                    <option value="greffier" {{ old('role') == 'greffier' ? 'selected' : '' }}>كاتب الضبط</option>
+                                                    <option value="greffier_en_chef" {{ old('role') == 'greffier_en_chef' ? 'selected' : '' }}>رئيس كتبة الضبط </option>
                                                 </select>
                                                 @error('role')
                                                     <span class="invalid-feedback" role="alert">
@@ -225,9 +224,9 @@
 
                                             <!-- Service -->
                                             <div class="col-md-6">
-                                                <label for="service_id" class="form-label">Service</label>
+                                                <label for="service_id" class="form-label">الخدمة</label>
                                                 <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required>
-                                                    <option value="" disabled selected>Sélectionner un service</option>
+                                                    <option value="" disabled selected>اختر خدمة</option>
                                                     @foreach($services as $service)
                                                         <option value="{{ $service->id }}" {{ old('service_id') == $service->id ? 'selected' : '' }}>
                                                             {{ $service->nom }}
@@ -244,10 +243,10 @@
 
                                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                             <button type="reset" class="btn btn-secondary">
-                                                <i class="fas fa-times me-1"></i> Annuler
+                                                <i class="fas fa-times me-1"></i> إلغاء
                                             </button>
                                             <button type="submit" class="btn btn-primary px-4">
-                                                <i class="fas fa-save me-1"></i> Enregistrer
+                                                <i class="fas fa-save me-1"></i> حفظ
                                             </button>
                                         </div>
                                     </form>
@@ -261,21 +260,21 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- Modal تأكيد الحذف -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Confirmation de suppression</h5>
+                <h5 class="modal-title">تأكيد الحذف</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer l'utilisateur <strong id="deleteUserName"></strong> ?</p>
-                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Cette action est irréversible.</p>
+                <p>هل أنت متأكد من حذف المستخدم <strong id="deleteUserName"></strong>؟</p>
+                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>هذا الإجراء لا يمكن التراجع عنه.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">Supprimer</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">حذف</button>
             </div>
         </div>
     </div>

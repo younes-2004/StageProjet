@@ -7,7 +7,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0">
                     <h5 class="mb-0 fw-bold fs-3">
-                        <i class="fas fa-building text-primary me-2"></i>Gestion des services
+                        <i class="fas fa-building text-primary me-2"></i>إدارة الأقسام
                     </h5>
                 </div>
 
@@ -33,13 +33,13 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="service-list-tab" data-bs-toggle="tab" data-bs-target="#service-list" 
                                     type="button" role="tab" aria-controls="service-list" aria-selected="true">
-                                <i class="fas fa-list me-2"></i>Liste des services
+                                <i class="fas fa-list me-2"></i>قائمة الأقسام
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="add-service-tab" data-bs-toggle="tab" data-bs-target="#add-service" 
                                     type="button" role="tab" aria-controls="add-service" aria-selected="false">
-                                <i class="fas fa-plus-circle me-2"></i>Ajouter un service
+                                <i class="fas fa-plus-circle me-2"></i>إضافة قسم
                             </button>
                         </li>
                     </ul>
@@ -58,7 +58,7 @@
                                                     <i class="fas fa-search text-muted"></i>
                                                 </span>
                                                 <input type="text" class="form-control border-start-0 search-input" 
-                                                       id="searchServices" placeholder="Rechercher un service...">
+                                                       id="searchServices" placeholder="البحث عن قسم...">
                                             </div>
                                         </div>
                                     </div>
@@ -70,28 +70,20 @@
                                 <table class="table table-hover align-middle" id="servicesTable">
                                     <thead class="bg-light">
                                         <tr>
+                                            <th style="width: 30%;" class="text-center">الإجراءات</th>
+                                            <th style="width: 15%;">المستخدمون</th>
+                                            <th style="width: 40%;">الوصف</th>
+                                            <th style="width: 25%;">الاسم</th>
                                             <th style="width: 5%;">#</th>
-                                            <th style="width: 25%;">Nom</th>
-                                            <th style="width: 40%;">Description</th>
-                                            <th style="width: 15%;">Utilisateurs</th>
-                                            <th style="width: 30%;" class="text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($services as $service)
                                             <tr>
-                                                <td>{{ $service->id }}</td>
-                                                <td>{{ $service->nom }}</td>
-                                                <td>{{ $service->description ?? 'Aucune description' }}</td>
-                                                <td>
-                                                    <span class="badge bg-primary">
-                                                        {{ $service->users()->count() }} utilisateur(s)
-                                                    </span>
-                                                </td>
                                                 <td class="text-center">
                                                     <div class="action-buttons">
                                                         <a href="{{ route('services.edit', $service->id) }}" class="btn btn-sm btn-primary action-btn">
-                                                            <i class="fas fa-edit me-1"></i> Modifier
+                                                            <i class="fas fa-edit me-1"></i> تعديل
                                                         </a>
                                                         
                                                         <form action="{{ route('services.destroy', $service->id) }}" method="POST" 
@@ -99,11 +91,19 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="button" class="btn btn-sm btn-danger delete-service-btn action-btn">
-                                                                <i class="fas fa-trash-alt me-1"></i> Supprimer
+                                                                <i class="fas fa-trash-alt me-1"></i> حذف
                                                             </button>
                                                         </form>
                                                     </div>
                                                 </td>
+                                                <td>
+                                                    <span class="badge bg-primary">
+                                                        {{ $service->users()->count() }} مستخدم
+                                                    </span>
+                                                </td>
+                                                <td>{{ $service->description ?? 'لا يوجد وصف' }}</td>
+                                                <td>{{ $service->nom }}</td>
+                                                <td>{{ $service->id }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -120,7 +120,7 @@
                         <div class="tab-pane fade" id="add-service" role="tabpanel" aria-labelledby="add-service-tab">
                             <div class="card">
                                 <div class="card-header bg-light">
-                                    <h5 class="mb-0">Ajouter un nouveau service</h5>
+                                    <h5 class="mb-0">إضافة قسم جديد</h5>
                                 </div>
                                 <div class="card-body">
                                     <form method="POST" action="{{ route('services.store') }}">
@@ -128,7 +128,7 @@
 
                                         <!-- Nom -->
                                         <div class="mb-3">
-                                            <label for="nom" class="form-label">Nom du service</label>
+                                            <label for="nom" class="form-label">اسم القسم</label>
                                             <input id="nom" type="text" class="form-control @error('nom') is-invalid @enderror" 
                                                    name="nom" value="{{ old('nom') }}" required autofocus>
                                             @error('nom')
@@ -140,7 +140,7 @@
 
                                         <!-- Description -->
                                         <div class="mb-3">
-                                            <label for="description" class="form-label">Description</label>
+                                            <label for="description" class="form-label">الوصف</label>
                                             <textarea id="description" class="form-control @error('description') is-invalid @enderror" 
                                                       name="description" rows="4">{{ old('description') }}</textarea>
                                             @error('description')
@@ -152,10 +152,10 @@
 
                                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                             <button type="reset" class="btn btn-secondary">
-                                                <i class="fas fa-times me-1"></i> Annuler
+                                                <i class="fas fa-times me-1"></i> إلغاء
                                             </button>
                                             <button type="submit" class="btn btn-primary px-4">
-                                                <i class="fas fa-save me-1"></i> Enregistrer
+                                                <i class="fas fa-save me-1"></i> حفظ
                                             </button>
                                         </div>
                                     </form>
@@ -174,16 +174,16 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Confirmation de suppression</h5>
+                <h5 class="modal-title">تأكيد الحذف</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer le service <strong id="deleteServiceName"></strong> ?</p>
-                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Cette action est irréversible.</p>
+                <p>هل أنت متأكد من رغبتك في حذف القسم <strong id="deleteServiceName"></strong> ؟</p>
+                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>هذا الإجراء لا يمكن التراجع عنه.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">Supprimer</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">حذف</button>
             </div>
         </div>
     </div>
@@ -368,8 +368,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchText = this.value.toLowerCase();
         
         rows.forEach(row => {
-            const serviceName = row.cells[1].textContent.toLowerCase();
-            const serviceDesc = row.cells[2].textContent.toLowerCase();
+            const serviceName = row.cells[3].textContent.toLowerCase(); // Adjusted for new column order
+            const serviceDesc = row.cells[2].textContent.toLowerCase(); // Adjusted for new column order
             
             if (serviceName.includes(searchText) || serviceDesc.includes(searchText)) {
                 row.style.display = '';

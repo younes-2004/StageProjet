@@ -7,12 +7,12 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0">
                     <h5 class="mb-0 fw-bold fs-3">
-                        <i class="fas fa-exchange-alt text-primary me-2"></i>Gestion des transferts
+                        <i class="fas fa-exchange-alt text-primary me-2"></i>إدارة التحويلات
                     </h5>
                     
                     <!-- Bouton d'exportation -->
                     <a href="{{ route('transferts.export', request()->query()) }}" class="btn btn-primary">
-                        <i class="fas fa-download me-1"></i> Exporter
+                        <i class="fas fa-download me-1"></i> تصدير
                     </a>
                 </div>
 
@@ -22,7 +22,7 @@
                         <div class="col-md-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h6 class="text-muted mb-1">Transferts par statut</h6>
+                                    <h6 class="text-muted mb-1">التحويلات حسب الحالة</h6>
                                     <div class="chart-container" style="height: 150px;">
                                         <canvas id="transfertsParStatutChart"></canvas>
                                     </div>
@@ -32,7 +32,7 @@
                         <div class="col-md-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h6 class="text-muted mb-1">Transferts par jour</h6>
+                                    <h6 class="text-muted mb-1">التحويلات حسب اليوم</h6>
                                     <div class="chart-container" style="height: 150px;">
                                         <canvas id="transfertsParJourChart"></canvas>
                                     </div>
@@ -42,7 +42,7 @@
                         <div class="col-md-3">
                             <div class="card bg-light h-100">
                                 <div class="card-body text-center">
-                                    <h6 class="text-muted mb-1">Transferts par service</h6>
+                                    <h6 class="text-muted mb-1">التحويلات حسب القسم</h6>
                                     <div class="chart-container" style="height: 150px;">
                                         <canvas id="transfertsParServiceChart"></canvas>
                                     </div>
@@ -53,13 +53,13 @@
                             <div class="card bg-light h-100">
                                 <div class="card-body">
                                     <div class="mb-3 text-center">
-                                        <h6 class="text-muted mb-1">Temps validation moyen</h6>
-                                        <div class="display-6 fw-bold text-primary">
-                                            {{ round($tempsValidationMoyen->avg_validation_hours ?? 0) }} h
+                                        <h6 class="text-muted mb-1">متوسط وقت التحقق</h6>
+                                          <div class="display-6 fw-bold text-primary">
+                                            {{ round($tempsValidationMoyen->avg_validation_hours ?? 0) }}h
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <h6 class="text-muted mb-1">Transferts non validés</h6>
+                                        <h6 class="text-muted mb-1">التحويلات غير المتحقق منها</h6>
                                         <div class="display-6 fw-bold text-warning">
                                             {{ $transfertsNonValides ?? 0 }}
                                         </div>
@@ -72,19 +72,31 @@
                     <!-- Filtres avancés -->
                     <div class="card shadow-sm mb-4">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0 fw-semibold">Filtres avancés</h6>
+                            <h6 class="mb-0 fw-semibold">تصفية متقدمة</h6>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('transferts.index') }}" method="GET" id="searchForm">
                                 <div class="row g-3">
                                     <!-- Statut -->
                                     <div class="col-md-3">
-                                        <label for="statut" class="form-label">Statut</label>
+                                        <label for="statut" class="form-label">الحالة</label>
                                         <select id="statut" name="statut" class="form-select">
-                                            <option value="">Tous les statuts</option>
+                                            <option value="">جميع الحالات</option>
                                             @foreach($statuts as $statut)
                                                 <option value="{{ $statut }}" {{ request('statut') == $statut ? 'selected' : '' }}>
-                                                    {{ ucfirst($statut) }}
+                                                    @if($statut == 'envoyé')
+                                                        مرسل
+                                                    @elseif($statut == 'reçu')
+                                                        مستلم
+                                                    @elseif($statut == 'validé')
+                                                        متحقق
+                                                    @elseif($statut == 'refusé')
+                                                        مرفوض
+                                                    @elseif($statut == 'réaffectation')
+                                                        إعادة تعيين
+                                                    @else
+                                                        {{ ucfirst($statut) }}
+                                                    @endif
                                                 </option>
                                             @endforeach
                                         </select>
@@ -92,9 +104,9 @@
                                     
                                     <!-- Utilisateur source -->
                                     <div class="col-md-3">
-                                        <label for="user_source_id" class="form-label">Expéditeur</label>
+                                        <label for="user_source_id" class="form-label">المرسل</label>
                                         <select id="user_source_id" name="user_source_id" class="form-select">
-                                            <option value="">Tous les expéditeurs</option>
+                                            <option value="">جميع المرسلين</option>
                                             @foreach($users as $user)
                                                 <option value="{{ $user->id }}" {{ request('user_source_id') == $user->id ? 'selected' : '' }}>
                                                     {{ $user->name }} {{ $user->fname }}
@@ -105,9 +117,9 @@
                                     
                                     <!-- Utilisateur destination -->
                                     <div class="col-md-3">
-                                        <label for="user_destination_id" class="form-label">Destinataire</label>
+                                        <label for="user_destination_id" class="form-label">المستلم</label>
                                         <select id="user_destination_id" name="user_destination_id" class="form-select">
-                                            <option value="">Tous les destinataires</option>
+                                            <option value="">جميع المستلمين</option>
                                             @foreach($users as $user)
                                                 <option value="{{ $user->id }}" {{ request('user_destination_id') == $user->id ? 'selected' : '' }}>
                                                     {{ $user->name }} {{ $user->fname }}
@@ -118,9 +130,9 @@
                                     
                                     <!-- Service source -->
                                     <div class="col-md-3">
-                                        <label for="service_source_id" class="form-label">Service source</label>
+                                        <label for="service_source_id" class="form-label">قسم المصدر</label>
                                         <select id="service_source_id" name="service_source_id" class="form-select">
-                                            <option value="">Tous les services sources</option>
+                                            <option value="">جميع أقسام المصدر</option>
                                             @foreach($services as $service)
                                                 <option value="{{ $service->id }}" {{ request('service_source_id') == $service->id ? 'selected' : '' }}>
                                                     {{ $service->nom }}
@@ -131,9 +143,9 @@
                                     
                                     <!-- Service destination -->
                                     <div class="col-md-3">
-                                        <label for="service_destination_id" class="form-label">Service destination</label>
+                                        <label for="service_destination_id" class="form-label">قسم الوجهة</label>
                                         <select id="service_destination_id" name="service_destination_id" class="form-select">
-                                            <option value="">Tous les services destinations</option>
+                                            <option value="">جميع أقسام الوجهة</option>
                                             @foreach($services as $service)
                                                 <option value="{{ $service->id }}" {{ request('service_destination_id') == $service->id ? 'selected' : '' }}>
                                                     {{ $service->nom }}
@@ -144,9 +156,9 @@
                                     
                                     <!-- Dossier -->
                                     <div class="col-md-3">
-                                        <label for="dossier_id" class="form-label">Dossier</label>
+                                        <label for="dossier_id" class="form-label">ملف</label>
                                         <select id="dossier_id" name="dossier_id" class="form-select">
-                                            <option value="">Tous les dossiers</option>
+                                            <option value="">جميع الملفات</option>
                                             @foreach($dossiers as $dossier)
                                                 <option value="{{ $dossier->id }}" {{ request('dossier_id') == $dossier->id ? 'selected' : '' }}>
                                                     {{ $dossier->numero_dossier_judiciaire }} - {{ $dossier->titre }}
@@ -157,60 +169,60 @@
                                     
                                     <!-- Date envoi début -->
                                     <div class="col-md-3">
-                                        <label for="date_envoi_debut" class="form-label">Date d'envoi (début)</label>
+                                        <label for="date_envoi_debut" class="form-label">تاريخ الإرسال (البداية)</label>
                                         <input type="date" id="date_envoi_debut" name="date_envoi_debut" class="form-control" value="{{ request('date_envoi_debut') }}">
                                     </div>
                                     
                                     <!-- Date envoi fin -->
                                     <div class="col-md-3">
-                                        <label for="date_envoi_fin" class="form-label">Date d'envoi (fin)</label>
+                                        <label for="date_envoi_fin" class="form-label">تاريخ الإرسال (النهاية)</label>
                                         <input type="date" id="date_envoi_fin" name="date_envoi_fin" class="form-control" value="{{ request('date_envoi_fin') }}">
                                     </div>
                                     
                                     <!-- Date réception début -->
                                     <div class="col-md-3">
-                                        <label for="date_reception_debut" class="form-label">Date de réception (début)</label>
+                                        <label for="date_reception_debut" class="form-label">تاريخ الاستلام (البداية)</label>
                                         <input type="date" id="date_reception_debut" name="date_reception_debut" class="form-control" value="{{ request('date_reception_debut') }}">
                                     </div>
                                     
                                     <!-- Date réception fin -->
                                     <div class="col-md-3">
-                                        <label for="date_reception_fin" class="form-label">Date de réception (fin)</label>
+                                        <label for="date_reception_fin" class="form-label">تاريخ الاستلام (النهاية)</label>
                                         <input type="date" id="date_reception_fin" name="date_reception_fin" class="form-control" value="{{ request('date_reception_fin') }}">
                                     </div>
                                     
                                     <!-- État de validation -->
                                     <div class="col-md-3">
-                                        <label for="valide" class="form-label">État de validation</label>
+                                        <label for="valide" class="form-label">حالة التحقق</label>
                                         <select id="valide" name="valide" class="form-select">
-                                            <option value="">Tous</option>
-                                            <option value="1" {{ request('valide') == '1' ? 'selected' : '' }}>Validés</option>
-                                            <option value="0" {{ request('valide') == '0' ? 'selected' : '' }}>Non validés</option>
+                                            <option value="">الكل</option>
+                                            <option value="1" {{ request('valide') == '1' ? 'selected' : '' }}>متحقق منها</option>
+                                            <option value="0" {{ request('valide') == '0' ? 'selected' : '' }}>غير متحقق منها</option>
                                         </select>
                                     </div>
                                     
                                     <!-- Recherche par mot-clé -->
                                     <div class="col-md-3">
-                                        <label for="keyword" class="form-label">Mot-clé dans les commentaires</label>
-                                        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="Rechercher..." value="{{ request('keyword') }}">
+                                        <label for="keyword" class="form-label">كلمة مفتاحية في التعليقات</label>
+                                        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="بحث..." value="{{ request('keyword') }}">
                                     </div>
                                     
                                     <!-- Tri -->
                                     <div class="col-md-3">
                                         <div class="row">
                                             <div class="col-6">
-                                                <label for="sort_by" class="form-label">Trier par</label>
+                                                <label for="sort_by" class="form-label">ترتيب حسب</label>
                                                 <select id="sort_by" name="sort_by" class="form-select">
-                                                    <option value="date_envoi" {{ request('sort_by') == 'date_envoi' ? 'selected' : '' }}>Date d'envoi</option>
-                                                    <option value="date_reception" {{ request('sort_by') == 'date_reception' ? 'selected' : '' }}>Date de réception</option>
-                                                    <option value="statut" {{ request('sort_by') == 'statut' ? 'selected' : '' }}>Statut</option>
+                                                    <option value="date_envoi" {{ request('sort_by') == 'date_envoi' ? 'selected' : '' }}>تاريخ الإرسال</option>
+                                                    <option value="date_reception" {{ request('sort_by') == 'date_reception' ? 'selected' : '' }}>تاريخ الاستلام</option>
+                                                    <option value="statut" {{ request('sort_by') == 'statut' ? 'selected' : '' }}>الحالة</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label for="sort_direction" class="form-label">Ordre</label>
+                                                <label for="sort_direction" class="form-label">الترتيب</label>
                                                 <select id="sort_direction" name="sort_direction" class="form-select">
-                                                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>Décroissant</option>
-                                                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>Croissant</option>
+                                                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>تنازلي</option>
+                                                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>تصاعدي</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -220,10 +232,10 @@
                                     <div class="col-md-3 d-flex align-items-end">
                                         <div class="d-flex gap-2 w-100">
                                             <button type="button" id="resetButton" class="btn btn-secondary flex-grow-1">
-                                                <i class="fas fa-redo me-1"></i>Réinitialiser
+                                                <i class="fas fa-redo me-1"></i>إعادة تعيين
                                             </button>
                                             <button type="submit" class="btn btn-primary flex-grow-1">
-                                                <i class="fas fa-search me-1"></i>Filtrer
+                                                <i class="fas fa-search me-1"></i>تصفية
                                             </button>
                                         </div>
                                     </div>
@@ -235,23 +247,23 @@
                     <!-- Liste des transferts -->
                     <div class="card shadow-sm">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 fw-semibold">Liste des transferts</h6>
-                            <span class="badge bg-primary">{{ $transferts->total() }} résultat(s)</span>
+                            <h6 class="mb-0 fw-semibold">قائمة التحويلات</h6>
+                            <span class="badge bg-primary">{{ $transferts->total() }} نتيجة</span>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th style="width: 5%;">ID</th>
-                                            <th style="width: 11%;">Dossier</th>
-                                            <th style="width: 15%;">Source</th>
-                                            <th style="width: 15%;">Destination</th>
-                                            <th style="width: 12%;">Date d'envoi</th>
-                                            <th style="width: 12%;">Date de réception</th>
-                                            <th style="width: 8%;">Statut</th>
-                                            <th style="width: 15%;">Commentaire</th>
-                                            <th style="width: 7%;">Actions</th>
+                                            <th style="width: 5%;">رقم</th>
+                                            <th style="width: 11%;">ملف</th>
+                                            <th style="width: 15%;">المصدر</th>
+                                            <th style="width: 15%;">الوجهة</th>
+                                            <th style="width: 12%;">تاريخ الإرسال</th>
+                                            <th style="width: 12%;">تاريخ الاستلام</th>
+                                            <th style="width: 8%;">الحالة</th>
+                                            <th style="width: 15%;">تعليق</th>
+                                            <th style="width: 7%;">إجراءات</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -260,18 +272,18 @@
                                                 <td>{{ $transfert->id }}</td>
                                                 <td>
                                                     <a href="{{ route('dossiers.show', $transfert->dossier_id) }}" class="text-decoration-none">
-                                                        {{ $transfert->dossier->numero_dossier_judiciaire ?? 'N/A' }}
+                                                        {{ $transfert->dossier->numero_dossier_judiciaire ?? 'غير متوفر' }}
                                                     </a>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex flex-column">
                                                         <span>
                                                             <i class="fas fa-user me-1 text-primary"></i>
-                                                            {{ $transfert->userSource->name ?? 'N/A' }}
+                                                            {{ $transfert->userSource->name ?? 'غير متوفر' }}
                                                         </span>
                                                         <small class="text-muted">
                                                             <i class="fas fa-building me-1"></i>
-                                                            {{ $transfert->serviceSource->nom ?? 'N/A' }}
+                                                            {{ $transfert->serviceSource->nom ?? 'غير متوفر' }}
                                                         </small>
                                                     </div>
                                                 </td>
@@ -279,18 +291,18 @@
                                                     <div class="d-flex flex-column">
                                                         <span>
                                                             <i class="fas fa-user me-1 text-primary"></i>
-                                                            {{ $transfert->userDestination->name ?? 'N/A' }}
+                                                            {{ $transfert->userDestination->name ?? 'غير متوفر' }}
                                                         </span>
                                                         <small class="text-muted">
                                                             <i class="fas fa-building me-1"></i>
-                                                            {{ $transfert->serviceDestination->nom ?? 'N/A' }}
+                                                            {{ $transfert->serviceDestination->nom ?? 'غير متوفر' }}
                                                         </small>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <span class="text-muted">
                                                         <i class="far fa-calendar-alt me-1"></i>
-                                                        {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'N/A' }}
+                                                        {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'غير متوفر' }}
                                                     </span>
                                                 </td>
                                                 <td>
@@ -302,7 +314,7 @@
                                                     @else
                                                         <span class="text-warning">
                                                             <i class="fas fa-clock me-1"></i>
-                                                            En attente
+                                                            قيد الانتظار
                                                         </span>
                                                     @endif
                                                 </td>
@@ -314,7 +326,19 @@
                                                         @elseif($transfert->statut == 'refusé') bg-danger
                                                         @elseif($transfert->statut == 'réaffectation') bg-warning
                                                         @else bg-secondary @endif">
-                                                        {{ ucfirst($transfert->statut) }}
+                                                        @if($transfert->statut == 'envoyé')
+                                                            مرسل
+                                                        @elseif($transfert->statut == 'reçu')
+                                                            مستلم
+                                                        @elseif($transfert->statut == 'validé')
+                                                            متحقق
+                                                        @elseif($transfert->statut == 'refusé')
+                                                            مرفوض
+                                                        @elseif($transfert->statut == 'réaffectation')
+                                                            إعادة تعيين
+                                                        @else
+                                                            {{ ucfirst($transfert->statut) }}
+                                                        @endif
                                                     </span>
                                                 </td>
                                                 <td>
@@ -323,7 +347,7 @@
                                                             {{ $transfert->commentaire }}
                                                         </span>
                                                     @else
-                                                        <span class="text-muted fst-italic">Aucun commentaire</span>
+                                                        <span class="text-muted fst-italic">لا يوجد تعليق</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -336,7 +360,7 @@
                                             <tr>
                                                 <td colspan="9" class="text-center py-3">
                                                     <i class="fas fa-info-circle text-info me-1"></i>
-                                                    Aucun transfert trouvé avec les critères sélectionnés
+                                                    لم يتم العثور على تحويلات بالمعايير المحددة
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -379,7 +403,19 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: [
                     @foreach($transfertsParStatut as $data)
-                        '{{ ucfirst($data->statut) }}',
+                        @if($data->statut == 'envoyé')
+                            'مرسل',
+                        @elseif($data->statut == 'reçu')
+                            'مستلم',
+                        @elseif($data->statut == 'validé')
+                            'متحقق',
+                        @elseif($data->statut == 'refusé')
+                            'مرفوض',
+                        @elseif($data->statut == 'réaffectation')
+                            'إعادة تعيين',
+                        @else
+                            '{{ ucfirst($data->statut) }}',
+                        @endif
                     @endforeach
                 ],
                 datasets: [{
@@ -428,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endforeach
                 ],
                 datasets: [{
-                    label: 'Transferts',
+                    label: 'التحويلات',
                     data: [
                         @foreach($transfertsParJour as $transfert)
                             {{ $transfert->total }},
@@ -476,11 +512,11 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: [
                     @foreach($transfertsParService as $transfert)
-                        '{{ $transfert->serviceDestination->nom ?? 'N/A' }}',
+                        '{{ $transfert->serviceDestination->nom ?? 'غير متوفر' }}',
                     @endforeach
                 ],
                 datasets: [{
-                    label: 'Transferts',
+                    label: 'التحويلات',
                     data: [
                         @foreach($transfertsParService as $transfert)
                             {{ $transfert->total }},
