@@ -172,16 +172,26 @@
                                     <td>{{ $dossier->service->nom }}</td>
                                     <td>{{ $dossier->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
-                                        <div class="btn-group">
-                                        <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning btn-action">
-                                                <i class="fas fa-edit"></i>تعديل
-                                            </a>
-                                            <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary btn-action">
-                                                <i class="fas fa-eye"></i>عرض
-                                            </a>
-                                        </div>
-                                    </td>
-                                   
+    <div class="btn-group">
+        <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning btn-action">
+            <i class="fas fa-edit"></i>تعديل
+        </a>
+        <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary btn-action">
+            <i class="fas fa-eye"></i>عرض
+        </a>
+        @if(auth()->user()->role === 'greffier_en_chef')
+        <form action="{{ route('dossiers.destroy', $dossier->id) }}" method="POST" 
+            class="d-inline delete-dossier-form" 
+            data-dossier-titre="{{ $dossier->titre }}">
+            @csrf
+            @method('DELETE')
+            <button type="button" class="btn btn-sm btn-danger delete-dossier-btn">
+                <i class="fas fa-trash-alt"></i> حذف
+            </button>
+        </form>
+        @endif
+    </div>
+</td>
                                   
                                    
                                    
@@ -256,6 +266,28 @@
             </div>
         </div>
     </div>
+    <!-- تأكيد الحذف مودال -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">تأكيد الحذف</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد من حذف الملف <strong id="deleteDossierTitre"></strong> ؟</p>
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    هذا الإجراء لا يمكن التراجع عنه.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 <!-- Scripts pour les graphiques -->
@@ -350,6 +382,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+});
+// إعداد حذف الملف
+const deleteButtons = document.querySelectorAll('.delete-dossier-btn');
+const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+let currentForm = null;
+
+// اعتراض النقر على أزرار الحذف
+deleteButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        // الحصول على النموذج وعنوان الملف
+        currentForm = this.closest('form');
+        const dossierTitre = currentForm.getAttribute('data-dossier-titre');
+        
+        // تحديث النص في النافذة المنبثقة
+        document.getElementById('deleteDossierTitre').textContent = dossierTitre;
+        
+        // إظهار نافذة التأكيد
+        deleteModal.show();
+    });
+});
+
+// التعامل مع تأكيد الحذف
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (currentForm) {
+        // إرسال النموذج
+        currentForm.submit();
+        
+        // إغلاق النافذة المنبثقة
+        deleteModal.hide();
+    }
 });
 </script>
 @endsection

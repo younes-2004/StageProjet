@@ -195,22 +195,20 @@
                                     <td>{{ $dossier->numero_dossier_judiciaire }}</td>
                                     <td>{{ $dossier->titre }}</td>
                                     <td>
-                                    <td>
-    <span class="badge 
-        @if($dossier->statut == 'Créé') bg-info 
-        @elseif($dossier->statut == 'Validé') bg-success 
-        @elseif($dossier->statut == 'En attente') bg-warning 
-        @elseif($dossier->statut == 'Archivé') bg-secondary 
-        @elseif($dossier->statut == 'Transmis') bg-primary
-        @else bg-light text-dark @endif">
-        @if($dossier->statut == 'Créé') تم الإنشاء 
-        @elseif($dossier->statut == 'Validé') تمت المصادقة 
-        @elseif($dossier->statut == 'En attente') قيد الانتظار 
-        @elseif($dossier->statut == 'Archivé') مؤرشف 
-        @elseif($dossier->statut == 'Transmis') مُحال
-        @else {{ $dossier->statut }} @endif
-    </span>
-</td>
+                                        <span class="badge 
+                                            @if($dossier->statut == 'Créé') bg-info 
+                                            @elseif($dossier->statut == 'Validé') bg-success 
+                                            @elseif($dossier->statut == 'En attente') bg-warning 
+                                            @elseif($dossier->statut == 'Archivé') bg-secondary 
+                                            @elseif($dossier->statut == 'Transmis') bg-primary
+                                            @else bg-light text-dark @endif">
+                                            @if($dossier->statut == 'Créé') تم الإنشاء 
+                                            @elseif($dossier->statut == 'Validé') تمت المصادقة 
+                                            @elseif($dossier->statut == 'En attente') قيد الانتظار 
+                                            @elseif($dossier->statut == 'Archivé') مؤرشف 
+                                            @elseif($dossier->statut == 'Transmis') مُحال
+                                            @else {{ $dossier->statut }} @endif
+                                        </span>
                                     </td>
                                     <td>{{ $dossier->genre }}</td>
                                     <td>{{ $dossier->createur->name ?? 'غير متوفر' }}</td>
