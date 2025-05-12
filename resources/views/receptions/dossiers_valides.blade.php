@@ -55,10 +55,10 @@
                                 <div class="row g-2">
                                     <div class="col-md-4">
                                         <div class="input-group">
+                                            <input type="text" class="form-control border-start-0 search-input" id="searchNonReaffectes" placeholder="بحث...">
                                             <span class="input-group-text bg-white border-end-0">
                                                 <i class="fas fa-search text-muted"></i>
                                             </span>
-                                            <input type="text" class="form-control border-start-0 search-input" id="searchNonReaffectes" placeholder="بحث...">
                                         </div>
                                     </div>
                                     <div class="col-md-8">
@@ -202,10 +202,10 @@
                                 <div class="row g-2">
                                     <div class="col-md-4">
                                         <div class="input-group">
-                                            <span class="input-group-text bg-white border-end-0">
+                                           
+                                            <input type="text" class="form-control border-start-0 search-input" id="searchReaffectes" placeholder="بحث..."> <span class="input-group-text bg-white border-end-0">
                                                 <i class="fas fa-search text-muted"></i>
                                             </span>
-                                            <input type="text" class="form-control border-start-0 search-input" id="searchReaffectes" placeholder="بحث...">
                                         </div>
                                     </div>
                                     <div class="col-md-8">
@@ -565,13 +565,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     .btn-group .btn:first-child {
-        border-top-left-radius: 0.25rem;
-        border-bottom-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
     }
     
     .btn-group .btn:last-child {
-        border-top-right-radius: 0.25rem;
-        border-bottom-right-radius: 0.25rem;
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+    
+       
     }
     
     .btn-group form {
@@ -587,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     .btn-group-spaced .btn {
         padding: 0.3rem 0.6rem !important;
-        border-radius: 0.25rem;
+        border-radius: 0;
         font-size: 0.85rem !important;
     }
     

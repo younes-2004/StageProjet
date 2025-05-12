@@ -32,9 +32,9 @@
                 <i class="fas fa-building text-primary me-1"></i>القسم:
             </label>
             <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required onchange="updateUsersList()">
-                <option value="">-- اختر قسماً --</option>
+                <option value="" style="text-align: center"; >-- اختر قسماً --</option>
                 @foreach($services as $service)
-                    <option value="{{ $service->id }}">{{ $service->nom }}</option>
+                    <option value="{{ $service->id }}" style="text-align: center";>{{ $service->nom }}</option>
                 @endforeach
             </select>
             @error('service_id')
@@ -45,13 +45,13 @@
         </div>
         
         <div class="mb-4">
-            <label for="user_id" class="form-label fw-semibold">
+            <label for="user_id" class="form-label fw-semibold" style="text-align: center";>
                 <i class="fas fa-user text-primary me-1"></i>إعادة تعيين إلى:
             </label>
-            <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
-                <option value="">-- اختر مستخدماً --</option>
+            <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required  style="text-align: center";>
+                <option value=""  style="text-align: center";>-- اختر مستخدماً --</option>
                 @foreach($users as $user)
-                    <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}">
+                    <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}"  style="text-align: center";>
                         {{ $user->name }} ({{ $user->email ?? '' }})
                     </option>
                 @endforeach

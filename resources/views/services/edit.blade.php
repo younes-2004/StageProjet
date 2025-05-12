@@ -96,8 +96,8 @@
 
                         <!-- Boutons d'action -->
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('services.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times me-1"></i> إلغاء
+                            <a href="{{ route('services.index') }}" class="btn btn-secondary"> إلغاء
+                                <i class="fas fa-times me-1"></i>
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i> حفظ التعديلات

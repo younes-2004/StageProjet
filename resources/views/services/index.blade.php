@@ -54,11 +54,11 @@
                                     <div class="row g-2">
                                         <div class="col-md-4">
                                             <div class="input-group">
-                                                <span class="input-group-text bg-white border-end-0">
+                                                
+                                                <input type="text" class="form-control border-start-0 search-input" 
+                                                       id="searchServices" placeholder="البحث عن قسم..."><span class="input-group-text bg-white border-end-0">
                                                     <i class="fas fa-search text-muted"></i>
                                                 </span>
-                                                <input type="text" class="form-control border-start-0 search-input" 
-                                                       id="searchServices" placeholder="البحث عن قسم...">
                                             </div>
                                         </div>
                                     </div>
@@ -70,16 +70,29 @@
                                 <table class="table table-hover align-middle" id="servicesTable">
                                     <thead class="bg-light">
                                         <tr>
+                                        <th style="width: 5%;">#</th>
+                                        <th style="width: 25%;">الاسم</th>
+                                        <th style="width: 40%;">الوصف</th>
+                                        <th style="width: 15%;">المستخدمون</th>
                                             <th style="width: 30%;" class="text-center">الإجراءات</th>
-                                            <th style="width: 15%;">المستخدمون</th>
-                                            <th style="width: 40%;">الوصف</th>
-                                            <th style="width: 25%;">الاسم</th>
-                                            <th style="width: 5%;">#</th>
+                                           
+                                          
+                                            
+                                           
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($services as $service)
                                             <tr>
+                                            <td>{{ $service->id }}</td>
+                                            <td>{{ $service->nom }}</td>
+                                            <td>{{ $service->description ?? 'لا يوجد وصف' }}</td>
+                                            <td>
+                                                    <span class="badge bg-primary">
+                                                        {{ $service->users()->count() }} مستخدم
+                                                    </span>
+                                                </td>
+                                               
                                                 <td class="text-center">
                                                     <div class="action-buttons">
                                                         <a href="{{ route('services.edit', $service->id) }}" class="btn btn-sm btn-primary action-btn">
@@ -96,14 +109,9 @@
                                                         </form>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <span class="badge bg-primary">
-                                                        {{ $service->users()->count() }} مستخدم
-                                                    </span>
-                                                </td>
-                                                <td>{{ $service->description ?? 'لا يوجد وصف' }}</td>
-                                                <td>{{ $service->nom }}</td>
-                                                <td>{{ $service->id }}</td>
+                                              
+                                               
+                                              
                                             </tr>
                                         @endforeach
                                     </tbody>

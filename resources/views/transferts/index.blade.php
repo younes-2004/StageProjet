@@ -75,15 +75,15 @@
                             <h6 class="mb-0 fw-semibold">تصفية متقدمة</h6>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('transferts.index') }}" method="GET" id="searchForm">
+                            <form action="{{ route('transferts.index') }}" method="GET" id="searchForm"  style="text-align: center;">
                                 <div class="row g-3">
                                     <!-- Statut -->
-                                    <div class="col-md-3">
-                                        <label for="statut" class="form-label">الحالة</label>
+                                    <div class="col-md-3" >
+                                        <label for="statut" class="form-label" >الحالة</label>
                                         <select id="statut" name="statut" class="form-select">
-                                            <option value="">جميع الحالات</option>
+                                            <option value=""  style="text-align: center;">جميع الحالات</option>
                                             @foreach($statuts as $statut)
-                                                <option value="{{ $statut }}" {{ request('statut') == $statut ? 'selected' : '' }}>
+                                                <option value="{{ $statut }}" {{ request('statut') == $statut ? 'selected' : '' }}  style="text-align: center;">
                                                     @if($statut == 'envoyé')
                                                         مرسل
                                                     @elseif($statut == 'reçu')
@@ -105,10 +105,10 @@
                                     <!-- Utilisateur source -->
                                     <div class="col-md-3">
                                         <label for="user_source_id" class="form-label">المرسل</label>
-                                        <select id="user_source_id" name="user_source_id" class="form-select">
+                                        <select id="user_source_id" name="user_source_id" class="form-select"  style="text-align: center;">
                                             <option value="">جميع المرسلين</option>
                                             @foreach($users as $user)
-                                                <option value="{{ $user->id }}" {{ request('user_source_id') == $user->id ? 'selected' : '' }}>
+                                                <option value="{{ $user->id }}" {{ request('user_source_id') == $user->id ? 'selected' : '' }} style="text-align: center;">
                                                     {{ $user->name }} {{ $user->fname }}
                                                 </option>
                                             @endforeach
@@ -117,9 +117,9 @@
                                     
                                     <!-- Utilisateur destination -->
                                     <div class="col-md-3">
-                                        <label for="user_destination_id" class="form-label">المستلم</label>
+                                        <label for="user_destination_id" class="form-label"  style="text-align: center;">المستلم</label>
                                         <select id="user_destination_id" name="user_destination_id" class="form-select">
-                                            <option value="">جميع المستلمين</option>
+                                            <option value=""  style="text-align: center;">جميع المستلمين</option>
                                             @foreach($users as $user)
                                                 <option value="{{ $user->id }}" {{ request('user_destination_id') == $user->id ? 'selected' : '' }}>
                                                     {{ $user->name }} {{ $user->fname }}
@@ -132,7 +132,7 @@
                                     <div class="col-md-3">
                                         <label for="service_source_id" class="form-label">قسم المصدر</label>
                                         <select id="service_source_id" name="service_source_id" class="form-select">
-                                            <option value="">جميع أقسام المصدر</option>
+                                            <option value=""  style="text-align: center;">جميع أقسام المصدر</option>
                                             @foreach($services as $service)
                                                 <option value="{{ $service->id }}" {{ request('service_source_id') == $service->id ? 'selected' : '' }}>
                                                     {{ $service->nom }}
@@ -143,9 +143,9 @@
                                     
                                     <!-- Service destination -->
                                     <div class="col-md-3">
-                                        <label for="service_destination_id" class="form-label">قسم الوجهة</label>
-                                        <select id="service_destination_id" name="service_destination_id" class="form-select">
-                                            <option value="">جميع أقسام الوجهة</option>
+                                        <label for="service_destination_id" class="form-label" >قسم الوجهة</label>
+                                        <select id="service_destination_id" name="service_destination_id" class="form-select"  style="text-align: center;">
+                                            <option value=""  style="text-align: center;">جميع أقسام الوجهة</option>
                                             @foreach($services as $service)
                                                 <option value="{{ $service->id }}" {{ request('service_destination_id') == $service->id ? 'selected' : '' }}>
                                                     {{ $service->nom }}
@@ -157,7 +157,7 @@
                                     <!-- Dossier -->
                                     <div class="col-md-3">
                                         <label for="dossier_id" class="form-label">ملف</label>
-                                        <select id="dossier_id" name="dossier_id" class="form-select">
+                                        <select id="dossier_id" name="dossier_id" class="form-select"  style="text-align: center;">
                                             <option value="">جميع الملفات</option>
                                             @foreach($dossiers as $dossier)
                                                 <option value="{{ $dossier->id }}" {{ request('dossier_id') == $dossier->id ? 'selected' : '' }}>
@@ -192,10 +192,10 @@
                                     </div>
                                     
                                     <!-- État de validation -->
-                                    <div class="col-md-3">
-                                        <label for="valide" class="form-label">حالة التحقق</label>
+                                    <div class="col-md-3" >
+                                        <label for="valide" class="form-label" >حالة التحقق</label>
                                         <select id="valide" name="valide" class="form-select">
-                                            <option value="">الكل</option>
+                                            <option value=""  style="text-align: center;">الكل</option>
                                             <option value="1" {{ request('valide') == '1' ? 'selected' : '' }}>متحقق منها</option>
                                             <option value="0" {{ request('valide') == '0' ? 'selected' : '' }}>غير متحقق منها</option>
                                         </select>
@@ -212,17 +212,17 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <label for="sort_by" class="form-label">ترتيب حسب</label>
-                                                <select id="sort_by" name="sort_by" class="form-select">
-                                                    <option value="date_envoi" {{ request('sort_by') == 'date_envoi' ? 'selected' : '' }}>تاريخ الإرسال</option>
-                                                    <option value="date_reception" {{ request('sort_by') == 'date_reception' ? 'selected' : '' }}>تاريخ الاستلام</option>
-                                                    <option value="statut" {{ request('sort_by') == 'statut' ? 'selected' : '' }}>الحالة</option>
+                                                <select id="sort_by" name="sort_by" class="form-select"  style="text-align: center;">
+                                                    <option value="date_envoi" {{ request('sort_by') == 'date_envoi' ? 'selected' : '' }}  style="text-align: left;">تاريخ الإرسال</option>
+                                                    <option value="date_reception" {{ request('sort_by') == 'date_reception' ? 'selected' : '' }}  style="text-align: center;">تاريخ الاستلام</option>
+                                                    <option value="statut" {{ request('sort_by') == 'statut' ? 'selected' : '' }}  style="text-align: center;">الحالة</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
                                                 <label for="sort_direction" class="form-label">الترتيب</label>
                                                 <select id="sort_direction" name="sort_direction" class="form-select">
-                                                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>تنازلي</option>
-                                                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}>تصاعدي</option>
+                                                    <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}  style="text-align: center;">تنازلي</option>
+                                                    <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}  style="text-align: center;">تصاعدي</option>
                                                 </select>
                                             </div>
                                         </div>

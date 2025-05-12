@@ -63,7 +63,7 @@
                     <label for="service_id" class="form-label fw-semibold">
                         <i class="fas fa-building text-primary me-1"></i>القسم المستلم:
                     </label>
-                    <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required onchange="updateUsersList()">
+                    <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required onchange="updateUsersList()" style="text-align: center";>
                         <option value="">-- اختر قسماً --</option>
                         @foreach($services as $service)
                             <option value="{{ $service->id }}">{{ $service->nom }}</option>
@@ -80,7 +80,7 @@
                     <label for="user_id" class="form-label fw-semibold">
                         <i class="fas fa-user text-primary me-1"></i>المستخدم المستلم:
                     </label>
-                    <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required>
+                    <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required  style="text-align: center";>
                         <option value="">-- اختر مستخدماً --</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}">

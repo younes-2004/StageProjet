@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du dossier</title>
+    <title>تفاصيل الملف</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -76,17 +78,30 @@
             color: #212529;
             margin-bottom: 1rem;
         }
+        /* Fix pour les boutons RTL */
+        .btn i.me-1, .btn i.me-2 {
+            margin-right: 0 !important;
+            margin-left: 0.25rem !important;
+        }
+        .btn i.me-2 {
+            margin-left: 0.5rem !important;
+        }
+        /* Pour corriger l'ordre des icônes */
+        .detail-label i.me-1 {
+            margin-right: 0 !important;
+            margin-left: 0.25rem !important;
+        }
     </style>
 </head>
 <body>
     <div class="container py-4">
         <!-- Header -->
         <div class="d-flex align-items-center mb-4">
-            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm me-3">
-                <i class="fas fa-chevron-left me-1"></i> Retour
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm ms-3">
+                <i class="fas fa-chevron-right me-1"></i> رجوع
             </a>
             <h1 class="h4 mb-0 text-dark fw-bold">
-                <i class="fas fa-folder-open text-primary me-2"></i>Détails du dossier
+                <i class="fas fa-folder-open text-primary me-2"></i>تفاصيل الملف
             </h1>
         </div>
 
@@ -104,7 +119,9 @@
                             @if($dossier->statut === 'Validé') fa-check-circle @endif
                             @if($dossier->statut === 'Rejeté') fa-times-circle @endif
                             me-1"></i>
-                        {{ $dossier->statut }}
+                        @if($dossier->statut === 'En cours') قيد التنفيذ @endif
+                        @if($dossier->statut === 'Validé') تمت الموافقة @endif
+                        @if($dossier->statut === 'Rejeté') مرفوض @endif
                     </span>
                 </div>
                 <small class="text-muted">
@@ -118,7 +135,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <div class="detail-label">
-                                <i class="fas fa-hashtag me-1"></i>Numéro du dossier
+                                <i class="fas fa-hashtag me-1"></i>رقم الملف
                             </div>
                             <div class="detail-value">
                                 {{ $dossier->numero_dossier_judiciaire }}
@@ -127,7 +144,7 @@
 
                         <div class="mb-3">
                             <div class="detail-label">
-                                <i class="far fa-calendar-alt me-1"></i>Date de création
+                                <i class="far fa-calendar-alt me-1"></i>تاريخ الإنشاء
                             </div>
                             <div class="detail-value">
                                 {{ $dossier->date_creation }}
@@ -138,7 +155,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <div class="detail-label">
-                                <i class="fas fa-tag me-1"></i>Genre
+                                <i class="fas fa-tag me-1"></i>النوع
                             </div>
                             <div class="detail-value">
                                 {{ $dossier->genre }}
@@ -149,7 +166,7 @@
 
                 <div class="mb-3">
                     <div class="detail-label">
-                        <i class="fas fa-align-left me-1"></i>Contenu
+                        <i class="fas fa-align-left me-1"></i>المحتوى
                     </div>
                     <div class="mt-2 text-dark whitespace-pre-line bg-light p-3 rounded">
                         {{ $dossier->contenu }}
@@ -161,13 +178,13 @@
             <div class="card-footer d-flex justify-content-between">
                 <div>
                     <a href="javascript:history.back()" class="btn btn-warning">
-                        <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                        <i class="fas fa-arrow-right me-2"></i>العودة إلى القائمة
                     </a>
                 </div>
                 <div>
                     @if($dossier->statut !== 'Validé')
                     <a href="{{ route('receptions.create-envoi', $dossier->id) }}" class="btn btn-success">
-                        <i class="fas fa-paper-plane me-2"></i>Envoyer le dossier
+                        <i class="fas fa-paper-plane me-2"></i>إرسال الملف
                     </a>
                     @endif
                 </div>

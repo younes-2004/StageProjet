@@ -49,10 +49,10 @@
                                 <div class="row g-2">
                                     <div class="col-md-4">
                                         <div class="input-group">
-                                            <span class="input-group-text bg-white border-end-0">
+                                            
+                                            <input type="text" class="form-control border-start-0 search-input" id="searchReceptions" placeholder="البحث عن ملف..."><span class="input-group-text bg-white border-end-0">
                                                 <i class="fas fa-search text-muted"></i>
                                             </span>
-                                            <input type="text" class="form-control border-start-0 search-input" id="searchReceptions" placeholder="البحث عن ملف...">
                                         </div>
                                     </div>
                                     <div class="col-md-8">

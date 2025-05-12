@@ -43,10 +43,11 @@
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
+                          
+                            <input type="text" class="form-control border-start-0 search-input" id="searchNonEnvoyes" placeholder="بحث...">
+                              <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0 search-input" id="searchNonEnvoyes" placeholder="بحث...">
                         </div>
                     </div>
                     <div class="col-md-8">
@@ -146,10 +147,10 @@
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
+                           
+                            <input type="text" class="form-control border-start-0 search-input" id="searchEnAttente" placeholder="بحث..."> <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0 search-input" id="searchEnAttente" placeholder="بحث...">
                         </div>
                     </div>
                     <div class="col-md-8">
@@ -260,10 +261,10 @@
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
+                           
+                            <input type="text" class="form-control border-start-0 search-input" id="searchHistorique" placeholder="بحث..."> <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0 search-input" id="searchHistorique" placeholder="بحث...">
                         </div>
                     </div>
                     <div class="col-md-8">
@@ -428,23 +429,57 @@ document.addEventListener('DOMContentLoaded', function() {
     .bg-success-light {
         background-color: rgba(40, 167, 69, 0.1);
     }
-    .border-left {
-        border-left: 4px solid !important;
+    .border-right {
+        border-right: 4px solid !important;
     }
     
     /* Style des boutons */
     .btn-primary {
-        background: linear-gradient(to right, #0d6efd, #0b5ed7);
+        background: linear-gradient(to left, #0d6efd, #0b5ed7);
         border: none;
     }
     .btn-success {
-        background: linear-gradient(to right, #198754, #157347);
+        background: linear-gradient(to left, #198754, #157347);
         border: none;
     }
     .btn:hover {
         opacity: 0.9;
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Style spécifique pour les boutons de filtre */
+    .filter-btn {
+        border-width: 1px;
+        font-size: 0.875rem;
+        border-radius: 0 !important;
+    }
+    
+    /* Suppression de la bordure arrondie pour les btn-group */
+    .btn-group > .btn:first-child,
+    .btn-group > .btn:last-child,
+    .btn-group > .btn {
+        border-radius: 0 !important;
+    }
+    
+    .filter-btn.active {
+        font-weight: 600;
+        box-shadow: 0 0 0 0.2rem rgba(102, 109, 116, 0.25);
+    }
+    
+    .btn-outline-secondary.active {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .btn-outline-warning.active {
+        background-color: linear-gradient(to left, rgb(238, 235, 21), rgb(240, 225, 58));
+        color: #212529;
+    }
+    
+    .btn-outline-success.active {
+        background-color: #198754;
+        color: white;
     }
     
     /* Style des tableaux */
@@ -511,32 +546,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     .search-input {
         border-radius: 0 0.5rem 0.5rem 0;
-    }
-    
-    /* Style pour les boutons de filtre */
-    .filter-btn {
-        border-width: 1px;
-        font-size: 0.875rem;
-    }
-    
-    .filter-btn.active {
-        font-weight: 600;
-        box-shadow: 0 0 0 0.2rem rgba(102, 109, 116, 0.25);
-    }
-    
-    .btn-outline-secondary.active {
-        background-color: #6c757d;
-        color: white;
-    }
-    
-    .btn-outline-warning.active {
-        background-colorlinear-gradient(to right,rgb(238, 235, 21),rgb(240, 225, 58));;
-        color: #212529;
-    }
-    
-    .btn-outline-success.active {
-        background-color: #198754;
-        color: white;
     }
     
     /* Styles responsifs */

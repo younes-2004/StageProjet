@@ -370,6 +370,61 @@
 .menu-toggle.pulse {
     animation: pulse 1s infinite;
 }
+    .search-container {
+        display: flex;
+        align-items: center;
+        direction: rtl; /* Gardons la direction RTL pour le texte arabe */
+        margin: 15px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+        width: 100%; /* Assurons-nous qu'elle prend toute la largeur */
+    }
+    
+    .search-filters {
+        display: flex;
+        background-color: #f5f5f5;
+    }
+    
+    .filter {
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        border-right: 1px solid #ddd;
+    }
+    
+    .filter.active {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .search-input {
+        flex-grow: 1;
+        position: relative;
+        display: flex; /* Ajouté pour aligner le bouton et l'input */
+    }
+    
+    .search-input form {
+        display: flex;
+        width: 100%; /* Pour que le formulaire prenne toute la largeur */
+    }
+    
+    .search-input input {
+        width: 100%;
+        padding: 10px 15px;
+        border: none;
+        outline: none;
+    }
+    
+    /* Modification importante ici pour placer le bouton à gauche */
+    .search-btn {
+        background: none;
+        border: none;
+        padding: 0 15px;
+        cursor: pointer;
+        order: -1; /* Place le bouton avant l'input dans un contexte flex */
+    }
+
     </style>
 </head>
 <!-- Modifiez la section du sidebar dans layouts/app.blade.php -->

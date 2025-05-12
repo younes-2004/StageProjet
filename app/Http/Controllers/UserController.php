@@ -72,11 +72,11 @@ class UserController extends Controller
 
         if ($user) {
             return redirect()->route('users.index')
-                ->with('success', 'L\'utilisateur a été créé avec succès.');
+                ->with('success', 'تم إنشاء المستخدم بنجاح.');
         }
 
         return redirect()->back()
-            ->with('error', 'Une erreur est survenue lors de la création de l\'utilisateur.')
+            ->with('error', 'حدث خطأ أثناء إنشاء المستخدم.')
             ->withInput();
     }
 
@@ -135,7 +135,7 @@ class UserController extends Controller
         $user->update($userData);
 
         return redirect()->route('users.index')
-            ->with('success', 'L\'utilisateur a été modifié avec succès.');
+            ->with('success', 'تم تعديل المستخدم بنجاح.');
     }
 
     /**
@@ -146,19 +146,19 @@ class UserController extends Controller
         // Empêcher la suppression de son propre compte
         if ($user->id === auth()->id()) {
             return redirect()->route('users.index')
-                ->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+                ->with('error', 'لا يمكنك حذف حسابك الخاص.');
         }
 
         // Vérification des dossiers associés
         $dossiers = $user->dossiers ?? [];
         if (count($dossiers) > 0) {
             return redirect()->route('users.index')
-                ->with('error', 'Impossible de supprimer cet utilisateur car il possède des dossiers.');
+                ->with('error', 'لا يمكن حذف هذا المستخدم لأنه يملك ملفات.');
         }
 
         $user->delete();
 
         return redirect()->route('users.index')
-            ->with('success', 'L\'utilisateur a été supprimé avec succès.');
+            ->with('success', 'تم حذف المستخدم بنجاح.');
     }
 }

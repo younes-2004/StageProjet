@@ -54,11 +54,11 @@
                                     <div class="row g-2">
                                         <div class="col-md-4">
                                             <div class="input-group">
-                                                <span class="input-group-text bg-white border-end-0">
+                                              
+                                                <input type="text" class="form-control border-start-0 search-input" 
+                                                       id="searchUsers" placeholder="البحث عن مستخدم...">  <span class="input-group-text bg-white border-end-0">
                                                     <i class="fas fa-search text-muted"></i>
                                                 </span>
-                                                <input type="text" class="form-control border-start-0 search-input" 
-                                                       id="searchUsers" placeholder="البحث عن مستخدم...">
                                             </div>
                                         </div>
                                         <div class="col-md-8">
@@ -210,8 +210,8 @@
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label for="role" class="form-label">الدور</label>
-                                                <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required>
-                                                    <option value="" disabled selected>اختر دور</option>
+                                                <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required  style="text-align: center";>
+                                                    <option value=" disabled selected>اختر دور</option>
                                                     <option value="greffier" {{ old('role') == 'greffier' ? 'selected' : '' }}>كاتب الضبط</option>
                                                     <option value="greffier_en_chef" {{ old('role') == 'greffier_en_chef' ? 'selected' : '' }}>رئيس كتبة الضبط </option>
                                                 </select>
@@ -224,23 +224,21 @@
 
                                             <!-- Service -->
                                             <div class="col-md-6">
-                                                <label for="service_id" class="form-label">الخدمة</label>
-                                                <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required>
-                                                    <option value="" disabled selected>اختر خدمة</option>
-                                                    @foreach($services as $service)
-                                                        <option value="{{ $service->id }}" {{ old('service_id') == $service->id ? 'selected' : '' }}>
-                                                            {{ $service->nom }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('service_id')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
+    <label for="service_id" class="form-label">القسم</label>
+    <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" style="text-align: center;" required>
+        <option value="" disabled selected>اخت خدمة</option>
+        @foreach($services as $service)
+            <option value="{{ $service->id }}" {{ old('service_id') == $service->id ? 'selected' : '' }}>
+                {{ $service->nom }}
+            </option>
+        @endforeach
+    </select>
+    @error('service_id')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+    @enderror
+</div>
                                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                             <button type="reset" class="btn btn-secondary">
                                                 <i class="fas fa-times me-1"></i> إلغاء
@@ -399,24 +397,38 @@
         border-radius: 0 0.5rem 0.5rem 0;
     }
     
-    .filter-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-    
-    .filter-btn {
-        font-size: 0.875rem;
-        border-width: 1px;
-        flex: 1;
-        min-width: 80px;
-    }
-    
-    .filter-btn.active {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-        color: white;
-    }
+   /* Style pour les boutons de filtre */
+.filter-btn {
+    font-size: 0.875rem;
+    border-width: 1px;
+    flex: 1;
+    min-width: 80px;
+    border-radius: 0 !important; /* Suppression des coins arrondis */
+}
+
+/* Pour les groupes de boutons de filtre */
+.filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    direction: rtl; /* Pour l'ordre des boutons en arabe */
+}
+
+/* Style actif pour les boutons de filtre */
+.filter-btn.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+/* Pour les btn-group contenant les boutons de filtre */
+.btn-group > .filter-btn:first-child {
+    border-radius: 0 !important;
+}
+
+.btn-group > .filter-btn:last-child {
+    border-radius: 0 !important;
+}
     
     /* Modal styling */
     .modal-content {

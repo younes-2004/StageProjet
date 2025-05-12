@@ -64,7 +64,7 @@ class ReceptionController extends Controller
             'user_id' => auth()->id(),
             'service_id' => auth()->user()->service_id,
             'action' => 'transfert',
-            'description' => 'Dossier transféré à l\'utilisateur ID ' . $validated['user_id'],
+            'description' => 'تم تحويل الملف إلى المستخدم ذو الرقم التعريفي ' . $validated['user_id'],
             'date_action' => now(),
         ]);
         
@@ -91,7 +91,7 @@ class ReceptionController extends Controller
         
         // Rediriger vers la même page avec un message de confirmation
         return redirect()->route('receptions.create-envoi', $dossier->id)
-            ->with('success', 'Le dossier "' . $dossier->titre . '" a été envoyé avec succès à ' . $destinataire->name . ' (' . $destinataire->email . ').')
+            ->with('تم إرسال الملف "' . $dossier->titre . '" بنجاح إلى ' . $destinataire->name . ' (' . $destinataire->email . ').')
             ->with('transfert_id', $transfert->id);
     }
 
@@ -136,7 +136,7 @@ public function validerReception(Request $request, $id)
     
     // Vérifier que l'utilisateur connecté est bien le destinataire
     if ($reception->user_id != Auth::id()) {
-        return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à effectuer cette action.');
+        return redirect()->back()->with('غير مصرح لك بتنفيذ هذا الإجراء.');
     }
     
     // Récupérer le dossier associé
@@ -203,7 +203,7 @@ public function validerReception(Request $request, $id)
     ]);
     
     return redirect()->route('receptions.inbox')
-        ->with('success', 'Dossier validé avec succès.');
+        ->with('تمت المصادقة على الملف بنجاح.');
 }
     /**
      * Réaffecter un dossier reçu à un autre service
@@ -223,7 +223,7 @@ public function validerReception(Request $request, $id)
         
         // Vérifier que l'utilisateur connecté est bien le destinataire du transfert original
         if ($transfertOriginal->user_destination_id != Auth::id()) {
-            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à effectuer cette action.');
+            return redirect()->back()->with('غير مصرح لك بتنفيذ هذا الإجراء.');
         }
         
         // Marquer le transfert original comme validé
@@ -255,12 +255,12 @@ public function validerReception(Request $request, $id)
             'user_id' => auth()->id(),
             'service_id' => auth()->user()->service_id,
             'action' => 'reassignation',
-            'description' => 'Dossier réaffecté à l\'utilisateur ID ' . $validated['user_id'],
+            'description' => 'تمت إعادة تعيين الملف إلى المستخدم ' . $validated['user_id'],
             'date_action' => now(),
         ]);
         
         return redirect()->route('receptions.inbox')
-          ->with('success', 'Dossier réaffecté avec succès.');
+          ->with('تمت إعادة تعيين الملف بنجاح.');
     }
 
     /**
@@ -339,7 +339,7 @@ public function validerReception(Request $request, $id)
             'user_id' => Auth::id(), // Utilisateur qui effectue la réaffectation
             'service_id' => $serviceId, // Service de l'émetteur
             'action' => 'réaffectation',
-            'description' => 'Dossier réaffecté à l\'utilisateur ID ' . $validated['user_id'],
+            'description' => 'تمت إعادة تعيين الملف إلى المستخدم برقم التعريف' . $validated['user_id'],
             'date_action' => now(),
         ]);
     
@@ -368,6 +368,6 @@ public function validerReception(Request $request, $id)
         ]);
     
         // Redirection avec un message de succès
-        return redirect()->route('receptions.dossiers_valides')->with('success', 'Le dossier a été réaffecté avec succès.');
+        return redirect()->route('receptions.dossiers_valides')->with('تمت إعادة تعيين الملف بنجاح.');
     }
 }

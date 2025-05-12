@@ -55,7 +55,7 @@
                                 <div class="mb-3">
                                     <label for="numero_dossier_judiciaire" class="form-label fw-medium">
                                         <i class="fas fa-hashtag text-secondary me-1"></i>
-                                        رقم الملف القضائي
+                                        رقم الملف بالمحكمة
                                     </label>
                                     <input 
                                         id="numero_dossier_judiciaire" 

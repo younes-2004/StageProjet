@@ -87,18 +87,18 @@ class DossierController extends Controller
             'user_id' => auth()->id(),
             'service_id' => auth()->user()->service_id,
             'action' => 'creation',
-            'description' => 'Création du dossier avec le numéro ' . $dossier->numero_dossier_judiciaire,
+            'description' => 'إنشاء مجلد برقم' . $dossier->numero_dossier_judiciaire,
             'date_action' => now(),
         ]);
 
         if ($dossier) {
             return redirect()->route('dossiers.create')
-                ->with('success', 'Votre dossier a été créé avec succès!')
+                ->with('تم إنشاء ملفك بنجاح')
                 ->with('dossier_id', $dossier->id);
         }
         
         return redirect()->route('dossiers.create')
-            ->with('error', 'Un problème est survenu lors de la création du dossier.');
+            ->with('حدث عطل أثناء محاولة إنشاء المجلد.');
     }
 
   /**
@@ -126,7 +126,7 @@ public function show(Dossier $dossier)
     
     // Autoriser l'accès si l'utilisateur est le créateur, un récepteur ou a validé le dossier
     if (!$isCreator && !$isReceiver && !$hasValidated) {
-        abort(403, 'Accès non autorisé. Vous n\'êtes ni le créateur ni un destinataire de ce dossier.');
+        abort(403, 'وصول غير مصرح به: أنت لست منشئ هذا المجلد ولا من المستلمين المعتمدين له');
     }
 
     // Retourner la vue avec les détails du dossier
@@ -192,12 +192,12 @@ public function update(Request $request, Dossier $dossier)
         'user_id' => auth()->id(),
         'service_id' => auth()->user()->service_id,
         'action' => 'modification',
-        'description' => 'Modification du dossier avec le numéro ' . $dossier->numero_dossier_judiciaire,
+        'description' => 'تعديل الدليل ذي الرقم' . $dossier->numero_dossier_judiciaire,
         'date_action' => now(),
     ]);
     
     return redirect()->route('dossiers.detail', $dossier->id)
-        ->with('success', 'Le dossier a été mis à jour avec succès.');
+        ->with('تم تعديل المجلد بنجاح.');
 }
 
 /**
@@ -228,7 +228,7 @@ private function authorizeView(Dossier $dossier)
     
     // Autoriser l'accès si l'utilisateur remplit au moins une des conditions
     if (!$isCreator && !$isReceiver && !$hasValidated && !$isChiefClerk) {
-        abort(403, 'Accès non autorisé. Vous n\'êtes ni le créateur ni un destinataire autorisé de ce dossier.');
+        abort(403, ' غير مسموح بالوصول: ليس لديك صلاحية كمُنشئ أو مستلم معتمد لهذا المجلد');
     }
 }
 
@@ -250,14 +250,14 @@ private function authorizeEdit(Dossier $dossier)
     
     // Autoriser l'édition si l'utilisateur est créateur ou greffier en chef
     if (!$isCreator && !$isChiefClerk) {
-        abort(403, 'Accès non autorisé. Seul le créateur ou un greffier en chef peut modifier ce dossier.');
+        abort(403, 'غير مسموح بالوصول: فقط المنشئ أو كاتب الضبط الرئيسي يمكنه تعديل هذا المجلد.');
     }
 }
 public function destroy(Dossier $dossier)
 {
     // Vérifier que l'utilisateur a le rôle de greffier en chef
     if (auth()->user()->role !== 'greffier_en_chef') {
-        abort(403, 'Vous n\'êtes pas autorisé à supprimer des dossiers.');
+        abort(403, 'ليست لديك صلاحية حذف الملفات');
     }
 
     try {
@@ -272,11 +272,11 @@ public function destroy(Dossier $dossier)
 
         // Redirection avec message de succès
         return redirect()->route('dossiers.search')
-            ->with('success', 'Le dossier a été supprimé avec succès.');
+            ->with('تم حذف المجلد بنجاح');
     } catch (\Exception $e) {
         // Gérer les erreurs de suppression
         return redirect()->route('dossiers.search')
-            ->with('error', 'Une erreur est survenue lors de la suppression du dossier : ' . $e->getMessage());
+            ->with('حدث خطأ أثناء محاولة مسح المجلد' . $e->getMessage());
     }
 }
 
