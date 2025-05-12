@@ -36,9 +36,52 @@
         border-radius: 4px !important;
         margin: 0 2px;
     }
+    /* Ajoutez ceci dans la section <style> existante */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+}
+
+.card-welcome {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card-welcome:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
 </style>
 
 <div class="container-fluid py-4" dir="rtl">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card card-welcome bg-gradient-primary shadow-lg rounded-3 overflow-hidden">
+                <div class="card-body p-4 text-white">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h1 class="display-6 fw-bold mb-3">
+                                مرحباً، {{ Auth::user()->name }} {{ Auth::user()->fname }}
+                            </h1>
+                            <p class="lead mb-0">
+                                مرحباً بك في لوحة معلومات إدارة الملفات
+                            </p>
+                        </div>
+                        <div class="col-lg-4 text-center d-none d-lg-block">
+                            <i class="fas fa-chart-line fa-5x text-white opacity-7"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reste du contenu existant -->
+    <!-- Reste du contenu existant -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                ...
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm mb-4">

@@ -26,6 +26,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 });
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Route pour le dashboard des greffiers normaux
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Route pour le dashboard du greffier en chef
+    Route::get('/dossiers/dashboard', [DossierDashboardController::class, 'index'])
+        ->name('dossiers.dashboard')
+        ->middleware('role:greffier_en_chef');
+
+    // Autres routes de l'application...
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
