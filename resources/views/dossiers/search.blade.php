@@ -209,11 +209,12 @@
                                             @elseif($dossier->statut == 'Transmis') مُحال
                                             @else {{ $dossier->statut }} @endif
                                         </span>
+
                                     </td>
                                     <td>{{ $dossier->genre }}</td>
                                     <td>{{ $dossier->createur->name ?? 'غير متوفر' }}</td>
                                     <td>{{ $dossier->service->nom ?? 'غير متوفر' }}</td>
-                                    <td>{{ $dossier->date_creation ? $dossier->date_creation->format('d/m/Y') : ($dossier->created_at ? $dossier->created_at->format('d/m/Y') : 'غير متوفر') }}</td>
+                                    <td> {{ $dossier->created_at ? $dossier->created_at->format('d/m/Y H:i') : ($dossier->date_creation ? $dossier->date_creation->format('d/m/Y H:i') : 'N/A') }}</td>
                                     <td>
                                         <div class="d-flex gap-1">
                                              <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary">
