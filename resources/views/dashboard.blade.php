@@ -171,6 +171,9 @@
                                                 @case('validation')
                                                     مصادقة على ملف
                                                     @break
+                                                    @case('réaffectation')
+                                                    إعادة تعيين
+                                                    @break
                                                 @default
                                                     {{ $activity->action }}
                                             @endswitch

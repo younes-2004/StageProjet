@@ -134,7 +134,7 @@
                                                         <input type="hidden" name="commentaire_reception" value="">
                                                         <input type="hidden" name="observations" value="">
                                                         <button type="submit" class="btn btn-sm btn-success px-3 py-1">
-                                                            <i class="fas fa-check me-1"></i> تحقق
+                                                            <i class="fas fa-check me-1"></i> مصادقة
                                                         </button>
                                                     </form>
                                                 </div>

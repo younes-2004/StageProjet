@@ -12,6 +12,9 @@
         <div class="mt-3 mt-md-0">
             <a href="{{ route('receptions.inbox') }}" class="btn btn-primary">
                 <i class="fas fa-inbox me-2"></i>صندوق الوارد
+                <span class="badge bg-danger ms-2">
+                                    {{ \App\Models\Reception::where('user_id', Auth::id())->where('traite', false)->count() }}
+                                </span>
             </a>
         </div>
     </div>
