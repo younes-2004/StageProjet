@@ -182,7 +182,7 @@
                     </a>
                 </div>
                 <div>
-                    @if($dossier->statut !== 'Validé')
+                    @if($dossier->statut !== 'Transmis')
                     <a href="{{ route('receptions.create-envoi', $dossier->id) }}" class="btn btn-success">
                         <i class="fas fa-paper-plane me-2"></i>إرسال الملف
                     </a>

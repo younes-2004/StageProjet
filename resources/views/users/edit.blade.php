@@ -88,8 +88,8 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="role" class="form-label">الدور</label>
-                                        <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required>
-                                            <option value="greffier" {{ (old('role', $user->role) == 'greffier') ? 'selected' : '' }}>كاتب الضبط</option>
+                                        <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required  style="text-align: center;">
+                                            <option value="greffier" {{ (old('role', $user->role) == 'greffier') ? 'selected' : '' }} >كاتب الضبط</option>
                                             <option value="greffier_en_chef" {{ (old('role', $user->role) == 'greffier_en_chef') ? 'selected' : '' }}>رئيس كتبة الضبط</option>
                                         </select>
                                         @error('role')
@@ -100,9 +100,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label for="service_id" class="form-label">الخدمة</label>
-                                        <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required>
+                                        <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required  style="text-align: center;">
                                             @foreach($services as $service)
-                                                <option value="{{ $service->id }}" {{ (old('service_id', $user->service_id) == $service->id) ? 'selected' : '' }}>
+                                                <option value="{{ $service->id }}" {{ (old('service_id', $user->service_id) == $service->id) ? 'selected' : '' }} >
                                                     {{ $service->nom }}
                                                 </option>
                                             @endforeach

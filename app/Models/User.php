@@ -8,8 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Dossier;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -54,11 +55,38 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Service::class, 'service_id');
     }
+
     /**
- * Relation avec les dossiers créés par cet utilisateur.
- */
-public function dossiersCreated()
-{
-    return $this->hasMany(Dossier::class, 'createur_id');
-}
+     * Relation avec les dossiers créés par cet utilisateur.
+     */
+    public function dossiersCreated()
+    {
+        return $this->hasMany(Dossier::class, 'createur_id');
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'name' => $this->name,
+            'fname' => $this->fname,
+            'email' => $this->email,
+            'role' => $this->role,
+            'service_id' => $this->service_id
+        ];
+    }
 }

@@ -92,13 +92,13 @@ class DossierController extends Controller
         ]);
 
         if ($dossier) {
-            return redirect()->route('dossiers.create')
-                ->with('تم إنشاء ملفك بنجاح')
-                ->with('dossier_id', $dossier->id);
+            return redirect()->route('dossiers.mes_dossiers')
+                ->with('success', 'تم إنشاء ملف "' . $dossier->titre . '" بنجاح برقم ' . $dossier->numero_dossier_judiciaire);
         }
         
-        return redirect()->route('dossiers.create')
-            ->with('حدث عطل أثناء محاولة إنشاء المجلد.');
+      // En cas d'échec, rediriger avec un message d'erreur
+      return redirect()->route('dossiers.create')
+      ->with('error', 'حدث عطل أثناء محاولة إنشاء المجلد.');
     }
 
   /**
@@ -197,7 +197,7 @@ public function update(Request $request, Dossier $dossier)
     ]);
     
     return redirect()->route('dossiers.detail', $dossier->id)
-        ->with('تم تعديل المجلد بنجاح.');
+        ->with('sucess','تم تعديل المجلد بنجاح.');
 }
 
 /**
@@ -272,7 +272,7 @@ public function destroy(Dossier $dossier)
 
         // Redirection avec message de succès
         return redirect()->route('dossiers.search')
-            ->with('تم حذف المجلد بنجاح');
+            ->with('success','تم حذف المجلد بنجاح');
     } catch (\Exception $e) {
         // Gérer les erreurs de suppression
         return redirect()->route('dossiers.search')

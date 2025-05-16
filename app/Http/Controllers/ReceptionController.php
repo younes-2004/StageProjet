@@ -87,11 +87,16 @@ class ReceptionController extends Controller
         
         // Récupérer les informations du dossier pour le message de confirmation
         $dossier = \App\Models\Dossier::findOrFail($validated['dossier_id']);
+         // AJOUT: Mettre à jour le statut du dossier à "Transmis"
+         $dossier->update([
+            'statut' => 'Transmis'
+        ]);
         $destinataire = User::findOrFail($validated['user_id']);
+        $message = 'تم إرسال الملف "' . $dossier->titre . '" بنجاح إلى ' . $destinataire->name . ' (' . $destinataire->email . ').';
         
         // Rediriger vers la même page avec un message de confirmation
-        return redirect()->route('receptions.create-envoi', $dossier->id)
-            ->with('تم إرسال الملف "' . $dossier->titre . '" بنجاح إلى ' . $destinataire->name . ' (' . $destinataire->email . ').')
+        return redirect()->route('dossiers.mes_dossiers', $dossier->id)
+            ->with('success',$message)
             ->with('transfert_id', $transfert->id);
     }
 
@@ -203,7 +208,7 @@ public function validerReception(Request $request, $id)
     ]);
     
     return redirect()->route('receptions.inbox')
-        ->with('تمت المصادقة على الملف بنجاح.');
+        ->with('success','تمت المصادقة على الملف بنجاح.');
 }
     /**
      * Réaffecter un dossier reçu à un autre service
@@ -260,7 +265,7 @@ public function validerReception(Request $request, $id)
         ]);
         
         return redirect()->route('receptions.inbox')
-          ->with('تمت إعادة تعيين الملف بنجاح.');
+          ->with('success','تمت إعادة تعيين الملف بنجاح.');
     }
 
     /**
@@ -368,6 +373,6 @@ public function validerReception(Request $request, $id)
         ]);
     
         // Redirection avec un message de succès
-        return redirect()->route('receptions.dossiers_valides')->with('تمت إعادة تعيين الملف بنجاح.');
+        return redirect()->route('receptions.dossiers_valides')->with('success','تمت إعادة تعيين الملف بنجاح.');
     }
 }

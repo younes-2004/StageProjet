@@ -3,6 +3,30 @@
 
 
 <div class="container-fluid py-4">
+    <!-- Message de confirmation -->
+    @if (session('success'))
+        <div class="confirmation-card mb-4">
+            <div class="card border-0 bg-success-subtle">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="confirmation-icon bg-success text-white me-3">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="confirmation-content">
+                        <h5 class="mb-1 fw-bold">تمت العملية بنجاح!</h5>
+                        <p class="mb-0">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <!-- Header Section -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
         <div>
@@ -573,5 +597,38 @@ document.addEventListener('DOMContentLoaded', function() {
             white-space: nowrap;
         }
     }
+    .confirmation-card .card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .confirmation-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .confirmation-content h5 {
+            color: #198754;
+        }
+        
+        .confirmation-content p {
+            color: #495057;
+        }
+        
+        /* Animation d'entrée */
+        @keyframes slideIn {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .confirmation-card {
+            animation: slideIn 0.3s ease forwards;
+        }
+
 </style>
 @endsection
