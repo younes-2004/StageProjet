@@ -203,7 +203,7 @@ public function validerReception(Request $request, $id)
         'user_id' => Auth::id(),
         'service_id' => Auth::user()->service_id,
         'action' => 'validation',
-        'description' => 'Dossier validé',
+        'description' => 'تمت المصادقة على الملف بنجاح',
         'date_action' => now(),
     ]);
     

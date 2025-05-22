@@ -15,6 +15,7 @@ class Dossier extends Model
         'numero_dossier_judiciaire', // Corrigé pour éviter les espaces
         'titre',
         'contenu',
+        'type_contenu',
         'date_creation',
         'statut',
         'createur_id',

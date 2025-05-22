@@ -7,6 +7,7 @@ use App\Models\HistoriqueAction;
 use Illuminate\Http\Request;
 use App\Models\Transfert;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DossierController extends Controller
 {
@@ -62,18 +63,54 @@ class DossierController extends Controller
     // Enregistre un nouveau dossier
     public function store(Request $request)
     {
+        ini_set('memory_limit', '2G');
+        set_time_limit(600); // 10 minutes
+        \Illuminate\Support\Facades\Log::info('Données de formulaire reçues:', $request->all());
+        \Illuminate\Support\Facades\Log::info('Fichiers reçus:', $request->allFiles());
         $request->validate([
             'numero_dossier_judiciaire' => 'required|string|max:255|unique:dossiers,numero_dossier_judiciaire',
             'titre' => 'required|string|max:255',
-            'contenu' => 'required|string',
+           'type_contenu' => 'required|in:texte,pdf',
+        'contenu_texte' => 'required_if:type_contenu,texte',
+    'contenu_pdf' => 'required_if:type_contenu,pdf|file|mimes:pdf|max:1048576', // 1 Go (en Ko)
             'genre' => 'required|string|max:255',
         ]);
+        $contenu = '';
+    $typeContenu = $request->type_contenu;
+
+    if ($typeContenu === 'texte') {
+        $contenu = $request->contenu_texte;
+    }  $fichier = $request->file('contenu_pdf');
+        
+    // Log la taille du fichier pour déboguer
+    \Illuminate\Support\Facades\Log::info('Téléchargement de fichier volumineux:', [
+        'name' => $fichier->getClientOriginalName(),
+        'size_bytes' => $fichier->getSize(),
+        'size_mb' => round($fichier->getSize() / (1024 * 1024), 2) . ' Mo',
+        'size_gb' => round($fichier->getSize() / (1024 * 1024 * 1024), 4) . ' Go'
+    ]);
+    
+    // Utiliser un stockage par morceaux pour les gros fichiers
+    try {
+        $nomFichier = time() . '_' . $fichier->getClientOriginalName();
+        $chemin = $fichier->storeAs('contenus_pdf', $nomFichier, 'public');
+        $contenu = $chemin;
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('Erreur de téléchargement:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return redirect()->back()->withErrors(['contenu_pdf' => 'فشل تحميل الملف: ' . $e->getMessage()]);
+    }
+
+
 
         // Création du dossier
         $dossier = Dossier::create([
             'numero_dossier_judiciaire' => $request->numero_dossier_judiciaire,
             'titre' => $request->titre,
-            'contenu' => $request->contenu,
+            'contenu' =>$contenu,
+            'type_contenu' => $typeContenu,
             'createur_id' => auth()->id(),
             'service_id' => auth()->user()->service_id, // Récupération automatique du service_id
             'statut' => 'Créé',
@@ -179,25 +216,85 @@ public function update(Request $request, Dossier $dossier)
     // Validation des données
     $validated = $request->validate([
         'titre' => 'required|string|max:255',
-        'contenu' => 'required|string',
+        'type_contenu' => 'required|in:texte,pdf',
+        'contenu_texte' => 'required_if:type_contenu,texte',
+        'contenu_pdf' => 'required_if:type_contenu,pdf,remplacer_pdf|file|mimes:pdf|max:1048576', // 1 Go (en Ko)
         'genre' => 'required|string|max:255',
+        'remplacer_pdf' => 'nullable|in:1',
     ]);
     
-    // Mise à jour du dossier
-    $dossier->update($validated);
+    // Augmenter les limites pour les gros fichiers
+    ini_set('memory_limit', '2G');
+    set_time_limit(600);
     
-    // Enregistrement dans l'historique
-    \App\Models\HistoriqueAction::create([
-        'dossier_id' => $dossier->id,
-        'user_id' => auth()->id(),
-        'service_id' => auth()->user()->service_id,
-        'action' => 'modification',
-        'description' => 'تعديل الدليل ذي الرقم' . $dossier->numero_dossier_judiciaire,
-        'date_action' => now(),
-    ]);
+    $contenu = $dossier->contenu;
+    $typeContenu = $request->type_contenu;
     
-    return redirect()->route('dossiers.detail', $dossier->id)
-        ->with('sucess','تم تعديل المجلد بنجاح.');
+    try {
+        // Gérer le contenu selon son type
+        if ($typeContenu === 'texte') {
+            $contenu = $request->contenu_texte;
+            
+            // Si on change de type (PDF -> texte), supprimer l'ancien fichier PDF
+            if ($dossier->type_contenu === 'pdf') {
+                Storage::disk('public')->delete($dossier->contenu);
+            }
+        } 
+        // Si le type est PDF et qu'on veut remplacer par un nouveau PDF
+        else if ($typeContenu === 'pdf' && $request->hasFile('contenu_pdf')) {
+            // Si on avait déjà un PDF, on le supprime
+            if ($dossier->type_contenu === 'pdf') {
+                Storage::disk('public')->delete($dossier->contenu);
+            }
+            
+            // Traiter le nouveau fichier PDF
+            $fichier = $request->file('contenu_pdf');
+            
+            // Log pour débogage
+            \Illuminate\Support\Facades\Log::info('Mise à jour PDF:', [
+                'name' => $fichier->getClientOriginalName(),
+                'size' => $fichier->getSize(),
+                'size_mb' => round($fichier->getSize() / (1024 * 1024), 2) . ' Mo'
+            ]);
+            
+            $nomFichier = time() . '_' . $fichier->getClientOriginalName();
+            $chemin = $fichier->storeAs('contenus_pdf', $nomFichier, 'public');
+            
+            $contenu = $chemin;
+        }
+        // Si on garde le PDF existant, ne rien changer au contenu
+        
+        // Mise à jour du dossier
+        $dossier->update([
+            'titre' => $validated['titre'],
+            'contenu' => $contenu,
+            'type_contenu' => $typeContenu,
+            'genre' => $validated['genre']
+        ]);
+        
+        // Enregistrement dans l'historique
+        \App\Models\HistoriqueAction::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'service_id' => auth()->user()->service_id,
+            'action' => 'modification',
+            'description' => 'تعديل الدليل ذي الرقم' . $dossier->numero_dossier_judiciaire,
+            'date_action' => now(),
+        ]);
+        
+        return redirect()->route('dossiers.detail', $dossier->id)
+            ->with('success', 'تم تعديل المجلد بنجاح.');
+            
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('Erreur lors de la mise à jour:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'حدث عطل أثناء تعديل المجلد: ' . $e->getMessage());
+    }
 }
 
 /**
@@ -261,6 +358,9 @@ public function destroy(Dossier $dossier)
     }
 
     try {
+        if ($dossier->type_contenu === 'pdf') {
+            Storage::disk('public')->delete($dossier->contenu);
+        }
         // Supprimer les enregistrements associés
         \App\Models\HistoriqueAction::where('dossier_id', $dossier->id)->delete();
         \App\Models\Transfert::where('dossier_id', $dossier->id)->delete();

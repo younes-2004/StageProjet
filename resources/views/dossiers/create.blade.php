@@ -47,7 +47,7 @@
                         </div>
                     @endif
                     
-                    <form method="POST" action="{{ route('dossiers.store') }}" class="mt-2">
+                    <form method="POST" action="{{ route('dossiers.store') }}" class="mt-2" enctype="multipart/form-data">
                         @csrf
                         
                         <div class="row mb-4">
@@ -97,20 +97,52 @@
                                 class="form-control rounded-3 border-light shadow-sm"
                                 placeholder="أدخل عنوان الملف">
                         </div>
-                        
                         <div class="mb-4">
-                            <label for="contenu" class="form-label fw-medium">
-                                <i class="fas fa-file-alt text-secondary me-1"></i>
-                                المحتوى
-                            </label>
-                            <textarea 
-                                id="contenu" 
-                                name="contenu" 
-                                rows="5" 
-                                required 
-                                class="form-control rounded-3 border-light shadow-sm"
-                                placeholder="أدخل محتوى الملف"></textarea>
-                        </div>
+        <label for="type_contenu" class="form-label fw-medium">
+            <i class="fas fa-file-alt text-secondary me-1"></i>
+            نوع المحتوى
+        </label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="type_contenu" id="type_texte" value="texte" checked>
+            <label class="form-check-label" for="type_texte">
+                نص
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="type_contenu" id="type_pdf" value="pdf">
+            <label class="form-check-label" for="type_pdf">
+                ملف PDF
+            </label>
+        </div>
+    </div>
+    
+    <div id="contenu_texte_div" class="mb-4">
+        <label for="contenu_texte" class="form-label fw-medium">
+            <i class="fas fa-file-alt text-secondary me-1"></i>
+            المحتوى (نص)
+        </label>
+        <textarea 
+            id="contenu_texte" 
+            name="contenu_texte" 
+            rows="5" 
+            class="form-control rounded-3 border-light shadow-sm"
+            placeholder="أدخل محتوى الملف"></textarea>
+    </div>
+    
+    <div id="contenu_pdf_div" class="mb-4" style="display: none;">
+        <label for="contenu_pdf" class="form-label fw-medium">
+            <i class="fas fa-file-pdf text-secondary me-1"></i>
+            المحتوى (ملف PDF)
+        </label>
+        <input 
+            type="file" 
+            id="contenu_pdf" 
+            name="contenu_pdf" 
+            accept=".pdf" 
+            class="form-control rounded-3 border-light shadow-sm">
+        <small class="text-muted">الحد الأقصى للحجم: 1 جيجابايت</small>
+    </div>
+
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                             <a href="{{ route('dossiers.mes_dossiers') }}" class="btn btn-secondary me-2">
@@ -126,6 +158,29 @@
         </div>
     </div>
 </div>
+<script>
+    // Script pour basculer entre les options de contenu
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeTexte = document.getElementById('type_texte');
+        const typePdf = document.getElementById('type_pdf');
+        const contenuTexteDiv = document.getElementById('contenu_texte_div');
+        const contenuPdfDiv = document.getElementById('contenu_pdf_div');
+        
+        typeTexte.addEventListener('change', function() {
+            if (this.checked) {
+                contenuTexteDiv.style.display = 'block';
+                contenuPdfDiv.style.display = 'none';
+            }
+        });
+        
+        typePdf.addEventListener('change', function() {
+            if (this.checked) {
+                contenuTexteDiv.style.display = 'none';
+                contenuPdfDiv.style.display = 'block';
+            }
+        });
+    });
+</script>
 
 <style>
     /* التنسيق المتناسق مع الصفحات الأخرى */

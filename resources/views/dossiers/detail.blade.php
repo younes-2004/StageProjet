@@ -31,12 +31,30 @@
                         </div>
                     </div>
                     
-                    <div class="mb-4">
-                        <h6 class="text-muted mb-2">المحتوى</h6>
-                        <div class="p-3 bg-light rounded">
-                            {{ $dossier->contenu }}
-                        </div>
-                    </div>
+                  <!-- Dans detail.blade.php -->
+<div class="mb-4">
+    <h6 class="text-muted mb-2">المحتوى</h6>
+    
+    @if($dossier->type_contenu === 'texte')
+        <div class="p-3 bg-light rounded">
+            {{ $dossier->contenu }}
+        </div>
+    @elseif($dossier->type_contenu === 'pdf')
+        <div class="p-3 bg-light rounded">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-file-pdf text-danger fs-4 me-2"></i>
+                <div>
+                    <a href="{{ asset('storage/' . $dossier->contenu) }}" class="btn btn-sm btn-primary" target="_blank">
+                        <i class="fas fa-eye me-1"></i> عرض الملف PDF
+                    </a>
+                    <a href="{{ asset('storage/' . $dossier->contenu) }}" class="btn btn-sm btn-secondary ms-2" download>
+                        <i class="fas fa-download me-1"></i> تحميل
+                    </a>
+                </div>
+            </div>
+        </div>
+    @endif
+</div>
                     
                     <div class="row mb-4">
                         <div class="col-md-4">

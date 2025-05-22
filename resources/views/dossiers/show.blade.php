@@ -165,14 +165,40 @@
                 </div>
 
                 <div class="mb-3">
-                    <div class="detail-label">
-                        <i class="fas fa-align-left me-1"></i>المحتوى
-                    </div>
-                    <div class="mt-2 text-dark whitespace-pre-line bg-light p-3 rounded">
-                        {{ $dossier->contenu }}
+    <div class="detail-label">
+        <i class="fas fa-align-left me-1"></i>المحتوى
+    </div>
+    
+    @if($dossier->type_contenu === 'texte')
+        <!-- Afficher le texte normalement -->
+        <div class="mt-2 text-dark whitespace-pre-line bg-light p-3 rounded">
+            {{ $dossier->contenu }}
+        </div>
+    @elseif($dossier->type_contenu === 'pdf')
+        <!-- Afficher le lien vers le PDF avec des boutons d'action -->
+        <div class="mt-2 bg-light p-3 rounded">
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <i class="fas fa-file-pdf text-danger fs-1"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">ملف PDF</h6>
+                    <p class="text-muted mb-2 small">
+                        {{ basename($dossier->contenu) }}
+                    </p>
+                    <div>
+                        <a href="{{ asset('storage/' . $dossier->contenu) }}" class="btn btn-sm btn-primary" target="_blank">
+                            <i class="fas fa-eye me-1"></i> عرض الملف
+                        </a>
+                        <a href="{{ asset('storage/' . $dossier->contenu) }}" class="btn btn-sm btn-secondary me-2" download>
+                            <i class="fas fa-download me-1"></i> تحميل
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+    @endif
+</div>
 
             <!-- Boutons d'action -->
             <div class="card-footer d-flex justify-content-between">
