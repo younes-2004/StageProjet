@@ -222,6 +222,7 @@
                                 ->where('user_source_id', auth()->id())
                                 ->latest()
                                 ->first();
+                                $heuresCoulees = $transfert ? now()->diffInHours($transfert->date_envoi) : 0;
                         @endphp
                         <tr class="bg-warning-light">
                             <td>
@@ -235,11 +236,27 @@
                                 {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'N/A' }}
                             </td>
                             <td>
-                                <a href="{{ route('dossiers.show', $dossier->id) }}" 
-                                   class="btn btn-primary btn-sm">
-                                    <i class="fas fa-eye me-1"></i> عرض
-                                </a>
-                            </td>
+            <div class="d-flex">
+                <a href="{{ route('dossiers.show', $dossier->id) }}" 
+                   class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye me-1"></i> عرض
+                </a>
+                
+                @if($heuresCoulees <= 24)
+                <form action="{{ route('receptions.annuler-transfert', $transfert->id) }}" 
+      method="POST" 
+      class="ms-2">
+    @csrf
+    @method('DELETE')
+    <button type="submit" 
+            class="btn btn-warning btn-sm"
+            onclick="return confirm('هل أنت متأكد من إلغاء التحويل؟')">
+        <i class="fas fa-times me-1"></i> إلغاء التحويل
+    </button>
+</form>
+                @endif
+            </div>
+        </td>
                         </tr>
                         @endforeach
                     </tbody>

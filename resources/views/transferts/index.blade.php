@@ -263,7 +263,7 @@
                                             <th style="width: 12%;">تاريخ الاستلام</th>
                                             <th style="width: 8%;">الحالة</th>
                                             <th style="width: 15%;">تعليق</th>
-                                            <th style="width: 7%;">إجراءات</th>
+                                            <th style="width: 20%;">إجراءات</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -350,12 +350,25 @@
                                                         <span class="text-muted fst-italic">لا يوجد تعليق</span>
                                                     @endif
                                                 </td>
-                                                <td>
-                                                    <a href="{{ route('transferts.show', $transfert->id) }}" class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                                <td width="250" style="min-width: 250px !important;" class="actions-column">
+    <div class="d-flex flex-wrap gap-3">
+        <a href="{{ route('transferts.show', $transfert->id) }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-eye"></i> عرض
+        </a>
+        
+        @if(Auth::user()->role === 'greffier_en_chef' && $transfert->statut === 'envoyé')
+            <form action="{{ route('transferts.annuler-transfert', $transfert->id) }}"
+                  method="POST"
+                  onsubmit="return confirm('هل أنت متأكد من إلغاء هذا التحويل؟');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fas fa-times"></i> إلغاء التحويل
+                </button>
+            </form>
+        @endif
+    </div>
+</td>                                      </tr>
                                         @empty
                                             <tr>
                                                 <td colspan="9" class="text-center py-3">
@@ -649,5 +662,41 @@ document.addEventListener('DOMContentLoaded', function() {
             margin-bottom: 1rem;
         }
     }
+    .actions-column {
+    width: 250px !important; 
+    min-width: 250px !important;
+    padding: 10px;
+}
+
+/* Ajouter cette règle à votre table */
+table {
+    table-layout: fixed;
+}
+
+/* Si c'est une table Bootstrap, vous pouvez aussi essayer */
+.table-responsive table td.actions-column {
+    width: 250px !important;
+    min-width: 250px !important;
+}
+
+.actions-column .d-flex {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+/* Pour les écrans mobiles */
+@media (max-width: 768px) {
+    .actions-column {
+        width: 100% !important;
+    }
+    
+    .actions-column .d-flex {
+        flex-direction: column;
+    }
+    
+    .actions-column .btn {
+        margin-bottom: 5px;
+    }
+}
 </style>
 @endsection

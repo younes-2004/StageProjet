@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Transfert;
+use App\Models\DossierValide;
+use App\Models\Reception;
+use App\Models\HistoriqueAction;
 use App\Models\User;
 use App\Models\Service;
 use App\Models\Dossier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class TransfertController extends Controller
 {
@@ -308,4 +312,82 @@ class TransfertController extends Controller
         
         return view('transferts.show', compact('transfert'));
     }
+     // Méthodes existantes...
+
+    /**
+     * Annuler un transfert par l'administrateur (greffier en chef)
+     *
+     * @param int $transfertId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function annulerTransfert($transfertId)
+    {
+        // Vérifier que seul le greffier en chef peut effectuer cette action
+
+        try {
+            // Log des informations de débogage
+            Log::info('Tentative d\'annulation de transfert par administrateur', [
+                'transfert_id' => $transfertId,
+                'user_id' => Auth::id(),
+                'timestamp' => now(),
+            ]);
+
+            // Récupérer le transfert avec ses relations
+            $transfert = Transfert::with(['dossier', 'userSource', 'userDestination'])
+                ->findOrFail($transfertId);
+            
+            // Vérifier qu'aucune validation n'a été faite
+            $validationExiste = DossierValide::where('dossier_id', $transfert->dossier_id)->exists();
+            if ($validationExiste) {
+                Log::warning('Tentative d\'annulation d\'un transfert déjà validé', [
+                    'transfert_id' => $transfertId,
+                    'dossier_id' => $transfert->dossier_id,
+                ]);
+                return redirect()->back()->with('error', 'لا يمكن إلغاء تحويل تم التحقق منه');
+            }
+            
+            // Début de la transaction
+            DB::beginTransaction();
+            
+            // Supprimer le transfert
+            $transfertDeleted = $transfert->delete();
+            
+            // Supprimer les réceptions associées
+            $receptionsDeleted = Reception::where('dossier_id', $transfert->dossier_id)
+                ->where('user_id', $transfert->user_destination_id)
+                ->delete();
+            
+            // Ajouter une entrée dans l'historique des actions
+            $historiqueCreated = HistoriqueAction::create([
+                'dossier_id' => $transfert->dossier_id,
+                'user_id' => Auth::id(),
+                'service_id' => Auth::user()->service_id,
+                'action' => 'annulation', 
+                'description' => 'إلغاء تحويل الملف من قبل كاتب الضبط الرئيسي',
+                'date_action' => now(),
+            ]);
+            
+            // Commit de la transaction
+            DB::commit();
+            
+            // Rediriger avec un message de succès
+            return redirect()->route('transferts.index')
+                ->with('success', 'تم إلغاء التحويل بنجاح من قبل كاتب الضبط الرئيسي');
+        } catch (\Exception $e) {
+            // Rollback en cas d'erreur
+            DB::rollBack();
+            
+            // Log détaillé de l'erreur
+            Log::error('Erreur lors de l\'annulation du transfert par administrateur', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'transfert_id' => $transfertId,
+                'user_id' => Auth::id(),
+            ]);
+            
+            // Rediriger avec un message d'erreur détaillé
+            return redirect()->back()->with('error', 'حدث خطأ أثناء إلغاء التحويل: ' . $e->getMessage());
+        }
+    }
+
 }

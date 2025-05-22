@@ -60,84 +60,89 @@ class DossierController extends Controller
     return view('dossiers.create', compact('services'));
 }
 
-    // Enregistre un nouveau dossier
-    public function store(Request $request)
-    {
-        ini_set('memory_limit', '2G');
-        set_time_limit(600); // 10 minutes
-        \Illuminate\Support\Facades\Log::info('Données de formulaire reçues:', $request->all());
-        \Illuminate\Support\Facades\Log::info('Fichiers reçus:', $request->allFiles());
-        $request->validate([
-            'numero_dossier_judiciaire' => 'required|string|max:255|unique:dossiers,numero_dossier_judiciaire',
-            'titre' => 'required|string|max:255',
-           'type_contenu' => 'required|in:texte,pdf',
+ // Enregistre un nouveau dossier
+public function store(Request $request)
+{
+    ini_set('memory_limit', '2G');
+    set_time_limit(600); // 10 minutes
+    
+    \Illuminate\Support\Facades\Log::info('Données de formulaire reçues:', $request->all());
+    \Illuminate\Support\Facades\Log::info('Fichiers reçus:', $request->allFiles());
+    
+    $request->validate([
+        'numero_dossier_judiciaire' => 'required|string|max:255|unique:dossiers,numero_dossier_judiciaire',
+        'titre' => 'required|string|max:255',
+        'type_contenu' => 'required|in:texte,pdf',
         'contenu_texte' => 'required_if:type_contenu,texte',
-    'contenu_pdf' => 'required_if:type_contenu,pdf|file|mimes:pdf|max:1048576', // 1 Go (en Ko)
-            'genre' => 'required|string|max:255',
-        ]);
-        $contenu = '';
+        'contenu_pdf' => 'required_if:type_contenu,pdf|file|mimes:pdf|max:1048576', // 1 Go (en Ko)
+        'genre' => 'required|string|max:255',
+    ]);
+    
+    $contenu = '';
     $typeContenu = $request->type_contenu;
 
     if ($typeContenu === 'texte') {
         $contenu = $request->contenu_texte;
-    }  $fichier = $request->file('contenu_pdf');
+    } elseif ($typeContenu === 'pdf' && $request->hasFile('contenu_pdf')) {
+        $fichier = $request->file('contenu_pdf');
         
-    // Log la taille du fichier pour déboguer
-    \Illuminate\Support\Facades\Log::info('Téléchargement de fichier volumineux:', [
-        'name' => $fichier->getClientOriginalName(),
-        'size_bytes' => $fichier->getSize(),
-        'size_mb' => round($fichier->getSize() / (1024 * 1024), 2) . ' Mo',
-        'size_gb' => round($fichier->getSize() / (1024 * 1024 * 1024), 4) . ' Go'
+        // Log la taille du fichier pour déboguer
+        \Illuminate\Support\Facades\Log::info('Téléchargement de fichier volumineux:', [
+            'name' => $fichier->getClientOriginalName(),
+            'size_bytes' => $fichier->getSize(),
+            'size_mb' => round($fichier->getSize() / (1024 * 1024), 2) . ' Mo',
+            'size_gb' => round($fichier->getSize() / (1024 * 1024 * 1024), 4) . ' Go'
+        ]);
+        
+        // Utiliser un stockage par morceaux pour les gros fichiers
+        try {
+            $nomFichier = time() . '_' . $fichier->getClientOriginalName();
+            $chemin = $fichier->storeAs('contenus_pdf', $nomFichier, 'public');
+            $contenu = $chemin;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Erreur de téléchargement:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->withInput()->withErrors(['contenu_pdf' => 'فشل تحميل الملف: ' . $e->getMessage()]);
+        }
+    } elseif ($typeContenu === 'pdf') {
+        // Si le type est pdf mais qu'aucun fichier n'a été fourni
+        return redirect()->back()->withInput()->withErrors(['contenu_pdf' => 'الملف PDF مطلوب لهذا النوع من المحتوى.']);
+    }
+    
+    // Création du dossier
+    $dossier = Dossier::create([
+        'numero_dossier_judiciaire' => $request->numero_dossier_judiciaire,
+        'titre' => $request->titre,
+        'contenu' => $contenu,
+        'type_contenu' => $typeContenu,
+        'createur_id' => auth()->id(),
+        'service_id' => auth()->user()->service_id, // Récupération automatique du service_id
+        'statut' => 'Créé',
+        'date_creation' => now(),
+        'genre' => $request->genre,
     ]);
     
-    // Utiliser un stockage par morceaux pour les gros fichiers
-    try {
-        $nomFichier = time() . '_' . $fichier->getClientOriginalName();
-        $chemin = $fichier->storeAs('contenus_pdf', $nomFichier, 'public');
-        $contenu = $chemin;
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::error('Erreur de téléchargement:', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return redirect()->back()->withErrors(['contenu_pdf' => 'فشل تحميل الملف: ' . $e->getMessage()]);
+    // Enregistrement dans l'historique des actions
+    HistoriqueAction::create([
+        'dossier_id' => $dossier->id,
+        'user_id' => auth()->id(),
+        'service_id' => auth()->user()->service_id,
+        'action' => 'creation',
+        'description' => 'إنشاء مجلد برقم' . $dossier->numero_dossier_judiciaire,
+        'date_action' => now(),
+    ]);
+    
+    if ($dossier) {
+        return redirect()->route('dossiers.mes_dossiers')
+            ->with('success', 'تم إنشاء ملف "' . $dossier->titre . '" بنجاح برقم ' . $dossier->numero_dossier_judiciaire);
     }
-
-
-
-        // Création du dossier
-        $dossier = Dossier::create([
-            'numero_dossier_judiciaire' => $request->numero_dossier_judiciaire,
-            'titre' => $request->titre,
-            'contenu' =>$contenu,
-            'type_contenu' => $typeContenu,
-            'createur_id' => auth()->id(),
-            'service_id' => auth()->user()->service_id, // Récupération automatique du service_id
-            'statut' => 'Créé',
-            'date_creation' => now(),
-            'genre' => $request->genre,
-        ]);
-
-        // Enregistrement dans l'historique des actions
-        HistoriqueAction::create([
-            'dossier_id' => $dossier->id,
-            'user_id' => auth()->id(),
-            'service_id' => auth()->user()->service_id,
-            'action' => 'creation',
-            'description' => 'إنشاء مجلد برقم' . $dossier->numero_dossier_judiciaire,
-            'date_action' => now(),
-        ]);
-
-        if ($dossier) {
-            return redirect()->route('dossiers.mes_dossiers')
-                ->with('success', 'تم إنشاء ملف "' . $dossier->titre . '" بنجاح برقم ' . $dossier->numero_dossier_judiciaire);
-        }
-        
-      // En cas d'échec, rediriger avec un message d'erreur
-      return redirect()->route('dossiers.create')
-      ->with('error', 'حدث عطل أثناء محاولة إنشاء المجلد.');
-    }
-
+    
+    // En cas d'échec, rediriger avec un message d'erreur
+    return redirect()->route('dossiers.create')
+        ->with('error', 'حدث عطل أثناء محاولة إنشاء المجلد.');
+}
   /**
  * Affiche un dossier spécifique
  *

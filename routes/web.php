@@ -11,6 +11,8 @@ use App\Http\Controllers\DossierExportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HistoriqueActionController;
+use App\Http\Controllers\TransfertController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +62,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mes-dossiers', [DossierController::class, 'mesDossiers'])->name('dossiers.mes_dossiers');
     Route::get('/dossiers/{dossier}', [DossierController::class, 'show'])->name('dossiers.show');
     Route::get('/dossiers', [DossierController::class, 'index'])->name('dossiers.index');
+    Route::delete('/receptions/annuler-transfert/{transfert}', 
+    [ReceptionController::class, 'annulerTransfert'])
+    ->name('receptions.annuler-transfert')
+    ->middleware(['auth']);
     
     // Routes pour l'envoi et la réception de dossiers
     Route::get('/dossiers/{dossier_id}/envoi', [ReceptionController::class, 'createEnvoi'])
@@ -134,6 +140,11 @@ Route::prefix('admin')->middleware(['auth', 'role:greffier_en_chef'])->group(fun
     Route::get('/utilisateurs', [AdminController::class, 'gestionUtilisateurs'])->name('admin.utilisateurs');
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store']);
+    // Route pour l'annulation de transfert par l'administrateur
+Route::delete('/transferts/annuler-transfert/{transfert}', 
+[TransfertController::class, 'annulerTransfert'])
+->name('transferts.annuler-transfert')
+->middleware(['auth', 'role:greffier_en_chef']);
 });
 
 // Routes pour validation et réaffectation
@@ -163,6 +174,11 @@ Route::middleware(['auth', 'role:greffier_en_chef'])->group(function () {
      Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
     ->name('dossiers.destroy')
     ->middleware('role:greffier_en_chef');
+    // Route pour l'annulation de transfert par l'administrateur
+Route::delete('/transferts/annuler-transfert/{transfert}', 
+[TransfertController::class, 'annulerTransfert'])
+->name('transferts.annuler-transfert')
+->middleware(['auth', 'role:greffier_en_chef']);
 });
 
 Route::get('/test-route', function() {

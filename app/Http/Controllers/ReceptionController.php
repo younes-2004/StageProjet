@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\HistoriqueAction; // Ajoutez cette ligne
+use App\Models\Transfert; // Ajoutez cette ligne
 
 class ReceptionController extends Controller
 {
@@ -375,4 +376,113 @@ public function validerReception(Request $request, $id)
         // Redirection avec un message de succès
         return redirect()->route('receptions.dossiers_valides')->with('success','تمت إعادة تعيين الملف بنجاح.');
     }
-}
+        /**
+         * Annuler un transfert de dossier
+         *
+         * @param Request $request
+         * @param int $transfertId
+         * @return \Illuminate\Http\RedirectResponse
+         */
+        public function annulerTransfert(Request $request, $transfertId)
+        {
+            try {
+                // Log des informations de débogage
+                Log::info('Tentative d\'annulation de transfert', [
+                    'transfert_id' => $transfertId,
+                    'user_id' => Auth::id(),
+                    'timestamp' => now(),
+                ]);
+    
+                // Récupérer le transfert avec ses relations
+                $transfert = Transfert::with(['dossier', 'userSource', 'userDestination'])
+                    ->findOrFail($transfertId);
+                
+                // Vérifier que le transfert appartient à l'utilisateur connecté
+                if ($transfert->user_source_id !== Auth::id()) {
+                    Log::warning('Tentative d\'annulation non autorisée', [
+                        'transfert_id' => $transfertId,
+                        'source_user_id' => $transfert->user_source_id,
+                        'current_user_id' => Auth::id(),
+                    ]);
+                    return redirect()->back()->with('error', 'غير مصرح لك بإلغاء هذا التحويل');
+                }
+                
+                // Vérifier le délai (moins de 24 heures)
+                $heuresCoulees = now()->diffInHours($transfert->date_envoi);
+                if ($heuresCoulees > 24) {
+                    Log::warning('Tentative d\'annulation après 24 heures', [
+                        'transfert_id' => $transfertId,
+                        'heures_coulees' => $heuresCoulees,
+                    ]);
+                    return redirect()->back()->with('error', 'لا يمكن إلغاء التحويل بعد 24 ساعة');
+                }
+                
+                // Vérifier qu'aucune validation n'a été faite
+                $validationExiste = DossierValide::where('dossier_id', $transfert->dossier_id)->exists();
+                if ($validationExiste) {
+                    Log::warning('Tentative d\'annulation d\'un transfert déjà validé', [
+                        'transfert_id' => $transfertId,
+                        'dossier_id' => $transfert->dossier_id,
+                    ]);
+                    return redirect()->back()->with('error', 'لا يمكن إلغاء تحويل تم التحقق منه');
+                }
+                
+                // Début de la transaction
+                DB::beginTransaction();
+                
+                // Supprimer le transfert
+                $transfertDeleted = $transfert->delete();
+                Log::info('Suppression du transfert', [
+                    'transfert_id' => $transfertId,
+                    'deleted' => $transfertDeleted,
+                ]);
+                
+                // Supprimer les réceptions associées
+                $receptionsDeleted = Reception::where('dossier_id', $transfert->dossier_id)
+                    ->where('user_id', $transfert->user_destination_id)
+                    ->delete();
+                Log::info('Suppression des réceptions', [
+                    'dossier_id' => $transfert->dossier_id,
+                    'user_destination_id' => $transfert->user_destination_id,
+                    'deleted' => $receptionsDeleted,
+                ]);
+                
+                // Ajouter une entrée dans l'historique des actions
+                $historiqueCreated = HistoriqueAction::create([
+                    'dossier_id' => $transfert->dossier_id,
+                    'user_id' => Auth::id(),
+                    'service_id' => Auth::user()->service_id,
+                    'action' => 'annulation', // Utiliser l'action ajoutée à l'ENUM
+                    'description' => 'إلغاء تحويل الملف قبل التحقق',
+                    'date_action' => now(),
+                ]);
+                Log::info('Création de l\'historique', [
+                    'historique_id' => $historiqueCreated->id,
+                ]);
+                
+                // Commit de la transaction
+                DB::commit();
+                
+                // Rediriger avec un message de succès
+                return redirect()->route('dossiers.mes_dossiers')
+                    ->with('success', 'تم إلغاء التحويل بنجاح');
+            } catch (\Exception $e) {
+                // Rollback en cas d'erreur
+                DB::rollBack();
+                
+                // Log détaillé de l'erreur
+                Log::error('Erreur lors de l\'annulation du transfert', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'transfert_id' => $transfertId,
+                    'user_id' => Auth::id(),
+                ]);
+                
+                // Rediriger avec un message d'erreur détaillé
+                return redirect()->back()->with('error', 'حدث خطأ أثناء إلغاء التحويل: ' . $e->getMessage());
+            }
+        }
+    }
+
+
+ 
