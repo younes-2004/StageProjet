@@ -14,7 +14,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\HistoriqueAction; // Ajoutez cette ligne
 use App\Models\Transfert; // Ajoutez cette ligne
-
 class ReceptionController extends Controller
 {
     /**
@@ -320,15 +319,21 @@ public function validerReception(Request $request, $id)
 
         return view('receptions.reaffecter', compact('dossier', 'users','services'));
     }
-
-    public function archiver(Dossier $dossier)
+    public function archives()
     {
-        // Mettre à jour le statut du dossier en "Archivé"
-        $dossier->update(['statut' => 'Archivé']);
-
-        return redirect()->route('receptions.dossiers_valides')->with('success', 'Le dossier a été archivé avec succès.');
+        // Vérifier que l'utilisateur est un greffier en chef
+        if (auth()->user()->role !== 'greffier_en_chef') {
+            abort(403, 'غير مسموح لك بعرض الملفات المؤرشفة');
+        }
+    
+        // Récupérer uniquement les dossiers avec le statut "Archivé"
+        $dossiersArchives = Dossier::where('statut', 'Archivé')
+            ->with('service')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(15);
+        
+        return view('dossiers.archives', compact('dossiersArchives'));
     }
-
     public function storeReaffectation(Request $request, Dossier $dossier)
     {
         $validated = $request->validate([

@@ -18,16 +18,15 @@ return new class extends Migration
             $table->foreignId('dossier_id')->constrained('dossiers')->onDelete('cascade');
             $table->foreignId('service_source_id')->constrained('services')->onDelete('cascade');
             $table->foreignId('service_destination_id')->constrained('services')->onDelete('cascade');
-            $table->foreignId('user_source_id')->constrained('utilisateurs')->onDelete('cascade');
-            $table->foreignId('user_destination_id')->nullable()->constrained('utilisateurs')->onDelete('set null');
-            $table->date('date_envoi');
-            $table->date('date_reception')->nullable();
-            $table->enum('statut', ['envoyé', 'reçu', 'validé', 'refusé']);
+            $table->foreignId('user_source_id')->constrained('users')->onDelete('cascade'); 
+            $table->foreignId('user_destination_id')->nullable()->constrained('users')->onDelete('set null'); 
+            $table->datetime('date_envoi')->nullable(); 
+            $table->datetime('date_reception')->nullable(); 
+            $table->enum('statut', ['envoyé', 'reçu', 'validé', 'refusé', 'réaffectation']); 
             $table->text('commentaire')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *

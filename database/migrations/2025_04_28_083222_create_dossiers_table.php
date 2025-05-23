@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('dossiers', function (Blueprint $table) {
             $table->id(); // Identifiant auto-incrémenté
-            $table->renameColumn('numéro du dossier judiciaire', 'numero_dossier_judiciaire'); // Numéro du dossier au tribunal
+            $table->string('numero_dossier_judiciaire')->nullable(); 
             $table->string('titre');
             $table->text('contenu');
-            $table->date('date_creation');
+            $table->timestamp('date_creation')->useCurrent(); 
             $table->enum('statut', [
                 'Créé',
                 'En attente',
@@ -28,9 +28,8 @@ return new class extends Migration
                 'Réaffecté',
                 'Archivé'
             ]);
-            $table->foreignId('createur_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers `users`
-            $table->foreignId('service_id')->constrained('services')->onDelete('cascade'); // Clé étrangère vers `services`
-            $table->string('statut');
+            $table->foreignId('createur_id')->nullable()->constrained('users')->onDelete('cascade'); 
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
             $table->timestamps();
         });
     }

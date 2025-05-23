@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Autres routes de l'application...
 });
 
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -62,6 +63,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mes-dossiers', [DossierController::class, 'mesDossiers'])->name('dossiers.mes_dossiers');
     Route::get('/dossiers/{dossier}', [DossierController::class, 'show'])->name('dossiers.show');
     Route::get('/dossiers', [DossierController::class, 'index'])->name('dossiers.index');
+    Route::patch('/dossiers/{dossier}/archiver', [DossierController::class, 'archiver'])
+    ->name('dossiers.archiver')
+    ->middleware(['auth']);
     Route::delete('/receptions/annuler-transfert/{transfert}', 
     [ReceptionController::class, 'annulerTransfert'])
     ->name('receptions.annuler-transfert')
@@ -105,6 +109,9 @@ Route::middleware(['auth'])->group(function () {
     // Archivage d'un dossier
     Route::patch('/receptions/{dossier}/archiver', [ReceptionController::class, 'archiver'])
         ->name('dossiers.archiver');
+        Route::get('/dossiers/archives', [DossierController::class, 'archives'])
+    ->name('dossiers.archives')
+    ->middleware(['auth']);
     
     // Routes pour afficher les dossiers validés
     Route::get('/dossiers-valides', [ReceptionController::class, 'dossiersValides'])

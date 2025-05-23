@@ -384,5 +384,19 @@ public function destroy(Dossier $dossier)
             ->with('حدث خطأ أثناء محاولة مسح المجلد' . $e->getMessage());
     }
 }
+public function archives()
+{
+    // Vérifier que l'utilisateur est un greffier en chef
+    if (auth()->user()->role !== 'greffier_en_chef') {
+        abort(403, 'غير مسموح لك بعرض الملفات المؤرشفة');
+    }
 
+    // Récupérer uniquement les dossiers avec le statut "Archivé"
+    $dossiersArchives = Dossier::where('statut', 'Archivé')
+        ->with('service')
+        ->orderBy('updated_at', 'desc')
+        ->paginate(15);
+    
+    return view('dossiers.archives', compact('dossiersArchives'));
+}
 }

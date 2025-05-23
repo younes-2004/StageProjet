@@ -17,13 +17,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dossier_id')->constrained('dossiers')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->timestamp('date_validation');
+            $table->timestamp('date_validation')->useCurrent()->useCurrentOnUpdate();
             $table->text('commentaire')->nullable();
             $table->text('observations')->nullable();
             $table->timestamps();
         });
 
-        // Ajouter la colonne traite à la table receptions si elle n'existe pas déjà
+        // ATTENTION: Cette migration modifie aussi la table 'receptions'
+        // en ajoutant les colonnes 'traite' et 'date_traitement'
+        // car elles sont liées fonctionnellement à la validation des dossiers
         if (!Schema::hasColumn('receptions', 'traite')) {
             Schema::table('receptions', function (Blueprint $table) {
                 $table->boolean('traite')->default(false);
