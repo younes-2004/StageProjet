@@ -39,9 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dossiers/create', [DossierController::class, 'create'])->name('dossiers.create');
     Route::get('/dossiers/search', [DossierSearchController::class, 'index'])->name('dossiers.search');
     Route::get('/dossiers/export', [DossierExportController::class, 'export'])->name('dossiers.export');
-    Route::get('/dossiers/archives', [DossierController::class, 'archives'])
-        ->name('dossiers.archives')
-        ->middleware('role:greffier_en_chef');
+    Route::get('/dossiers/archives', [DossierController::class, 'archives'])->name('dossiers.archives');
     Route::get('/dossiers/dashboard', [DossierDashboardController::class, 'index'])
         ->name('dossiers.dashboard')
         ->middleware('role:greffier_en_chef');
@@ -51,8 +49,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/dossiers', [DossierController::class, 'store'])->name('dossiers.store');
     Route::put('/dossiers/{dossier}', [DossierController::class, 'update'])->name('dossiers.update');
     Route::patch('/dossiers/{dossier}/archiver', [DossierController::class, 'archiver'])
-        ->name('dossiers.archiver')
-        ->middleware('role:greffier_en_chef');
+        ->name('dossiers.archiver');
+        Route::patch('/dossiers/{dossier}/desarchiver', [DossierController::class, 'desarchiver'])
+        ->name('dossiers.desarchiver');
+    
     Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
         ->name('dossiers.destroy')
         ->middleware('role:greffier_en_chef');

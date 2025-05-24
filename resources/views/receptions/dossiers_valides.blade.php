@@ -96,7 +96,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @php
+@php
     // Filtrer les dossiers validés qui n'ont pas encore été réaffectés ET qui ne sont pas archivés
     $dossiersNonReaffectes = $dossiersValides->filter(function($dossierValide) {
         // Exclure les dossiers archivés
@@ -245,8 +245,8 @@
                                         <th style="width: 15%;">الرقم</th>
                                         <th style="width: 25%;">عنوان الملف</th>
                                         <th style="width: 20%;">المستلم</th>
-                                        <th style="width: 25%;">تاريخ إعادة التعيين</th>
-                                        <th class="text-center" style="width: 15%;">إجراءات</th>
+                                        <th style="width: 20%;">تاريخ إعادة التعيين</th>
+                                        <th class="text-center" style="width: 20%;">إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -269,6 +269,9 @@
                                         </tr>
                                     @else
                                         @foreach($dossiersReaffectesNonValides as $transfert)
+                                            @php
+                                                $heuresCoulees = now()->diffInHours($transfert->date_envoi);
+                                            @endphp
                                             <tr>
                                                 <td>
                                                     <span class="d-inline-block rounded-circle bg-warning me-2" style="width:10px;height:10px"></span>
@@ -286,10 +289,36 @@
                                                     {{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'غير متوفر' }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <a href="{{ route('dossiers.show', $transfert->dossier_id) }}" 
-                                                    class="btn btn-sm btn-primary px-3 py-1">
-                                                        <i class="fas fa-eye me-1"></i> عرض
-                                                    </a>
+                                                    <div class="d-flex justify-content-center">
+                                                        <div class="btn-group btn-group-spaced" role="group">
+                                                            <!-- Bouton pour consulter les détails -->
+                                                            <a href="{{ route('dossiers.show', $transfert->dossier_id) }}" 
+                                                               class="btn btn-primary">
+                                                                <i class="fas fa-eye me-1"></i> عرض
+                                                            </a>
+                                                            
+                                                            <!-- Bouton d'annulation de la réaffectation (dans les 24h) -->
+                                                            @if($heuresCoulees <= 24)
+                                                                <form action="{{ route('receptions.annuler-transfert', $transfert->id) }}" 
+                                                                      method="POST" 
+                                                                      style="display: inline;"
+                                                                      onsubmit="return confirm('هل أنت متأكد من إلغاء إعادة التعيين؟ سيعود الملف إلى قائمة الملفات المتحقق منها غير المعاد تعيينها.');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-danger">
+                                                                        <i class="fas fa-times me-1"></i> إلغاء إعادة التعيين
+                                                                    </button>
+                                                                </form>
+                                                            @else
+                                                                <button type="button" 
+                                                                        class="btn btn-outline-secondary" 
+                                                                        disabled
+                                                                        title="لا يمكن إلغاء إعادة التعيين بعد 24 ساعة">
+                                                                    <i class="fas fa-clock me-1"></i> انتهت المهلة
+                                                                </button>
+                                                            @endif
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -527,6 +556,10 @@ document.addEventListener('DOMContentLoaded', function() {
         background: linear-gradient(135deg, #6c757d, #5a6268);
     }
     
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+    
     /* Style pour les badges et alertes */
     .badge {
         font-weight: 500;
@@ -660,6 +693,17 @@ document.addEventListener('DOMContentLoaded', function() {
         color: #6c757d;
     }
     
+    /* Style pour les boutons désactivés */
+    .btn[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .btn[disabled]:hover {
+        transform: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
         .btn-group {
@@ -670,6 +714,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         .filter-btn {
             white-space: nowrap;
+        }
+        
+        .btn-group-spaced {
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .btn-group-spaced .btn {
+            width: 100%;
+            margin-bottom: 2px;
         }
     }
 </style>

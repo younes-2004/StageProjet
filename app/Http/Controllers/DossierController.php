@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Transfert;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Reception;
+use App\Models\DossierValide;
 
 class DossierController extends Controller
 {
@@ -18,41 +20,53 @@ class DossierController extends Controller
         return view('dossiers.mes_dossiers', compact('dossiers'));
     }
     public function mesDossiers()
-    {
-        $userId = auth()->id();
-        
-        // Récupérer les IDs des dossiers qui ont été validés
-        $dossiersValidesIds = \App\Models\Transfert::where('user_source_id', $userId)
-            ->whereNotNull('date_reception')
-            ->pluck('dossier_id')
-            ->toArray();
-        
-        // Si pas de dossiers validés, utiliser un tableau vide
-        if (empty($dossiersValidesIds)) {
-            $dossiersValidesIds = [0]; // Valeur impossible pour éviter l'erreur SQL
-        }
-        
-        // Récupérer les dossiers non validés
-        $dossiers = Dossier::where('createur_id', $userId)
-            ->whereNotIn('id', $dossiersValidesIds)
-            ->get();
-        
-        // Récupérer uniquement les transferts validés pour l'historique
-        $dossiersEnvoyes = \App\Models\Transfert::where('user_source_id', $userId)
-            ->whereNotNull('date_reception')
-            ->with(['dossier', 'userDestination', 'serviceDestination'])
-            ->orderBy('date_reception', 'desc')
-            ->get();
-        
-        // Make sure to log what's being passed to the view
-        \Illuminate\Support\Facades\Log::info('Données transmises à la vue', [
-            'dossiers_count' => $dossiers->count(),
-            'dossiersEnvoyes_count' => $dossiersEnvoyes->count(),
-            'dossierEnvoyes_first' => $dossiersEnvoyes->first()
-        ]);
-        
-        return view('dossiers.mes_dossiers', compact('dossiers', 'dossiersEnvoyes'));
+{
+    $userId = auth()->id();
+    
+    // Récupérer les IDs des dossiers qui ont été validés ET qui ne sont pas désarchivés
+    $dossiersValidesIds = \App\Models\Transfert::where('user_source_id', $userId)
+        ->whereNotNull('date_reception')
+        ->whereHas('dossier', function($query) {
+            $query->where('statut', '!=', 'Créé'); // Exclure les dossiers désarchivés (statut Créé)
+        })
+        ->pluck('dossier_id')
+        ->toArray();
+    
+    // Si pas de dossiers validés, utiliser un tableau vide
+    if (empty($dossiersValidesIds)) {
+        $dossiersValidesIds = [0]; // Valeur impossible pour éviter l'erreur SQL
     }
+    
+    // Récupérer les dossiers du user avec les conditions suivantes:
+    // 1. Créés par lui (y compris les désarchivés)
+    // 2. Pas dans la liste des dossiers déjà transférés/validés
+    // 3. Statut != 'Archivé' (pour exclure les archivés)
+    $dossiers = Dossier::where('createur_id', $userId)
+        ->whereNotIn('id', $dossiersValidesIds)
+        ->where('statut', '!=', 'Archivé') // Exclure les dossiers archivés
+        ->get();
+    
+    // Récupérer uniquement les transferts validés pour l'historique (exclure les désarchivés)
+    $dossiersEnvoyes = \App\Models\Transfert::where('user_source_id', $userId)
+        ->whereNotNull('date_reception')
+        ->whereHas('dossier', function($query) {
+            $query->where('statut', '!=', 'Créé'); // Exclure les dossiers désarchivés de l'historique
+        })
+        ->with(['dossier', 'userDestination', 'serviceDestination'])
+        ->orderBy('date_reception', 'desc')
+        ->get();
+    
+    // Log pour débogage
+    \Illuminate\Support\Facades\Log::info('Données transmises à la vue', [
+        'dossiers_count' => $dossiers->count(),
+        'dossiersEnvoyes_count' => $dossiersEnvoyes->count(),
+        'user_id' => $userId,
+        'dossiers_ids' => $dossiers->pluck('id')->toArray(),
+        'dossiersValidesIds' => $dossiersValidesIds
+    ]);
+    
+    return view('dossiers.mes_dossiers', compact('dossiers', 'dossiersEnvoyes'));
+}
     // Affiche le formulaire de création
     public function create()
 {
@@ -385,14 +399,18 @@ public function destroy(Dossier $dossier)
 
 public function archives()
 {
-    // Vérifier que l'utilisateur est un greffier en chef
-    if (auth()->user()->role !== 'greffier_en_chef') {
-        abort(403, 'غير مسموح لك بعرض الملفات المؤرشفة');
-    }
-
-    // Récupérer uniquement les dossiers avec le statut "Archivé"
+    $currentUserId = auth()->id();
+    
+    // Tous les utilisateurs (greffier et greffier_en_chef) ne voient que leurs propres dossiers archivés
+    // Soit les dossiers qu'ils ont créés, soit les dossiers qu'ils ont validés
     $dossiersArchives = Dossier::where('statut', 'Archivé')
         ->with('service')
+        ->where(function($query) use ($currentUserId) {
+            $query->where('createur_id', $currentUserId)
+                  ->orWhereHas('dossiersValides', function($subQuery) use ($currentUserId) {
+                      $subQuery->where('user_id', $currentUserId);
+                  });
+        })
         ->orderBy('updated_at', 'desc')
         ->paginate(15);
     
@@ -428,6 +446,64 @@ public function archiver(Request $request, Dossier $dossier)
     } catch (\Exception $e) {
         return redirect()->back()
             ->with('error', 'حدث خطأ أثناء أرشفة الملف: ' . $e->getMessage());
+    }
+}
+public function desarchiver(Request $request, Dossier $dossier)
+{
+    try {
+        // Vérifier que l'utilisateur peut désarchiver le dossier
+        $currentUserId = auth()->id();
+        $userRole = auth()->user()->role;
+        
+        // Autoriser si : créateur du dossier OU greffier en chef OU a validé le dossier
+        $isAuthorized = (
+            $dossier->createur_id === $currentUserId ||
+            $userRole === 'greffier_en_chef' ||
+            \App\Models\DossierValide::where('dossier_id', $dossier->id)
+                ->where('user_id', $currentUserId)
+                ->exists()
+        );
+
+        if (!$isAuthorized) {
+            return redirect()->back()->with('error', 'غير مسموح لك بإلغاء أرشفة هذا الملف');
+        }
+
+        // Vérifier que le dossier est bien archivé
+        if ($dossier->statut !== 'Archivé') {
+            return redirect()->back()->with('error', 'هذا الملف ليس مؤرشفاً');
+        }
+
+        // Le dossier désarchivé retourne toujours au statut "Créé"
+        $nouveauStatut = 'Créé';
+
+        // Supprimer complètement les anciens transferts/réceptions pour éviter les conflits
+        // L'historique sera préservé dans historique_actions pour l'administrateur
+        \App\Models\Transfert::where('dossier_id', $dossier->id)->delete();
+        \App\Models\Reception::where('dossier_id', $dossier->id)->delete();
+        \App\Models\DossierValide::where('dossier_id', $dossier->id)->delete();
+
+        // Mettre à jour le statut du dossier ET changer le créateur
+        $dossier->update([
+            'statut' => $nouveauStatut,
+            'createur_id' => auth()->id() // La personne qui désarchive devient le nouveau créateur
+        ]);
+
+        // Ajouter une entrée dans l'historique des actions
+        \App\Models\HistoriqueAction::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'service_id' => auth()->user()->service_id,
+            'action' => 'modification',
+            'description' => 'إلغاء أرشفة الملف وإعادة تعيينه كملف جديد - تم حذف جميع المعاملات السابقة',
+            'date_action' => now(),
+        ]);
+
+        return redirect()->route('dossiers.archives')
+            ->with('success', 'تم إلغاء أرشفة الملف بنجاح وإعادته إلى ملفاتك');
+
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'حدث خطأ أثناء إلغاء أرشفة الملف: ' . $e->getMessage());
     }
 }
 }

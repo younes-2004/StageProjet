@@ -43,14 +43,24 @@
         </div>
     </div>
 
-    <!-- Non Envoyé Dossiers Section -->
     @php
         $nonEnvoyes = $dossiers->filter(function($dossier) {
-            $transfert = \App\Models\Transfert::where('dossier_id', $dossier->id)
+            // Un dossier est "non envoyé" si :
+            // 1. Son statut est "Créé" ET
+            // 2. Il n'a pas de transfert actif non validé
+            
+            if ($dossier->statut !== 'Créé') {
+                return false; // Seuls les dossiers avec statut "Créé" peuvent être "non envoyés"
+            }
+            
+            // Vérifier qu'il n'y a pas de transfert actif (non validé)
+            $transfertActif = \App\Models\Transfert::where('dossier_id', $dossier->id)
                 ->where('user_source_id', auth()->id())
+                ->whereNull('date_reception') // Transfert non validé
                 ->latest()
                 ->first();
-            return !$transfert;
+            
+            return !$transfertActif; // Retourne true si pas de transfert actif
         });
     @endphp
 
