@@ -19,7 +19,7 @@
         </div>
         <div class="user-info">
             <h6 class="user-name">{{ Auth::user()->name }} {{ Auth::user()->fname }}</h6>
-            <span class="user-role">{{ Auth::user()->role == 'greffier_en_chef' ? 'كاتب ضبط رئيسي' : 'كاتب ضبط' }}</span>
+            <span class="user-role">{{ Auth::user()->role == 'greffier_en_chef' ? 'رئيس كتاب الضبط' : 'كاتب ضبط' }}</span>
         </div>
     </div>
         
@@ -49,6 +49,9 @@
                 </li>
                 <li class="{{ request()->routeIs('dossiers.search') ? 'active' : '' }}">
                     <a href="{{ route('dossiers.search') }}">بحث متقدم</a>
+                </li>
+                <li class="{{ request()->routeIs('dossiers.archives') ? 'active' : '' }}">
+                    <a href="{{ route('dossiers.archives') }}">الأرشفة</a>
                 </li>
             </ul>
         </li>

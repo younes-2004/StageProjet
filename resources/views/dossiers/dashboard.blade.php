@@ -169,8 +169,8 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                <th>رقم الملف القانوني</th>
-                                <th>العنوان</th>
+                                <th>رقم الملف بالمحكمة</th>
+                                <th> المصدر</th>
                                 <th>الحالة</th>
                                 <th>المنشئ</th>
                                 <th>القسم</th>

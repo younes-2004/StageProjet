@@ -319,21 +319,6 @@ public function validerReception(Request $request, $id)
 
         return view('receptions.reaffecter', compact('dossier', 'users','services'));
     }
-    public function archives()
-    {
-        // Vérifier que l'utilisateur est un greffier en chef
-        if (auth()->user()->role !== 'greffier_en_chef') {
-            abort(403, 'غير مسموح لك بعرض الملفات المؤرشفة');
-        }
-    
-        // Récupérer uniquement les dossiers avec le statut "Archivé"
-        $dossiersArchives = Dossier::where('statut', 'Archivé')
-            ->with('service')
-            ->orderBy('updated_at', 'desc')
-            ->paginate(15);
-        
-        return view('dossiers.archives', compact('dossiersArchives'));
-    }
     public function storeReaffectation(Request $request, Dossier $dossier)
     {
         $validated = $request->validate([
@@ -487,6 +472,38 @@ public function validerReception(Request $request, $id)
                 return redirect()->back()->with('error', 'حدث خطأ أثناء إلغاء التحويل: ' . $e->getMessage());
             }
         }
+        // À ajouter dans ReceptionController.php
+public function archiver(Request $request, Dossier $dossier)
+{
+    // Vérifier les permissions (seul le greffier en chef peut archiver)
+    if (auth()->user()->role !== 'greffier_en_chef') {
+        abort(403, 'غير مسموح لك بأرشفة الملفات');
+    }
+
+    try {
+        // Mettre à jour le statut du dossier à "Archivé"
+        $dossier->update([
+            'statut' => 'Archivé'
+        ]);
+
+        // Ajouter une entrée dans l'historique des actions
+        HistoriqueAction::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'service_id' => auth()->user()->service_id,
+            'action' => 'archivage',
+            'description' => 'تم أرشفة الملف',
+            'date_action' => now(),
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'تم أرشفة الملف بنجاح');
+
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'حدث خطأ أثناء أرشفة الملف: ' . $e->getMessage());
+    }
+}
     }
 
 

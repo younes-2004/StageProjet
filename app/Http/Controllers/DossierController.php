@@ -166,10 +166,7 @@ public function show(Dossier $dossier)
         ->where('user_id', $currentUserId)
         ->exists();
     
-    // Autoriser l'accès si l'utilisateur est le créateur, un récepteur ou a validé le dossier
-    if (!$isCreator && !$isReceiver && !$hasValidated) {
-        abort(403, 'وصول غير مصرح به: أنت لست منشئ هذا المجلد ولا من المستلمين المعتمدين له');
-    }
+    
 
     // Retourner la vue avec les détails du dossier
     return view('dossiers.show', compact('dossier'));
@@ -384,6 +381,8 @@ public function destroy(Dossier $dossier)
             ->with('حدث خطأ أثناء محاولة مسح المجلد' . $e->getMessage());
     }
 }
+// Ajoutez cette méthode à la fin de votre DossierController.php
+
 public function archives()
 {
     // Vérifier que l'utilisateur est un greffier en chef
@@ -398,5 +397,37 @@ public function archives()
         ->paginate(15);
     
     return view('dossiers.archives', compact('dossiersArchives'));
+}
+
+public function archiver(Request $request, Dossier $dossier)
+{
+    // Vérifier que l'utilisateur est un greffier en chef
+    if (auth()->user()->role !== 'greffier_en_chef') {
+        abort(403, 'غير مسموح لك بأرشفة الملفات');
+    }
+
+    try {
+        // Mettre à jour le statut du dossier à "Archivé"
+        $dossier->update([
+            'statut' => 'Archivé'
+        ]);
+
+        // Ajouter une entrée dans l'historique des actions
+        \App\Models\HistoriqueAction::create([
+            'dossier_id' => $dossier->id,
+            'user_id' => auth()->id(),
+            'service_id' => auth()->user()->service_id,
+            'action' => 'archivage',
+            'description' => 'تم أرشفة الملف',
+            'date_action' => now(),
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'تم أرشفة الملف بنجاح');
+
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'حدث خطأ أثناء أرشفة الملف: ' . $e->getMessage());
+    }
 }
 }

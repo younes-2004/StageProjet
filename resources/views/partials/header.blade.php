@@ -25,6 +25,12 @@
                 </span>
                 <span class="nav-text">ملف جديد</span>
             </a>
+            <a href="{{ route('dossiers.archives') }}" class="flex items-center text-gray-700 font-medium nav-item">
+                <span class="bg-gray-100 text-gray-600 p-2 rounded-md ml-2">
+                    <i class="fas fa-tag"></i>
+                </span>
+                <span class="nav-text">الأرشفة</span>
+            </a>
             
             @if(Auth::user()->role == 'greffier_en_chef')
                 <a href="{{ route('users.index') }}" class="flex items-center text-gray-700 font-medium nav-item">

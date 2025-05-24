@@ -71,7 +71,7 @@
                                 <div class="mb-3">
                                     <label for="genre" class="form-label fw-medium">
                                         <i class="fas fa-tag text-secondary me-1"></i>
-                                        النوع
+                              النوع
                                     </label>
                                     <input 
                                         id="genre" 
@@ -87,7 +87,7 @@
                         <div class="mb-3">
                             <label for="titre" class="form-label fw-medium">
                                 <i class="fas fa-heading text-secondary me-1"></i>
-                                العنوان
+                             المصدر
                             </label>
                             <input 
                                 id="titre" 

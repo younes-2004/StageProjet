@@ -96,18 +96,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        // Filtrer les dossiers validés qui n'ont pas encore été réaffectés
-                                        $dossiersNonReaffectes = $dossiersValides->filter(function($dossierValide) {
-                                            $transfert = \App\Models\Transfert::where('dossier_id', $dossierValide->dossier_id)
-                                                ->where('user_source_id', auth()->id())
-                                                ->where('statut', 'réaffectation')
-                                                ->latest()
-                                                ->first();
-                                            
-                                            return !$transfert; // Retourne true si aucun transfert de réaffectation
-                                        });
-                                    @endphp
+                                @php
+    // Filtrer les dossiers validés qui n'ont pas encore été réaffectés ET qui ne sont pas archivés
+    $dossiersNonReaffectes = $dossiersValides->filter(function($dossierValide) {
+        // Exclure les dossiers archivés
+        if (!$dossierValide->dossier || $dossierValide->dossier->statut === 'Archivé') {
+            return false;
+        }
+        
+        $transfert = \App\Models\Transfert::where('dossier_id', $dossierValide->dossier_id)
+            ->where('user_source_id', auth()->id())
+            ->where('statut', 'réaffectation')
+            ->latest()
+            ->first();
+        
+        return !$transfert; // Retourne true si aucun transfert de réaffectation
+    });
+@endphp 
 
                                     @if($dossiersNonReaffectes->isEmpty())
                                         <tr>
@@ -117,12 +122,13 @@
                                             </td>
                                         </tr>
                                     @else
-                                        @foreach($dossiersNonReaffectes as $dossierValide)
-                                            <tr>
-                                                <!-- Titre du dossier -->
-                                                <td>
-                                                    <span class="fw-medium">{{ $dossierValide->dossier->titre }}</span>
-                                                </td>
+                                    @foreach($dossiersNonReaffectes as $dossierValide)
+    @if($dossierValide->dossier && $dossierValide->dossier->statut !== 'Archivé')
+        <tr>
+            <!-- Titre du dossier -->
+            <td>
+                <span class="fw-medium">{{ $dossierValide->dossier->titre }}</span>
+            </td>
                                                 
                                                 <!-- Date de validation -->
                                                 <td class="text-muted">
@@ -179,6 +185,7 @@
                                                     </div>
                                                 </td>
                                             </tr>
+                                            @endif
                                         @endforeach
                                     @endif
                                 </tbody>
