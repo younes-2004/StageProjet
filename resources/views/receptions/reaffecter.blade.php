@@ -14,14 +14,14 @@
             </label>
             <div class="p-3 bg-light border-0 rounded-3">
                 <div class="row">
-                    <div class="col-md-4">
-                        <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>الرقم:</strong> {{ $dossier->id }}</p>
+                    <div class="col-md-6">
+                        <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>رقم الملف القضائي:</strong> {{ $dossier->numero_dossier_judiciaire ?? 'غير محدد' }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>العنوان:</strong> {{ $dossier->titre ?? 'غير محدد' }}</p>
+                    <div class="col-md-6">
+                        <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>المصدر:</strong> {{ $dossier->titre ?? 'غير محدد' }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>المرجع:</strong> {{ $dossier->reference ?? 'غير محدد' }}</p>
+                    <div class="col-md-6">
+                        <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>النوع:</strong> {{ $dossier->genre ?? 'غير محدد' }}</p>
                     </div>
                 </div>
             </div>
@@ -32,9 +32,9 @@
                 <i class="fas fa-building text-primary me-1"></i>القسم:
             </label>
             <select id="service_id" name="service_id" class="form-select @error('service_id') is-invalid @enderror" required onchange="updateUsersList()">
-                <option value="" style="text-align: center"; >-- اختر قسماً --</option>
+                <option value="" style="text-align: center;">-- اختر قسماً --</option>
                 @foreach($services as $service)
-                    <option value="{{ $service->id }}" style="text-align: center";>{{ $service->nom }}</option>
+                    <option value="{{ $service->id }}" style="text-align: center;">{{ $service->nom }}</option>
                 @endforeach
             </select>
             @error('service_id')
@@ -45,13 +45,13 @@
         </div>
         
         <div class="mb-4">
-            <label for="user_id" class="form-label fw-semibold" style="text-align: center";>
+            <label for="user_id" class="form-label fw-semibold">
                 <i class="fas fa-user text-primary me-1"></i>إعادة تعيين إلى:
             </label>
-            <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required  style="text-align: center";>
-                <option value=""  style="text-align: center";>-- اختر مستخدماً --</option>
+            <select id="user_id" name="user_id" class="form-select @error('user_id') is-invalid @enderror" required style="text-align: center;">
+                <option value="" style="text-align: center;">-- اختر مستخدماً --</option>
                 @foreach($users as $user)
-                    <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}"  style="text-align: center";>
+                    <option value="{{ $user->id }}" data-service="{{ $user->service_id ?? '' }}" style="text-align: center;">
                         {{ $user->name }} ({{ $user->email ?? '' }})
                     </option>
                 @endforeach

@@ -24,7 +24,7 @@
                                 <div class="card-body">
                                     <div class="mb-3">
                                         <label class="form-label text-muted">المعرف</label>
-                                        <p class="fw-medium">{{ $historique->id }}</p>
+                                        <p class="fw-medium"> {{ $historique->dossier->numero_dossier_judiciaire ?? 'غير متوفر' }}</p>
                                     </div>
                                     
                                     <div class="mb-3">
@@ -45,6 +45,7 @@
                                                 @elseif($historique->action == 'validation') bg-warning
                                                 @elseif($historique->action == 'archivage') bg-secondary 
                                                 @elseif($historique->action == 'reaffectation') bg-info
+                                                
                                                 @else bg-light text-dark @endif">
                                                 @if($historique->action == 'creation') إنشاء 
                                                 @elseif($historique->action == 'modification') تعديل 
@@ -75,7 +76,7 @@
                                         <label class="form-label text-muted">المستخدم</label>
                                         <p class="fw-medium">
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $historique->user->name ?? 'غير متوفر' }}
+                                            {{ $historique->user->fname ?? 'غير متوفر' }} {{ $historique->user->name ?? '' }}
                                         </p>
                                     </div>
                                     

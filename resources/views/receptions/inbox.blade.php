@@ -61,8 +61,8 @@
                                                 <i class="fas fa-list-ul me-1"></i> الكل
                                             </button>
                                             <button type="button" class="btn btn-outline-primary filter-btn" data-filter="titre" data-target="receptions">
-                                                <i class="fas fa-heading me-1"></i> العنوان
-                                            </button>
+    <i class="fas fa-heading me-1"></i> المصدر
+</button>
                                             <button type="button" class="btn btn-outline-primary filter-btn" data-filter="service" data-target="receptions">
                                                 <i class="fas fa-building me-1"></i> القسم
                                             </button>
@@ -79,7 +79,7 @@
                             <table class="table table-hover align-middle" id="tableReceptions">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th class="fw-semibold" style="width: 25%;">عنوان الملف</th>
+                                    <th class="fw-semibold" style="width: 25%;">المصدر</th>
                                         <th class="fw-semibold" style="width: 15%;">القسم</th>
                                         <th class="fw-semibold" style="width: 15%;">المرسل</th>
                                         <th class="fw-semibold" style="width: 20%;">تعليق</th>

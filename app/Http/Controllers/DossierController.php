@@ -419,10 +419,6 @@ public function archives()
 
 public function archiver(Request $request, Dossier $dossier)
 {
-    // Vérifier que l'utilisateur est un greffier en chef
-    if (auth()->user()->role !== 'greffier_en_chef') {
-        abort(403, 'غير مسموح لك بأرشفة الملفات');
-    }
 
     try {
         // Mettre à jour le statut du dossier à "Archivé"

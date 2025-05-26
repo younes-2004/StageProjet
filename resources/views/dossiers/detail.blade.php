@@ -8,7 +8,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-folder-open text-primary me-2"></i>{{ $dossier->titre }}
+                        <i class="fas fa-folder-open text-primary me-2"></i>{{ $dossier->numero_dossier_judiciaire }}
                     </h5>
                     <span class="badge 
                         @if($dossier->statut == 'Créé') bg-info 
@@ -28,6 +28,10 @@
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">النوع</h6>
                             <p class="fs-5">{{ $dossier->genre }}</p>
+                        </div>
+                        <div class="col-md-6" align=center>
+                            <h6 class="text-muted mb-2" >المصدر</h6>
+                            <p class="fs-5">{{ $dossier->titre }}</p>
                         </div>
                     </div>
                     
@@ -63,7 +67,7 @@
                         </div>
                         <div class="col-md-4">
                             <h6 class="text-muted mb-2">تم الإنشاء بواسطة</h6>
-                            <p><i class="far fa-user me-1"></i> {{ $dossier->createur->name ?? 'غير محدد' }}</p>
+                            <p><i class="far fa-user me-1"></i> {{ $dossier->createur->fname ?? 'غير محدد' }} {{ $dossier->createur->name ?? '' }}</p>
                         </div>
                         <div class="col-md-4">
                             <h6 class="text-muted mb-2">الخدمة الأصلية</h6>
@@ -117,26 +121,26 @@
         <div class="col-md-4">
             <!-- تفاصيل الحائز الحالي -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white">
-                    <h6 class="mb-0 fw-semibold">
-                        <i class="fas fa-user text-primary me-2"></i>الحائز الحالي
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                <i class="fas fa-user-circle fs-4"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">{{ $dossier->detenteurActuel()->name ?? 'غير محدد' }}</h6>
-                            <p class="text-muted mb-0">{{ $dossier->detenteurActuel()->email ?? '' }}</p>
-                            <p class="text-muted mb-0">{{ $dossier->detenteurActuel()->role == 'greffier_en_chef' ? 'كاتب رئيسي' : 'كاتب' }}</p>
-                        </div>
-                    </div>
+    <div class="card-header bg-white">
+        <h6 class="mb-0 fw-semibold">
+            <i class="fas fa-user text-primary me-2"></i>الحائز الحالي
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <i class="fas fa-user-circle fs-4"></i>
                 </div>
             </div>
+            <div class="flex-grow-1 ms-3">
+                <h6 class="mb-0">{{ $dossier->detenteurActuel()->fname ?? 'غير محدد' }} {{ $dossier->detenteurActuel()->name ?? '' }}</h6>
+                <p class="text-muted mb-0">{{ $dossier->detenteurActuel()->email ?? '' }}</p>
+                <p class="text-muted mb-0">{{ $dossier->detenteurActuel()->role == 'greffier_en_chef' ? 'رئيس كتاب الضبط' : 'كاتب الضبط' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
             
             <!-- سجل الإجراءات -->
             <div class="card shadow-sm mb-4">
@@ -192,7 +196,7 @@
                                 <p class="text-muted mb-1">{{ $action->date_action->format('d/m/Y H:i') }}</p>
                                 <p class="mb-0">{{ $action->description }}</p>
                                 <div class="text-muted small">
-                                    <span><i class="fas fa-user me-1"></i> {{ $action->user->name }}</span>
+                                    <span><i class="fas fa-user me-1"></i> {{ $action->user->fname ?? 'غير محدد' }} {{ $action->user->name ?? '' }}</span>
                                     <span class="ms-2"><i class="fas fa-building me-1"></i> {{ $action->service->nom }}</span>
                                 </div>
                             </div>

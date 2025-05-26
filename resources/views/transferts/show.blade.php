@@ -113,7 +113,7 @@
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label class="form-label text-muted">العنوان</label>
+                                        <label class="form-label text-muted">المصدر</label>
                                         <p>{{ $transfert->dossier->titre ?? 'غير متوفر' }}</p>
                                     </div>
                                     
@@ -147,7 +147,7 @@
                                         <label class="form-label text-muted">المستخدم المصدر</label>
                                         <p>
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $transfert->userSource->name ?? 'غير متوفر' }}
+                                            {{ $transfert->userSource->fname ?? 'غير متوفر' }} {{ $transfert->userSource->name ?? '' }}
                                             ({{ $transfert->userSource->email ?? 'غير متوفر' }})
                                         </p>
                                     </div>
@@ -174,7 +174,7 @@
                                         <label class="form-label text-muted">المستخدم المستلم</label>
                                         <p>
                                             <i class="fas fa-user me-1"></i>
-                                            {{ $transfert->userDestination->name ?? 'غير متوفر' }}
+                                            {{ $transfert->userDestination->fname ?? 'غير متوفر' }} {{ $transfert->userDestination->name ?? '' }}
                                             ({{ $transfert->userDestination->email ?? 'غير متوفر' }})
                                         </p>
                                     </div>

@@ -257,12 +257,12 @@
                                         <tr>
                                             <th style="width: 5%;">رقم</th>
                                             <th style="width: 11%;">ملف</th>
-                                            <th style="width: 15%;">المصدر</th>
-                                            <th style="width: 15%;">الوجهة</th>
+                                            <th style="width: 25%;">المصدر</th>
+                                            <th style="width: 25%;">الوجهة</th>
                                             <th style="width: 12%;">تاريخ الإرسال</th>
                                             <th style="width: 12%;">تاريخ الاستلام</th>
                                             <th style="width: 8%;">الحالة</th>
-                                            <th style="width: 15%;">تعليق</th>
+                                            <th style="width: 20%;">تعليق</th>
                                             <th style="width: 20%;">إجراءات</th>
                                         </tr>
                                     </thead>
@@ -279,7 +279,7 @@
                                                     <div class="d-flex flex-column">
                                                         <span>
                                                             <i class="fas fa-user me-1 text-primary"></i>
-                                                            {{ $transfert->userSource->name ?? 'غير متوفر' }}
+                                                            {{ $transfert->userSource->fname ?? 'غير متوفر' }} {{ $transfert->userSource->name ?? '' }}
                                                         </span>
                                                         <small class="text-muted">
                                                             <i class="fas fa-building me-1"></i>
@@ -291,7 +291,7 @@
                                                     <div class="d-flex flex-column">
                                                         <span>
                                                             <i class="fas fa-user me-1 text-primary"></i>
-                                                            {{ $transfert->userDestination->name ?? 'غير متوفر' }}
+                                                            {{ $transfert->userDestination->fname ?? 'غير متوفر' }} {{ $transfert->userDestination->name ?? '' }}
                                                         </span>
                                                         <small class="text-muted">
                                                             <i class="fas fa-building me-1"></i>

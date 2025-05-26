@@ -188,9 +188,9 @@
                             <tbody>
                                 @foreach($dossiersRecents as $dossier)
                                 <tr>
-                                <td>{{ $dossier->numero_dossier_judiciaire }}</td>
-                                <td>{{ $dossier->titre }}</td>
-                                <td>
+                                    <td>{{ $dossier->numero_dossier_judiciaire }}</td>
+                                    <td>{{ $dossier->titre }}</td>
+                                    <td>
                                         <span class="badge 
                                             @if($dossier->statut == 'Créé') bg-info 
                                             @elseif($dossier->statut == 'En attente') bg-warning 
@@ -210,35 +210,30 @@
                                             @else {{ $dossier->statut }} @endif
                                         </span>
                                     </td>
-                                    <td>{{ $dossier->createur->name }}</td>
+                                    <td>{{ $dossier->createur->fname ?? 'غير متوفر' }} {{ $dossier->createur->name ?? '' }}</td>
                                     <td>{{ $dossier->service->nom }}</td>
                                     <td>{{ $dossier->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
-    <div class="btn-group">
-        <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning btn-action">
-            <i class="fas fa-edit"></i>تعديل
-        </a>
-        <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary btn-action">
-            <i class="fas fa-eye"></i>عرض
-        </a>
-        @if(auth()->user()->role === 'greffier_en_chef')
-        <form action="{{ route('dossiers.destroy', $dossier->id) }}" method="POST" 
-            class="d-inline delete-dossier-form" 
-            data-dossier-titre="{{ $dossier->titre }}">
-            @csrf
-            @method('DELETE')
-            <button type="button" class="btn btn-sm btn-danger delete-dossier-btn">
-                <i class="fas fa-trash-alt"></i> حذف
-            </button>
-        </form>
-        @endif
-    </div>
-</td>
-                                  
-                                   
-                                   
-                                   
-                                   
+                                        <div class="btn-group">
+                                            <a href="{{ route('dossiers.edit', $dossier->id) }}" class="btn btn-sm btn-warning btn-action">
+                                                <i class="fas fa-edit"></i>تعديل
+                                            </a>
+                                            <a href="{{ route('dossiers.detail', $dossier->id) }}" class="btn btn-sm btn-primary btn-action">
+                                                <i class="fas fa-eye"></i>عرض
+                                            </a>
+                                            @if(auth()->user()->role === 'greffier_en_chef')
+                                            <form action="{{ route('dossiers.destroy', $dossier->id) }}" method="POST" 
+                                                class="d-inline delete-dossier-form" 
+                                                data-dossier-titre="{{ $dossier->titre }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-sm btn-danger delete-dossier-btn">
+                                                    <i class="fas fa-trash-alt"></i> حذف
+                                                </button>
+                                            </form>
+                                            @endif
+                                        </div>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -270,13 +265,17 @@
                             <tbody>
                                 @foreach($transfertsRecents as $transfert)
                                 <tr>
-                                <td>
+                                    <td>
                                         <a href="{{ route('dossiers.show', $transfert->dossier_id) }}">
-                                            {{ $transfert->dossier->titre }}
+                                            {{ $transfert->dossier->numero_dossier_judiciaire ?? 'غير متوفر' }}
                                         </a>
                                     </td>
-                                    <td>{{ $transfert->userSource->name ?? 'غير متوفر' }}</td>
-                                    <td>{{ $transfert->userDestination->name ?? 'غير متوفر' }}</td>
+                                    <td>
+                                        {{ $transfert->userSource->fname ?? 'غير متوفر' }} {{ $transfert->userSource->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $transfert->userDestination->fname ?? 'غير متوفر' }} {{ $transfert->userDestination->name ?? '' }}
+                                    </td>
                                     <td>{{ $transfert->date_envoi ? $transfert->date_envoi->format('d/m/Y H:i') : 'غير متوفر' }}</td>
                                     <td>{{ $transfert->date_reception ? $transfert->date_reception->format('d/m/Y H:i') : 'قيد الانتظار' }}</td>
                                     <td>

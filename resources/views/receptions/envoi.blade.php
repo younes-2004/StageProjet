@@ -46,14 +46,14 @@
                     </label>
                     <div class="p-3 bg-light border-0 rounded-3">
                         <div class="row">
-                            <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>الرقم:</strong> {{ $dossier->id }}</p>
+                            <div class="col-md-6">
+                                <p class="mb-2"><i class="fas fa-hashtag text-secondary me-1"></i> <strong>رقم الملف </strong> {{ $dossier->numero_dossier_judiciaire ?? 'غير محدد' }}</p>
                             </div>
-                            <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>العنوان:</strong> {{ $dossier->titre ?? 'غير محدد' }}</p>
+                            <div class="col-md-6">
+                                <p class="mb-2"><i class="fas fa-file-alt text-secondary me-1"></i> <strong>المصدر:</strong> {{ $dossier->titre ?? 'غير محدد' }}</p>
                             </div>
-                            <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>المرجع:</strong> {{ $dossier->reference ?? 'غير محدد' }}</p>
+                            <div class="col-md-6">
+                                <p class="mb-2"><i class="fas fa-tag text-secondary me-1"></i> <strong>النوع:</strong> {{ $dossier->genre ?? 'غير محدد' }}</p>
                             </div>
                         </div>
                     </div>

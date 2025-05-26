@@ -66,8 +66,8 @@
                                             <button type="button" class="btn btn-outline-secondary filter-btn active" data-filter="all" data-target="nonReaffectes">
                                                 <i class="fas fa-list-ul me-1"></i> الكل
                                             </button>
-                                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonReaffectes">
-                                                <i class="fas fa-heading me-1"></i> العنوان
+                                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="numero" data-target="nonReaffectes">
+                                                <i class="fas fa-hashtag me-1"></i> الرقم
                                             </button>
                                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="date" data-target="nonReaffectes">
                                                 <i class="fas fa-calendar-alt me-1"></i> التاريخ
@@ -88,7 +88,7 @@
                             <table class="table table-hover align-middle table-bordered border-light" id="tableNonReaffectes">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th style="width: 25%;">عنوان الملف</th>
+                                    <th style="width: 25%;">المصدر</th>
                                         <th style="width: 20%;">تاريخ التحقق</th>
                                         <th style="width: 15%;">القسم</th>
                                         <th style="width: 15%;">المرسل</th>
@@ -223,9 +223,9 @@
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="numero" data-target="reaffectes">
                                                 <i class="fas fa-hashtag me-1"></i> الرقم
                                             </button>
-                                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="titre" data-target="reaffectes">
-                                                <i class="fas fa-heading me-1"></i> العنوان
-                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonReaffectes">
+    <i class="fas fa-heading me-1"></i> المصدر
+</button>
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="destinataire" data-target="reaffectes">
                                                 <i class="fas fa-user me-1"></i> المستلم
                                             </button>
@@ -243,7 +243,7 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 15%;">الرقم</th>
-                                        <th style="width: 25%;">عنوان الملف</th>
+                                        <th style="width: 25%;">المصدر</th>
                                         <th style="width: 20%;">المستلم</th>
                                         <th style="width: 20%;">تاريخ إعادة التعيين</th>
                                         <th class="text-center" style="width: 20%;">إجراءات</th>

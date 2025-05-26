@@ -68,8 +68,8 @@
                                             <i class="fas fa-list-ul me-1"></i> الكل
                                         </button>
                                         <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre">
-                                            <i class="fas fa-heading me-1"></i> العنوان
-                                        </button>
+    <i class="fas fa-heading me-1"></i> المصدر
+</button>
                                         <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="numero">
                                             <i class="fas fa-hashtag me-1"></i> الرقم
                                         </button>
@@ -88,7 +88,7 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th>رقم الملف</th>
-                                    <th>العنوان</th>
+                                    <th>المصدر</th>
                                     <th>القسم</th>
                                     <th>تاريخ الأرشفة</th>
                                     <th>الإجراءات</th>

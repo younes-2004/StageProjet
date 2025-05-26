@@ -93,8 +93,8 @@
                                 <i class="fas fa-list-ul me-1"></i> الكل
                             </button>
                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonEnvoyes">
-                                <i class="fas fa-heading me-1"></i> العنوان
-                            </button>
+    <i class="fas fa-heading me-1"></i> المصدر
+</button>
                             <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="numero" data-target="nonEnvoyes">
                                 <i class="fas fa-hashtag me-1"></i> الرقم
                             </button>
@@ -113,7 +113,7 @@
                     <thead class="thead-light">
                         <tr>
                             <th style="width: 15%;">الرقم</th>
-                            <th style="width: 25%;">العنوان</th>
+                            <th style="width: 25%;">المصدر</th>
                             <th style="width: 20%;">تاريخ الإنشاء</th>
                             <th style="width: 15%;">الحالة</th>
                             <th style="width: 25%;">إجراءات</th>
@@ -195,9 +195,9 @@
                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="all" data-target="enAttente">
                                 <i class="fas fa-list-ul me-1"></i> الكل
                             </button>
-                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="titre" data-target="enAttente">
-                                <i class="fas fa-heading me-1"></i> العنوان
-                            </button>
+                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonEnvoyes">
+    <i class="fas fa-heading me-1"></i> المصدر
+</button>
                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="numero" data-target="enAttente">
                                 <i class="fas fa-hashtag me-1"></i> الرقم
                             </button>
@@ -219,7 +219,7 @@
                     <thead class="bg-warning-light">
                         <tr>
                             <th style="width: 15%;">الرقم</th>
-                            <th style="width: 25%;">العنوان</th>
+                            <th style="width: 25%;">المصدر</th>
                             <th style="width: 20%;">المستلم</th>
                             <th style="width: 20%;">تاريخ الإرسال</th>
                             <th style="width: 20%;">إجراءات</th>
@@ -326,9 +326,9 @@
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="all" data-target="historique">
                                 <i class="fas fa-list-ul me-1"></i> الكل
                             </button>
-                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="titre" data-target="historique">
-                                <i class="fas fa-heading me-1"></i> العنوان
-                            </button>
+                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonEnvoyes">
+    <i class="fas fa-heading me-1"></i> المصدر
+</button>
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="numero" data-target="historique">
                                 <i class="fas fa-hashtag me-1"></i> الرقم
                             </button>
@@ -353,7 +353,7 @@
                     <thead class="bg-success-light">
                         <tr>
                             <th style="width: 13%;">الرقم</th>
-                            <th style="width: 22%;">العنوان</th>
+                            <th style="width: 25%;">المصدر</th>
                             <th style="width: 15%;">صادق عليه</th>
                             <th style="width: 15%;">القسم</th>
                             <th style="width: 17.5%;">تاريخ الإرسال</th>

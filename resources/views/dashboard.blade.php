@@ -174,6 +174,12 @@
                                                     @case('réaffectation')
                                                     إعادة تعيين
                                                     @break
+                                                    @case('annulation')
+                                                    إلغاء
+                                                    @break
+                                                @case('archivage')
+                                                    أرشفة 
+                                                    @break
                                                 @default
                                                     {{ $activity->action }}
                                             @endswitch

@@ -95,7 +95,7 @@
                                 name="titre" 
                                 required 
                                 class="form-control rounded-3 border-light shadow-sm"
-                                placeholder="أدخل عنوان الملف">
+                                placeholder="أدخل  مصدر الملف">
                         </div>
                         <div class="mb-4">
         <label for="type_contenu" class="form-label fw-medium">

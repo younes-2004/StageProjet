@@ -57,6 +57,7 @@
                                         @foreach($utilisateursActifs as $user)
                                             <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
                                                 <span>{{ $user->utilisateur->name ?? 'غير متوفر' }}</span>
+                                                <span>{{ $user->utilisateur->fname?? 'غير متوفر' }}</span>
                                                 <span class="badge bg-primary rounded-pill">{{ $user->total }}</span>
                                             </li>
                                         @endforeach
@@ -83,12 +84,13 @@
                                             <ul class="dropdown-menu">
                                                 @foreach($actions as $action)
                                                     <li><a class="dropdown-item" href="#" onclick="document.getElementById('action').value='{{ $action }}'; document.getElementById('searchForm').submit();">
-                                                        @if($action == 'creation') إنشاء 
-                                                        @elseif($action == 'modification') تعديل 
-                                                        @elseif($action == 'transfert') تحويل 
-                                                        @elseif($action == 'validation') تصديق
-                                                        @elseif($action == 'archivage') أرشفة
-                                                        @elseif($action == 'réaffectation') إعادة تعيين
+                                                        @if(strtolower($action) == 'creation') إنشاء 
+                                                        @elseif(strtolower($action) == 'modification') تعديل 
+                                                        @elseif(strtolower($action) == 'transfert') تحويل 
+                                                        @elseif(strtolower($action) == 'validation') تصديق
+                                                        @elseif(strtolower($action) == 'archivage') أرشفة
+                                                        @elseif(strtolower($action) == 'réaffectation') إعادة تعيين
+                                                        @elseif(strtolower($action) == 'annulation') إلغاء
                                                         @else {{ ucfirst($action) }} @endif
                                                     </a></li>
                                                 @endforeach
@@ -98,12 +100,14 @@
                                             <option value="" style="text-align: center">جميع الإجراءات</option>
                                             @foreach($actions as $action)
                                                 <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
-                                                    @if($action == 'creation') إنشاء 
-                                                    @elseif($action == 'modification') تعديل 
-                                                    @elseif($action == 'transfert') تحويل 
-                                                    @elseif($action == 'validation') تصديق
-                                                    @elseif($action == 'archivage') أرشفة
-                                                    @elseif($action == 'réaffectation') إعادة تعيين
+                                                    @if(strtolower($action) == 'creation') إنشاء 
+                                                    @elseif(strtolower($action) == 'modification') تعديل 
+                                                    @elseif(strtolower($action) == 'transfert') تحويل 
+                                                    @elseif(strtolower($action) == 'validation') تصديق
+                                                    @elseif(strtolower($action) == 'archivage') أرشفة
+                                                    @elseif(strtolower($action) == 'réaffectation') إعادة تعيين
+                                                    @elseif(strtolower($action) == 'annulation') إلغاء
+                                                    
                                                     @else {{ ucfirst($action) }} @endif
                                                 </option>
                                             @endforeach
@@ -214,9 +218,9 @@
                                     <thead class="bg-light">
                                         <tr>
                                             <th style="width: 5%;">#</th>
-                                            <th style="width: 12%;">التاريخ</th>
+                                            <th style="width: 15%;">التاريخ</th>
                                             <th style="width: 10%;">الإجراء</th>
-                                            <th style="width: 12%;">المستخدم</th>
+                                            <th style="width: 20%;">المستخدم</th>
                                             <th style="width: 10%;">القسم</th>
                                             <th style="width: 12%;">الملف</th>
                                             <th style="width: 30%;">الوصف</th>
@@ -241,6 +245,7 @@
                                                         @elseif($historique->action == 'validation') bg-warning
                                                         @elseif($historique->action == 'archivage') bg-secondary 
                                                         @elseif($historique->action == 'reaffectation') bg-info
+                                                        @elseif($historique->action == 'annulation') bg-danger
                                                         @else bg-light text-dark @endif">
                                                         @if($historique->action == 'creation') إنشاء 
                                                         @elseif($historique->action == 'modification') تعديل 
@@ -248,10 +253,11 @@
                                                         @elseif($historique->action == 'validation') تصديق
                                                         @elseif($historique->action == 'archivage') أرشفة 
                                                         @elseif($historique->action == 'réaffectation') إعادة تعيين
+                                                        @elseif($historique->action == 'annulation') إلغاء
                                                         @else {{ ucfirst($historique->action) }} @endif
                                                     </span>
                                                 </td>
-                                                <td>{{ $historique->user->name ?? 'غير متوفر' }}</td>
+                                                <td>{{ $historique->user->fname ?? 'غير متوفر' }} {{ $historique->user->name ?? '' }}</td>
                                                 <td>{{ $historique->service->nom ?? 'غير متوفر' }}</td>
                                                 <td>
                                                     <a href="{{ route('dossiers.show', $historique->dossier_id) }}" class="text-decoration-none">
@@ -312,12 +318,13 @@ document.addEventListener('DOMContentLoaded', function() {
             data: {
                 labels: [
                     @foreach($actionsParType as $action)
-                        @if($action->action == 'creation') 'إنشاء',
-                        @elseif($action->action == 'modification') 'تعديل',
-                        @elseif($action->action == 'transfert') 'تحويل',
-                        @elseif($action->action == 'validation') 'تصديق',
-                        @elseif($action->action == 'archivage') 'أرشفة',
-                        @elseif($action->action == 'réaffectation') 'إعادة تعيين',
+                        @if(strtolower($action->action) == 'creation') 'إنشاء',
+                        @elseif(strtolower($action->action) == 'modification') 'تعديل',
+                        @elseif(strtolower($action->action) == 'transfert') 'تحويل',
+                        @elseif(strtolower($action->action) == 'validation') 'تصديق',
+                        @elseif(strtolower($action->action) == 'archivage') 'أرشفة',
+                        @elseif(strtolower($action->action) == 'réaffectation') 'إعادة تعيين',
+                        @elseif(strtolower($action->action) == 'annulation') 'إلغاء',
                         @else '{{ ucfirst($action->action) }}', @endif
                     @endforeach
                 ],
@@ -333,7 +340,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         'rgba(13, 110, 253, 0.7)',  /* transfert / تحويل */
                         'rgba(255, 193, 7, 0.7)',   /* validation / تصديق */
                         'rgba(108, 117, 125, 0.7)', /* archivage / أرشفة */
-                        'rgba(23, 162, 184, 0.7)'   /* reaffectation / إعادة تعيين */
+                        'rgba(23, 162, 184, 0.7)' ,  /* reaffectation / إعادة تعيين */
+                        'rgba(220, 53, 69, 0.7)'   /* annulation / إلغاء */
                     ],
                     borderWidth: 1
                 }]

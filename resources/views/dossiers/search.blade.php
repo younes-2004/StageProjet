@@ -20,7 +20,7 @@
                                     <div class="input-group">
                                        
                                         <input type="text" class="form-control" id="keyword" name="keyword" 
-                                               value="{{ request('keyword') }}" placeholder="البحث بالعنوان، المحتوى أو الرقم..."  style="text-align: center;">
+                                               value="{{ request('keyword') }}" placeholder="البحث بالمصدر، المحتوى أو الرقم..."  style="text-align: center;">
                                     </div>
                                 </div>
                             </div>
@@ -118,7 +118,7 @@
         <label for="sort_by" class="form-label">ترتيب حسب</label>
         <select class="form-select" id="sort_by" name="sort_by">
             <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}  style="text-align: center;">تاريخ الإنشاء</option>
-            <option value="titre" {{ request('sort_by') == 'titre' ? 'selected' : '' }}  style="text-align: center;">العنوان</option>
+            <option value="titre" {{ request('sort_by') == 'titre' ? 'selected' : '' }}  style="text-align: center;">المصدر</option>
             <option value="statut" {{ request('sort_by') == 'statut' ? 'selected' : '' }}  style="text-align: center;">الحالة</option>
             <option value="numero_dossier_judiciaire" {{ request('sort_by') == 'numero_dossier_judiciaire' ? 'selected' : '' }}  style="text-align: center;">رقم الملف</option>
         </select>
@@ -180,7 +180,7 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th>الرقم</th>
-                                    <th>العنوان</th>
+                                    <th>المصدر</th>
                                     <th>الحالة</th>
                                     <th>النوع</th>
                                     <th>المنشئ</th>
