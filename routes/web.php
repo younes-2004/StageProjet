@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('dossiers.archiver');
         Route::patch('/dossiers/{dossier}/desarchiver', [DossierController::class, 'desarchiver'])
         ->name('dossiers.desarchiver');
+    Route::patch('/receptions/{reception}/observation', [ReceptionController::class, 'updateObservation'])->name('receptions.observation');
     
     Route::delete('/dossiers/{dossier}', [DossierController::class, 'destroy'])
         ->name('dossiers.destroy')

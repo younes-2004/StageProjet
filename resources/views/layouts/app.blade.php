@@ -429,8 +429,8 @@
 </head>
 <!-- Modifiez la section du sidebar dans layouts/app.blade.php -->
 <body class="font-sans antialiased">
-    @if(Auth::check() && Auth::user()->role == 'greffier_en_chef')
-        <!-- Sidebar pour Greffier en Chef - cachée par défaut -->
+    @if(Auth::check() && (Auth::user()->role == 'greffier_en_chef' || Auth::user()->role == 'greffier'))
+        <!-- Sidebar pour Greffier en Chef et Greffier normal -->
         <div class="sidebar-wrapper collapsed" id="sidebar">
             @include('partials.sidebar')
         </div>

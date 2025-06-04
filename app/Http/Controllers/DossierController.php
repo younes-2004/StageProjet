@@ -68,12 +68,12 @@ class DossierController extends Controller
     return view('dossiers.mes_dossiers', compact('dossiers', 'dossiersEnvoyes'));
 }
     // Affiche le formulaire de création
-    public function create()
+public function create()
 {
-    $services = \App\Models\Service::all(); // Récupère les services pour le formulaire
-    return view('dossiers.create', compact('services'));
+    $services = \App\Models\Service::all();
+    $genres = $this->getEnumValues('dossiers', 'genre');
+    return view('dossiers.create', compact('services', 'genres'));
 }
-
  // Enregistre un nouveau dossier
 public function store(Request $request)
 {
@@ -157,6 +157,17 @@ public function store(Request $request)
     return redirect()->route('dossiers.create')
         ->with('error', 'حدث عطل أثناء محاولة إنشاء المجلد.');
 }
+private function getEnumValues($table, $column)
+{
+    $type = \DB::select(\DB::raw("SHOW COLUMNS FROM {$table} WHERE Field = '{$column}'"))[0]->Type;
+    preg_match('/^enum\((.*)\)$/', $type, $matches);
+    $enum = [];
+    foreach (explode(',', $matches[1]) as $value) {
+        $v = trim($value, "'");
+        $enum[] = $v;
+    }
+    return $enum;
+}
   /**
  * Affiche un dossier spécifique
  *
@@ -211,10 +222,11 @@ public function edit(Dossier $dossier)
 {
     // Vérifier que l'utilisateur peut éditer le dossier
     $this->authorizeEdit($dossier);
-    
+
     $services = \App\Models\Service::all();
-    
-    return view('dossiers.edit', compact('dossier', 'services'));
+    $genres = $this->getEnumValues('dossiers', 'genre');
+
+    return view('dossiers.edit', compact('dossier', 'services', 'genres'));
 }
 
 /**

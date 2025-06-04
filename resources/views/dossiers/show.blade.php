@@ -200,6 +200,17 @@
     @endif
 </div>
 
+                <!-- ملاحظة الملف -->
+                <div class="mb-3">
+                    <label class="form-label fw-medium">
+                        <i class="fas fa-sticky-note text-secondary me-1"></i>
+                        الملاحظة
+                    </label>
+                    <div class="form-control bg-light">
+                        {{ $dossier->observation ?? 'لا توجد ملاحظة' }}
+                    </div>
+                </div>
+
             <!-- Boutons d'action -->
             <div class="card-footer d-flex justify-content-between">
                 <div>
@@ -209,6 +220,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+
+        <!-- ... autres cartes ou infos ... -->
     </div>
 
     <!-- Bootstrap JS Bundle with Popper -->

@@ -2,7 +2,6 @@
 <div class="sidebar sidebar-right">
     <div class="sidebar-header">
         <div class="logo-container">
-            <!-- Si vous avez un logo, utilisez-le ici -->
             <div class="sidebar-logo">
                 <i class="fas fa-balance-scale"></i>
             </div>
@@ -24,71 +23,63 @@
     </div>
         
     <ul class="sidebar-menu">
-        <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-            <a href="{{ route('dashboard') }}" class="menu-link">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>لوحة التحكم</span>
-            </a>
-        </li>
-        
-        <li class="menu-item {{ request()->routeIs('dossiers.*') ? 'active' : '' }}">
-            <a href="#" class="menu-link has-dropdown">
-                <i class="fas fa-folder"></i>
-                <span>إدارة الملفات</span>
-                <i class="fas fa-chevron-left dropdown-icon"></i>
-            </a>
-            <ul class="submenu {{ request()->routeIs('dossiers.*') ? 'expanded' : '' }}">
-                <li class="{{ request()->routeIs('dossiers.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('dossiers.dashboard') }}">لوحة معلومات الملفات</a>
-                </li>
-                <li class="{{ request()->routeIs('dossiers.mes_dossiers') ? 'active' : '' }}">
-                    <a href="{{ route('dossiers.mes_dossiers') }}">ملفاتي</a>
-                </li>
-                <li class="{{ request()->routeIs('dossiers.create') ? 'active' : '' }}">
-                    <a href="{{ route('dossiers.create') }}">إنشاء ملف</a>
-                </li>
-                <li class="{{ request()->routeIs('dossiers.search') ? 'active' : '' }}">
-                    <a href="{{ route('dossiers.search') }}">بحث متقدم</a>
-                </li>
-                <li class="{{ request()->routeIs('dossiers.archives') ? 'active' : '' }}">
-                    <a href="{{ route('dossiers.archives') }}">الأرشفة</a>
-                </li>
-            </ul>
-        </li>
-        
-        <li class="menu-item {{ request()->routeIs('receptions.inbox') ? 'active' : '' }}">
-            <a href="{{ route('receptions.inbox') }}" class="menu-link">
-                <i class="fas fa-inbox"></i>
-                <span>صندوق الوارد</span>
-            </a>
-        </li>
-        
-        <li class="menu-item {{ request()->routeIs('receptions.dossiers_valides') ? 'active' : '' }}">
-            <a href="{{ route('receptions.dossiers_valides') }}" class="menu-link">
-                <i class="fas fa-check-circle"></i>
-                <span>الملفات المصادق عليها</span>
-            </a>
-        </li>
-        
         @if(Auth::user()->role == 'greffier_en_chef')
+            <!-- Menu complet pour le greffier en chef (inchangé) -->
+            <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <a href="{{ route('dashboard') }}" class="menu-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('dossiers.*') ? 'active' : '' }}">
+                <a href="#" class="menu-link has-dropdown">
+                    <i class="fas fa-folder"></i>
+                    <span>إدارة الملفات</span>
+                    <i class="fas fa-chevron-left dropdown-icon"></i>
+                </a>
+                <ul class="submenu {{ request()->routeIs('dossiers.*') ? 'expanded' : '' }}">
+                    <li class="{{ request()->routeIs('dossiers.dashboard') ? 'active' : '' }}">
+                        <a href="{{ route('dossiers.dashboard') }}">لوحة معلومات الملفات</a>
+                    </li>
+                    <li class="{{ request()->routeIs('dossiers.mes_dossiers') ? 'active' : '' }}">
+                        <a href="{{ route('dossiers.mes_dossiers') }}">ملفاتي</a>
+                    </li>
+                    <li class="{{ request()->routeIs('dossiers.create') ? 'active' : '' }}">
+                        <a href="{{ route('dossiers.create') }}">إنشاء ملف</a>
+                    </li>
+                    <li class="{{ request()->routeIs('dossiers.search') ? 'active' : '' }}">
+                        <a href="{{ route('dossiers.search') }}">بحث متقدم</a>
+                    </li>
+                    <li class="{{ request()->routeIs('dossiers.archives') ? 'active' : '' }}">
+                        <a href="{{ route('dossiers.archives') }}">الأرشفة</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item {{ request()->routeIs('receptions.inbox') ? 'active' : '' }}">
+                <a href="{{ route('receptions.inbox') }}" class="menu-link">
+                    <i class="fas fa-inbox"></i>
+                    <span>صندوق الوارد</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('receptions.dossiers_valides') ? 'active' : '' }}">
+                <a href="{{ route('receptions.dossiers_valides') }}" class="menu-link">
+                    <i class="fas fa-check-circle"></i>
+                    <span>الملفات المصادق عليها</span>
+                </a>
+            </li>
             <li class="menu-header">الإدارة</li>
-            
-            <!-- NOUVELLE SECTION : Historique des actions -->
             <li class="menu-item {{ request()->routeIs('admin.historique.*') ? 'active' : '' }}">
                 <a href="{{ route('historique.index') }}" class="menu-link">
                     <i class="fas fa-history"></i>
                     <span>سجل الإجراءات</span>
                 </a>
             </li>
-            
-            <!-- NOUVELLE SECTION : Transferts -->
             <li class="menu-item {{ request()->routeIs('admin.transferts.*') ? 'active' : '' }}">
                 <a href="{{ route('transferts.index') }}" class="menu-link">
                     <i class="fas fa-exchange-alt"></i>
                     <span>التحويلات</span>
                 </a>
             </li>
-            
             <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
                 <a href="#" class="menu-link has-dropdown">
                     <i class="fas fa-users"></i>
@@ -104,11 +95,42 @@
                     </li>
                 </ul>
             </li>
-            
             <li class="menu-item {{ request()->routeIs('services.*') ? 'active' : '' }}">
                 <a href="{{ route('services.index') }}" class="menu-link">
                     <i class="fas fa-building"></i>
                     <span>إدارة الخدمات</span>
+                </a>
+            </li>
+        @else
+            <!-- Menu simplifié pour le greffier normal -->
+            <li class="menu-item {{ request()->routeIs('dossiers.mes_dossiers') ? 'active' : '' }}">
+                <a href="{{ route('dossiers.mes_dossiers') }}" class="menu-link">
+                    <i class="fas fa-folder-open"></i>
+                    <span>ملفاتي</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('receptions.inbox') ? 'active' : '' }}">
+                <a href="{{ route('receptions.inbox') }}" class="menu-link">
+                    <i class="fas fa-inbox"></i>
+                    <span>صندوق الوارد</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('receptions.dossiers_valides') ? 'active' : '' }}">
+                <a href="{{ route('receptions.dossiers_valides') }}" class="menu-link">
+                    <i class="fas fa-check-circle"></i>
+                    <span>الملفات المصادق عليها</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('dossiers.archives') ? 'active' : '' }}">
+                <a href="{{ route('dossiers.archives') }}" class="menu-link">
+                    <i class="fas fa-archive"></i>
+                    <span>الأرشيف</span>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('dossiers.create') ? 'active' : '' }}">
+                <a href="{{ route('dossiers.create') }}" class="menu-link">
+                    <i class="fas fa-plus"></i>
+                    <span>إنشاء ملف جديد</span>
                 </a>
             </li>
         @endif

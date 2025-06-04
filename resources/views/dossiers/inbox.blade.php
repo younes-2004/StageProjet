@@ -22,6 +22,16 @@
                         </div>
                     @endif
 
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="numero_dossier_judiciaire" class="form-label">رقم الملف القضائي</label>
+                                <input type="text" class="form-control" id="numero_dossier_judiciaire" name="numero_dossier_judiciaire"
+                                       value="{{ request('numero_dossier_judiciaire') }}" placeholder="بحث برقم الملف">
+                            </div>
+                        </div>
+                    </div>
+
                     @if($receptions->isEmpty())
                         <div class="alert alert-info">
                             لم تستلم أي ملفات حتى الآن.
@@ -31,7 +41,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>المعرف</th>
+                                        <th>رقم الملف القضائي</th>
                                         <th>الملف</th>
                                         <th>المرجع</th>
                                         <th>المرسل</th>
@@ -42,7 +52,7 @@
                                 <tbody>
                                     @foreach($receptions as $reception)
                                         <tr>
-                                            <td>{{ $reception->id }}</td>
+                                            <td>{{ $reception->numero_dossier_judiciaire }}</td>
                                             <td>{{ $reception->dossier->titre ?? 'بدون عنوان' }}</td>
                                             <td>{{ $reception->dossier->reference ?? 'غير محدد' }}</td>
                                             <td>{{ $reception->dossier->user->name ?? 'مجهول' }}</td>

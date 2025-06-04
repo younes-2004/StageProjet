@@ -137,6 +137,16 @@
                         </div>
 
                         <!-- Add User Tab -->
+                         @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
                         <div class="tab-pane fade" id="add-user" role="tabpanel" aria-labelledby="add-user-tab">
                             <!-- Using the existing registration form -->
                             <div class="card">
@@ -211,7 +221,7 @@
                                             <div class="col-md-6">
                                                 <label for="role" class="form-label">الدور</label>
                                                 <select id="role" name="role" class="form-select @error('role') is-invalid @enderror" required  style="text-align: center";>
-                                                    <option value=" disabled selected>اختر دور</option>
+                                                    <option value="" disabled selected>اختر دور</option>
                                                     <option value="greffier" {{ old('role') == 'greffier' ? 'selected' : '' }}>كاتب الضبط</option>
                                                     <option value="greffier_en_chef" {{ old('role') == 'greffier_en_chef' ? 'selected' : '' }}>رئيس كتبة الضبط </option>
                                                 </select>
@@ -277,6 +287,8 @@
         </div>
     </div>
 </div>
+
+
 
 <style>
     /* Card styling */

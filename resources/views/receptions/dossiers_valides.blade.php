@@ -223,7 +223,7 @@
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="numero" data-target="reaffectes">
                                                 <i class="fas fa-hashtag me-1"></i> الرقم
                                             </button>
-                                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonReaffectes">
+                                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="titre" data-target="reaffectes">
     <i class="fas fa-heading me-1"></i> المصدر
 </button>
                                             <button type="button" class="btn btn-outline-warning filter-btn" data-filter="destinataire" data-target="reaffectes">
@@ -280,7 +280,7 @@
                                                 <td class="fw-medium">{{ $transfert->dossier->titre ?? 'بدون عنوان' }}</td>
                                                 <td>
                                                     <span class="badge bg-info bg-opacity-10 text-info">
-                                                        <i class="fas fa-user-circle me-1"></i>
+                                                        <i class="fas fa-user-circle me-1"></i
                                                         {{ $transfert->userDestination->name ?? 'غير متوفر' }}
                                                     </span>
                                                 </td>

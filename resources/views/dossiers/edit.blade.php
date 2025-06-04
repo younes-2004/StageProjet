@@ -53,22 +53,24 @@
                                 </div>
                             </div>
                             
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="genre" class="form-label fw-medium">
-                                        <i class="fas fa-tag text-secondary me-1"></i>
-                                        النوع
-                                    </label>
-                                    <input 
-                                        id="genre" 
-                                        type="text" 
-                                        name="genre" 
-                                        required 
-                                        class="form-control rounded-3 border-light shadow-sm"
-                                        value="{{ $dossier->genre }}">
-                                </div>
-                            </div>
-                        </div>
+                          <div class="col-md-6">
+    <div class="mb-3">
+        <label for="genre" class="form-label fw-medium">
+            <i class="fas fa-tag text-secondary me-1"></i>
+            النوع
+        </label>
+        <select 
+            id="genre" 
+            name="genre" 
+            required 
+            class="form-select rounded-3 border-light shadow-sm">
+            <option value="">اختر النوع</option>
+            @foreach($genres as $genre)
+                <option value="{{ $genre }}" {{ $dossier->genre == $genre ? 'selected' : '' }}>{{ $genre }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
                         
                         <div class="mb-3">
                             <label for="titre" class="form-label fw-medium">

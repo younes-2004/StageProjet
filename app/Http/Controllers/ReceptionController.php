@@ -543,7 +543,19 @@ public function archiver(Request $request, Dossier $dossier)
             ->with('error', 'حدث خطأ أثناء أرشفة الملف: ' . $e->getMessage());
     }
 }
-    }
+public function updateObservation(Request $request, $receptionId)
+{
+    $request->validate([
+        'observation' => 'nullable|string|max:2000',
+    ]);
+    $reception = \App\Models\Reception::findOrFail($receptionId);
+    $dossier = $reception->dossier;
+    $dossier->update([
+        'observation' => $request->observation,
+    ]);
+    return back()->with('success', 'تم تحديث الملاحظة بنجاح.');
+}
+}
 
 
- 
+

@@ -69,6 +69,9 @@
                                             <button type="button" class="btn btn-outline-primary filter-btn" data-filter="expediteur" data-target="receptions">
                                                 <i class="fas fa-user me-1"></i> المرسل
                                             </button>
+                                            <button type="button" class="btn btn-outline-primary filter-btn" data-filter="numero" data-target="receptions">
+    <i class="fas fa-hashtag me-1"></i> رقم الملف القضائي
+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -79,7 +82,8 @@
                             <table class="table table-hover align-middle" id="tableReceptions">
                                 <thead class="bg-light">
                                     <tr>
-                                    <th class="fw-semibold" style="width: 25%;">المصدر</th>
+                                        <th class="fw-semibold" style="width: 15%;">رقم الملف القضائي</th>
+                                        <th class="fw-semibold" style="width: 25%;">المصدر</th>
                                         <th class="fw-semibold" style="width: 15%;">القسم</th>
                                         <th class="fw-semibold" style="width: 15%;">المرسل</th>
                                         <th class="fw-semibold" style="width: 20%;">تعليق</th>
@@ -90,6 +94,9 @@
                                     @foreach($receptions as $reception)
                                         @if(!$reception->traite)
                                         <tr class="border-top border-light">
+                                            <td>
+                                                <span class="fw-medium">{{ $reception->dossier->numero_dossier_judiciaire ?? '-' }}</span>
+                                            </td>
                                             <td>
                                                 <span class="fw-medium">{{ $reception->dossier->titre }}</span>
                                             </td>
@@ -137,6 +144,33 @@
                                                             <i class="fas fa-check me-1"></i> مصادقة
                                                         </button>
                                                     </form>
+
+                                                    <!-- Bouton pour ouvrir le modal d'édition de l'observation -->
+<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#observationModal{{ $reception->id }}">
+    <i class="fas fa-edit"></i> تعديل الملاحظة
+</button>
+
+<!-- Modal d'édition de l'observation -->
+<div class="modal fade" id="observationModal{{ $reception->id }}" tabindex="-1" aria-labelledby="observationModalLabel{{ $reception->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('receptions.observation', $reception->id) }}">
+        @csrf
+        @method('PATCH')
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="observationModalLabel{{ $reception->id }}">تعديل الملاحظة</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <textarea name="observation" class="form-control" rows="4">{{ $reception->dossier->observation }}</textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">حفظ</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -204,23 +238,21 @@ document.addEventListener('DOMContentLoaded', function() {
         rows.forEach(row => {
             let showRow = false;
             const cells = row.querySelectorAll('td');
-            
+
             if (filterType === 'all') {
-                // Rechercher dans toutes les cellules
-                showRow = Array.from(cells).some(cell => 
+                showRow = Array.from(cells).some(cell =>
                     cell.textContent.toLowerCase().includes(searchText)
                 );
             } else if (filterType === 'titre') {
-                // Rechercher dans la colonne Titre (index 0)
-                showRow = cells[0].textContent.toLowerCase().includes(searchText);
-            } else if (filterType === 'service') {
-                // Rechercher dans la colonne Service (index 1)
+                // Le titre est maintenant à l'index 1
                 showRow = cells[1].textContent.toLowerCase().includes(searchText);
-            } else if (filterType === 'expediteur') {
-                // Rechercher dans la colonne Expediteur (index 2)
+            } else if (filterType === 'service') {
                 showRow = cells[2].textContent.toLowerCase().includes(searchText);
+            } else if (filterType === 'expediteur') {
+                showRow = cells[3].textContent.toLowerCase().includes(searchText);
+            } else if (filterType === 'numero') {
+                showRow = cells[0].textContent.toLowerCase().includes(searchText);
             }
-            
             row.style.display = showRow ? '' : 'none';
         });
     }

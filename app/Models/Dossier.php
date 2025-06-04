@@ -21,6 +21,7 @@ class Dossier extends Model
         'createur_id',
         'service_id',
         'genre',
+         'observation',
     ];
 
     /**

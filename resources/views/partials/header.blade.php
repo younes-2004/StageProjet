@@ -11,14 +11,22 @@
         <!-- Partie principale avec les liens (au centre) -->
         <div class="flex items-center space-x-uniform overflow-x-auto flex-grow justify-center" dir="rtl">
             <!-- Élément 1 -->
-            <a href="{{ route('dossiers.mes_dossiers') }}" class="flex items-center text-blue-600 font-medium nav-item">
+            <a href="{{ route('dashboard') }}" class="flex items-center text-blue-600 font-medium nav-item">
                 <span class="bg-blue-100 text-blue-600 p-2 rounded-md ml-2">
                     <i class="fas fa-home"></i>
+                </span>
+                <span class="nav-text">الرئيسية</span>
+            </a>
+
+            <!-- Élément 2 -->
+            <a href="{{ route('dossiers.mes_dossiers') }}" class="flex items-center text-blue-600 font-medium nav-item">
+                <span class="bg-blue-100 text-blue-600 p-2 rounded-md ml-2">
+                    <i class="fas fa-folder-open"></i>
                 </span>
                 <span class="nav-text">ملفاتي</span>
             </a>
             
-            <!-- Élément 2 -->
+            <!-- Élément 3 -->
             <a href="{{ route('dossiers.create') }}" class="flex items-center text-gray-700 font-medium nav-item">
                 <span class="bg-gray-100 text-gray-600 p-2 rounded-md ml-2">
                     <i class="fas fa-tag"></i>
@@ -31,24 +39,8 @@
                 </span>
                 <span class="nav-text">الأرشفة</span>
             </a>
-            
-            @if(Auth::user()->role == 'greffier_en_chef')
-                <a href="{{ route('users.index') }}" class="flex items-center text-gray-700 font-medium nav-item">
-                    <span class="bg-gray-100 text-gray-600 p-2 rounded-md ml-2">
-                        <i class="fas fa-users"></i>
-                    </span>
-                    <span class="nav-text">المستخدمين</span>
-                </a>
-                
-                <a href="{{ route('services.index') }}" class="flex items-center text-gray-700 font-medium nav-item">
-                    <span class="bg-gray-100 text-gray-600 p-2 rounded-md ml-2">
-                        <i class="fas fa-building"></i>
-                    </span>
-                    <span class="nav-text">الخدمات</span>
-                </a>
-            @endif
-            
-            <!-- Élément 3 -->
+        
+            <!-- Élément 4 -->
             <a href="{{ route('receptions.inbox') }}" class="flex items-center text-gray-700 font-medium nav-item">
                 <span class="bg-gray-100 text-gray-600 p-2 rounded-md ml-2">
                     <i class="fas fa-inbox"></i>
@@ -56,7 +48,7 @@
                 <span class="nav-text">صندوق الوارد</span>
             </a>
             
-            <!-- Élément 4 -->
+            <!-- Élément 5 -->
             <a href="{{ route('receptions.dossiers_valides') }}" class="flex items-center text-gray-700 font-medium nav-item">
                 <span class="bg-gray-100 text-gray-600 p-2 rounded-md ml-2">
                     <i class="fas fa-check-circle"></i>

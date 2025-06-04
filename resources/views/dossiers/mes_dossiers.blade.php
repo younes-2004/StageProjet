@@ -326,7 +326,7 @@
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="all" data-target="historique">
                                 <i class="fas fa-list-ul me-1"></i> الكل
                             </button>
-                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="titre" data-target="nonEnvoyes">
+                           <button type="button" class="btn btn-outline-success filter-btn" data-filter="titre" data-target="historique">
     <i class="fas fa-heading me-1"></i> المصدر
 </button>
                             <button type="button" class="btn btn-outline-success filter-btn" data-filter="numero" data-target="historique">

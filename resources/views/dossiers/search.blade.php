@@ -6,9 +6,8 @@
         <div class="col-12">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold">لبحث المتقدم عن الملفات
-                        <i class="fas fa-search text-primary me-2"></i>ا
-                    </h5>
+                    <h5 class="mb-0 fw-bold">البحث المتقدم عن الملفات
+                        <i class="fas fa-search text-primary me-2"></i>                    </h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('dossiers.search') }}" method="GET" id="searchForm">
@@ -46,20 +45,27 @@
 </div>
                             
                             <!-- تصفية حسب النوع -->
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="genre" class="form-label">النوع</label>
-                                    <select class="form-select" id="genre" name="genre">
-                                        <option value=""  style="text-align: center;">جميع الأنواع</option>
-                                        @foreach($genres as $genre)
-                                            <option value="{{ $genre }}" {{ request('genre') == $genre ? 'selected' : '' }}>
-                                                {{ $genre }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                           <div class="col-md-3">
+    <div class="form-group">
+        <label for="genre" class="form-label">النوع</label>
+        <select class="form-select" id="genre" name="genre">
+            <option value=""  style="text-align: center;">جميع الأنواع</option>
+            @foreach($genres as $genre)
+                <option value="{{ $genre }}" {{ request('genre') == $genre ? 'selected' : '' }}>
+                    {{ $genre }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+<!-- تصفية حسب رقم النوع -->
+<div class="col-md-3">
+    <div class="form-group">
+        <label for="genre_numero" class="form-label">رقم النوع</label>
+        <input type="text" class="form-control" id="genre_numero" name="genre_numero"
+               value="{{ request('genre_numero') }}" placeholder="مثال: 2526">
+    </div>
+</div>
                         
                         <div class="row mb-3">
                             <!-- تصفية حسب القسم -->
@@ -132,6 +138,14 @@
                                         <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}  style="text-align: center;">تنازلي</option>
                                         <option value="asc" {{ request('sort_direction') == 'asc' ? 'selected' : '' }}  style="text-align: center;">تصاعدي</option>
                                     </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="observation" class="form-label">الملاحظة</label>
+                                    <input type="text" class="form-control" id="observation" name="observation"
+                                           value="{{ request('observation') }}" placeholder="بحث في الملاحظة">
                                 </div>
                             </div>
                             

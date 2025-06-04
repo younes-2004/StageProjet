@@ -9,6 +9,17 @@ use Illuminate\Http\Request;
 
 class DossierSearchController extends Controller
 {
+    private function getEnumValues($table, $column)
+{
+    $type = \DB::select(\DB::raw("SHOW COLUMNS FROM {$table} WHERE Field = '{$column}'"))[0]->Type;
+    preg_match('/^enum\((.*)\)$/', $type, $matches);
+    $enum = [];
+    foreach (explode(',', $matches[1]) as $value) {
+        $v = trim($value, "'");
+        $enum[] = $v;
+    }
+    return $enum;
+}
     public function index(Request $request)
     {
         $services = Service::all();
@@ -42,10 +53,18 @@ class DossierSearchController extends Controller
             $query->where('createur_id', $request->createur_id);
         }
         
-        // Filtrage par genre
-        if ($request->has('genre') && !empty($request->genre)) {
-            $query->where('genre', 'like', "%{$request->genre}%");
-        }
+       if ($request->has('genre') && !empty($request->genre)) {
+    $query->where('genre', 'like', "%{$request->genre}%");
+}
+if ($request->has('observation') && !empty($request->observation)) {
+    $query->where('observation', 'like', '%' . $request->observation . '%');
+}
+
+// Filtrage par numéro dans le genre
+if ($request->has('genre_numero') && !empty($request->genre_numero)) {
+    $numero = $request->genre_numero;
+    $query->where('genre', 'like', '%[' . $numero . ']%');
+}
         
         // Filtrage par date
         if ($request->has('date_debut') && !empty($request->date_debut)) {
@@ -74,8 +93,7 @@ class DossierSearchController extends Controller
         $statuts = Dossier::select('statut')->distinct()->pluck('statut');
         
         // Liste des genres disponibles
-        $genres = Dossier::select('genre')->distinct()->pluck('genre');
-        
-        return view('dossiers.search', compact('dossiers', 'services', 'users', 'statuts', 'genres'));
+       $genres = $this->getEnumValues('dossiers', 'genre');
+return view('dossiers.search', compact('dossiers', 'services', 'users', 'statuts', 'genres'));
     }
 }

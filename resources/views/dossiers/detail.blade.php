@@ -205,6 +205,20 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ملاحظة الملف في الهامش -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h6 class="mb-0 fw-semibold">
+                <i class="fas fa-sticky-note text-warning me-2"></i>الملاحظة
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="text-muted">
+                {{ $dossier->observation ?? 'لا توجد ملاحظة' }}
+            </div>
+        </div>
+    </div>
         </div>
     </div>
 </div>
